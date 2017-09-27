@@ -9,3 +9,4 @@ from gbkfit_web import models
 admin.site.register(models.Job)
 admin.site.register(models.User)
 admin.site.register(models.DataSet)
+admin.site.register(models.Verification)

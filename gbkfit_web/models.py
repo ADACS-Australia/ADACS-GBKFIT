@@ -141,6 +141,7 @@ class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     information = models.CharField(max_length=1024)
     expiry = models.DateTimeField(null=True)
+    verified = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u'%s' % self.information

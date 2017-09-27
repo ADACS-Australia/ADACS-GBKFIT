@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from gbkfit_web.forms.account.registration import RegistrationForm
+from gbkfit_web.mailer.actions import email_verify_request
+from gbkfit_web.utility import constants
+from gbkfit_web.utility.utils import get_absolute_site_url, get_token
 
 
 def registration(request):
@@ -13,6 +16,32 @@ def registration(request):
         if form.is_valid():
             data = form.cleaned_data
             form.save()
+
+            # generating verification link
+            verification_link = get_absolute_site_url(request) + \
+                '/verify?verification_code=' + \
+                get_token(
+                    information='type=user&username={}'.format(data.get('username')),
+                    validity=constants.EMAIL_VERIFY_EXPIRY,
+                )
+
+            # Sending email to the potential user to verify the email address
+            email_verify_request(
+                to_addresses=[data.get('email')],
+                title=data.get('title'),
+                first_name=data.get('first_name'),
+                last_name=data.get('last_name'),
+                link=verification_link,
+            )
+
+            return render(
+                request,
+                "accounts/notification.html",
+                {
+                    'type': 'registration_submitted',
+                    'data': data,
+                },
+            )
     else:
         form = RegistrationForm()
 
@@ -22,22 +51,12 @@ def registration(request):
         {
             'form': form,
             'data': data,
-        }
+        },
     )
 
 
 @login_required
 def profile(request):
-    from gbkfit_web.mailer.email import Email
-    subject = 'Test Subject'
-    to_addresses = ['shiblicse@gmail.com']
-    context = {}
-    template = 'hi'
-    from_address = None
-    cc = None
-    bcc = None
-    email = Email(subject, to_addresses, context, template, from_address=from_address)
-    email.send_email()
     return render(
         request,
         "accounts/profile.html",

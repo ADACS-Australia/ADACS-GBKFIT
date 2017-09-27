@@ -1,7 +1,9 @@
 import base64
 import logging
 
+from datetime import timedelta
 from django.conf import settings
+from django.utils import timezone
 from six.moves.urllib.parse import quote_plus, unquote_plus, parse_qsl
 
 from gbkfit_web.models import Verification
@@ -25,20 +27,23 @@ def get_absolute_site_url(request):
         protocol = 'https'
     else:
         protocol = settings.HTTP_PROTOCOL
-    address = protocol + '://' + site_name
-    if settings.ROOT_SUBDIRECTORY_PATH != '':
-        address += '/' + settings.ROOT_SUBDIRECTORY_PATH[:-1]
-    return address
+    return protocol + '://' + site_name
 
 
-def get_token(information):
+def get_token(information, validity=None):
     """
     Stores the information in the database and generates a corresponding token
     :param information: information that needs to be stored and corresponding token to be generated
+    :param validity: for how long the token will be valid (in seconds)
     :return: token to be encoded in the url
     """
+    if validity:
+        now = timezone.localtime(timezone.now())
+        expiry = now + timedelta(seconds=validity)
+    else:
+        expiry = None
     try:
-        verification = Verification.objects.create(information=information)
+        verification = Verification.objects.create(information=information, expiry=expiry)
         return url_quote('id=' + verification.id.__str__())
     except:
         logger.info("Failure generating Verification token with {}".format(information))
@@ -51,12 +56,18 @@ def get_information(token):
     :param token: encoded token from email
     :return: the actual information
     """
+    now = timezone.localtime(timezone.now())
     try:
         params = dict(parse_qsl(url_unquote(token)))
-        verification = Verification.objects.get(id=params.get('id'))
+        verification = Verification.objects.get(id=params.get('id'), expiry__gte=now)
+        if verification.verified:
+            raise ValueError('Already verified')
+        else:
+            verification.verified = True
+            verification.save()
         return verification.information
     except Verification.DoesNotExist:
-        raise ValueError('Invalid verification code')
+        raise ValueError('Invalid or expired verification code')
     except Exception as e:
         logger.exception(e)  # should notify admins via email
         raise
