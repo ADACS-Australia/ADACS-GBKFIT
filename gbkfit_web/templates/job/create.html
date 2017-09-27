@@ -1,0 +1,54 @@
+{% extends 'base/base.html' %}
+
+{% block info-bar %}
+    Job Creation Widget
+    {{ request.session.draft_job }}
+{% endblock info-bar %}
+
+{% block page_header %}
+    New Job Creation
+{% endblock page_header %}
+
+{% block content %}
+    <ul class="nav nav-tabs">
+        <li{% if active_tab == 'start' %} class="active"{% endif %}><a data-toggle="tab" href="#start">Start</a></li>
+        <li{% if active_tab == 'data-set' %} class="active"{% endif %}><a data-toggle="tab" href="#data-set">Dataset Upload</a></li>
+        <li{% if active_tab == 'data-model' %} class="active"{% endif %}><a data-toggle="tab" href="#data-model">Data Model</a></li>
+        <li{% if active_tab == 'psf' %} class="active"{% endif %}><a data-toggle="tab" href="#psf">PSF</a></li>
+        <li{% if active_tab == 'lsf' %} class="active"{% endif %}><a data-toggle="tab" href="#lsf">LSF</a></li>
+        <li{% if active_tab == 'galaxy-model' %} class="active"{% endif %}><a data-toggle="tab" href="#galaxy-model">Galaxy Model</a></li>
+        <li{% if active_tab == 'fitter' %} class="active"{% endif %}><a data-toggle="tab" href="#fitter">Fitter</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="start" class="tab-pane fade{% if active_tab == 'start' %} in active{% endif %}">
+            <form action="{% url 'job_start' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ start_form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Save and Next >>" />
+            </form>
+        </div>
+        <div id="data-set" class="tab-pane fade{% if active_tab == 'data-set' %} in active{% endif %}">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ dataset_form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Upload Dataset" />
+            </form>
+        </div>
+        <div id="data-model" class="tab-pane fade{% if active_tab == 'data-model' %} in active{% endif %}">
+            <h3>Data model form will go here</h3>
+        </div>
+        <div id="psf" class="tab-pane fade{% if active_tab == 'psf' %} in active{% endif %}">
+            <h3>PSF input will go here</h3>
+        </div>
+        <div id="lsf" class="tab-pane fade{% if active_tab == 'lsf' %} in active{% endif %}">
+            <h3>LSF input will go here</h3>
+        </div>
+        <div id="galaxy-model" class="tab-pane fade{% if active_tab == 'galaxy-model' %} in active{% endif %}">
+            <h3>Galaxy Model input will go here</h3>
+        </div>
+        <div id="fitter" class="tab-pane fade{% if active_tab == 'fitter' %} in active{% endif %}">
+            <h3>Fitter input will go here</h3>
+        </div>
+    </div>
+{% endblock content %}

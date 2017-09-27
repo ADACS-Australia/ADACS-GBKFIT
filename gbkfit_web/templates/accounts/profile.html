@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+
+{% block info-bar %}
+    Profile of the User
+{% endblock info-bar %}
+
+{% block page_header %}
+    User Profile of {{ request.user.title }} {{ request.user.first_name }} {{ request.user.last_name }}
+{% endblock page_header %}
+
+{% block content %}
+    {% include 'snippets/render_form.html' %}
+{% endblock content %}

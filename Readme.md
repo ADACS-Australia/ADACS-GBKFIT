@@ -16,33 +16,35 @@ Create one `local.py` in the settings module next to the other settings
 files (`base.py`, `development.py`, `production.py` etc.)
 
 The following settings needs to be present in the `local.py` settings file.
-```
+
+Specify the base directory
+```python
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ```
-Specify the base directory
 
-```
+The admins of the site who will receive error emails.
+```python
 ADMINS = [
     ('Your Name', 'youremail@dd.ress'),
 ]
 
 MANAGERS = ADMINS
 ```
-The admins of the site who will receive error emails.
 
-```
+The address from where the server emails will be sent.
+```python
 SERVER_EMAIL = 'serveremail@dd.ress'
 ```
-The address from where the server emails will be sent.
 
-```
+The address from where the notification emails will be sent.
+```python
 EMAIL_FROM = 'mail@dd.ress'
 ```
-The address from where the notification emails will be sent.
 
-```
+Set up the log file settings.
+```python
 LOG_DIRECTORY = os.path.join(BASE_DIR, 'path/to/log')
 
 LOGGING = {
@@ -92,9 +94,10 @@ LOGGING = {
     },
 }
 ```
-Set up the log file settings.
 
-```
+Set up the database settings. Replace it with MySQL or other database 
+if required.
+```python
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -102,18 +105,23 @@ DATABASES = {
     }
 }
 ```
-Set up the database settings. Replace it with MySQL or other database 
-if required.
+
+(Optional) Force the https protocol even if the request is not secure
+in links. Specially helpful in case server is hosted in different 
+machine and apache redirect is there.
+```python
+HTTP_PROTOCOL = 'https'
+```
 
 ## Required Steps ##
 The required steps include the following:
 * `virtualenv venv` (create the virtual environment)
 * `git pull` (clone the code)
 * `source venv/bin/activate` (activate the virtual environment)
-* `cd gbkfit` (enter the root directory of the project)
-* `cd gbkfit/settings` (enter the settings directory)
+* `cd gbkfit/gbkfit/settings` (enter the settings directory)
 * `touch local.py` (create the file for local settings - refer above
 for setting up a local settings file)
+* `cd ../../` (enter the root directory of the project)
 * `./development-manage.py migrate` (migrate, for staging or production 
 specify the required manage.py file instead)
 * `./development-manage.py runserver` (running the server)
