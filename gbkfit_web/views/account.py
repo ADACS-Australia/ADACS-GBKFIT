@@ -51,6 +51,7 @@ def registration(request):
         {
             'form': form,
             'data': data,
+            'submit_text': 'Register',
         },
     )
 
