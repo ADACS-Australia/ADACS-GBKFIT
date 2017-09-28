@@ -11,8 +11,9 @@ class RegistrationForm(UserCreationForm):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields['country'].initial = 'AU'
         self.fields['username'].help_text = None
-        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
-        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['username'].widget.attrs.update({'autofocus': False})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control', 'tabindex': '11'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control', 'tabindex': '12'})
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['email'].required = True
@@ -27,35 +28,34 @@ class RegistrationForm(UserCreationForm):
 
         widgets = {
             'title': forms.Select(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control', 'tabindex': '1'},
             ),
             'first_name': forms.TextInput(
-                attrs={'class': "form-control"},
+                attrs={'class': "form-control", 'tabindex': '2'},
             ),
             'last_name': forms.TextInput(
-                attrs={'class': "form-control"},
+                attrs={'class': "form-control", 'tabindex': '3'},
             ),
             'email': forms.TextInput(
-                attrs={'class': "form-control"},
+                attrs={'class': "form-control", 'tabindex': '4'},
             ),
             'gender': forms.Select(
-                attrs={'class': "form-control"},
+                attrs={'class': "form-control", 'tabindex': '5'},
             ),
             'institution': forms.TextInput(
-                attrs={'class': "form-control"},
+                attrs={'class': "form-control", 'tabindex': '6'},
             ),
-            'is_student': forms.CheckboxInput(),
+            'is_student': forms.CheckboxInput(
+                attrs={'tabindex': '7'},
+            ),
             'country': forms.Select(
-                attrs={'class': "form-control"},
+                attrs={'class': "form-control", 'tabindex': '8'},
             ),
             'scientific_interests': forms.Textarea(
-                attrs={'rows': 3, 'class': 'form-control'},
+                attrs={'rows': 3, 'class': 'form-control', 'tabindex': '9'},
             ),
             'username': forms.TextInput(
-                attrs={'class': "form-control"},
-            ),
-            'password': forms.PasswordInput(
-                attrs={'class': "form-control"}
+                attrs={'class': "form-control", 'tabindex': '10'},
             ),
         }
 

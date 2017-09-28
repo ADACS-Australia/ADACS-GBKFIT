@@ -11,8 +11,8 @@
     {% endfor %}
     <div class="container-fluid text-right">
         <div class="buttons col-md-12">
-            <input class="btn btn-warning" type="reset" value="Reset"/>
-            <input class="btn btn-success" type="submit"
+            <input class="btn btn-warning" type="reset" tabindex="101" value="Reset"/>
+            <input class="btn btn-success" type="submit" tabindex="100"
                    value="{% if submit_text %}{{ submit_text }}{% else %}Submit{% endif %}"/>
         </div>
     </div>
