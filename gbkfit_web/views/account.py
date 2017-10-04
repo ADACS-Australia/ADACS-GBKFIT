@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from gbkfit_web.forms.account.registration import RegistrationForm
+from gbkfit_web.forms.account.profile import EditProfileForm
 from gbkfit_web.mailer.actions import email_verify_request
 from gbkfit_web.utility import constants
 from gbkfit_web.utility.utils import get_absolute_site_url, get_token
@@ -58,7 +59,33 @@ def registration(request):
 
 @login_required
 def profile(request):
+    # Create template
+    data = {}
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            data = form.cleaned_data
+            form.save()
+
+            return render(
+                request,
+                "accounts/profile.html",
+                {
+                    'type': 'update_profile_success',
+                    'data': data,
+                },
+            )
+    else:
+        form = EditProfileForm(instance=request.user)
+
     return render(
         request,
         "accounts/profile.html",
+        {
+            'form': form,
+            'data': data,
+            'submit_text': 'Update',
+        },
     )
+
+

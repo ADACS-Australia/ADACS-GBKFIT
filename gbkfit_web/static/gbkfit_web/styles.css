@@ -4,14 +4,24 @@
 /*                                          */
 /********************************************/
 .header{
-    min-height: 100px;
-    background-color: darkcyan;
+    min-height: 3.5em;
+    background-color: #ffffff00;
     color: #fff;
-    text-align: center;
+	background-color: rgb(23, 24, 28);
+/*     background-image: linear-gradient(to right, #1f0e12 0%, black 100%), url("../gbkfit_web/images/background.jpg");
+    background-blend-mode: screen;
+    background-repeat: no-repeat; */
+}
+
+.header label{
+    text-align: left;
+    padding-left: 12em;
+    font-family: 'Arvo', serif;
+    font-size: 22px;
 }
 
 .header .heading {
-    padding: 30px;
+/*     padding: 10px; */
     font-size: xx-large;
 }
 
@@ -23,20 +33,37 @@
 
 /********************************************/
 /*                                          */
+/*                  Navbar                  */
+/*                                          */
+/********************************************/
+.navbar{
+    background-color: #eeeeee;
+}
+
+/********************************************/
+/*                                          */
 /*                  Footer                  */
 /*                                          */
 /********************************************/
 .footer{
-    background-color: cadetblue;
-    color: #fff;
-    text-align: center;
-    margin-top: 20px;
+    /*background-color: cadetblue;*/
+    background-color: #fff;
+    color: #000;
+    text-align: left;
+    padding-left: 12em;
+    padding-bottom: 1em;
+    /*margin-top: 10px;*/
+
+/*     background-image: linear-gradient(to right, #1f0e12 0%, black 100%), url("../gbkfit_web/images/background.jpg");
+    background-blend-mode: screen;
+    background-repeat: no-repeat; */
 }
 
 .footer .footer-text {
-    padding: 10px;
+    /*padding: 35px;*/
+    font-family: 'Slabo 27px', serif;
+    font-size: 18px;
 }
-
 
 /********************************************/
 /*                                          */
@@ -57,6 +84,7 @@
 /********************************************/
 .main-content{
     border-left: 1px dotted #cccccc;
+    /*padding-bottom: 3em;*/
 }
 
 
@@ -114,4 +142,5 @@
     border-radius: 0 0 4px 4px;
     background-color: darksalmon;
 }
+
 

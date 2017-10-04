@@ -13,35 +13,37 @@ class User(auth_models.AbstractUser):
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
 
+    NOT_DISCLAUSED = ''
     MR = 'Mr'
     MS = 'Ms'
-    MISS = 'Miss'
+    # MISS = 'Miss'
     MRS = 'Mrs'
     DR = 'Dr'
     PROF = 'Prof'
     A_PROF = 'A/Prof'
 
     TITLE_CHOICES = [
-        (MR, 'Mr'),
-        (MS, 'Ms'),
-        (MISS, 'Miss'),
-        (MRS, 'Mrs'),
-        (DR, 'Dr'),
-        (PROF, 'Prof'),
-        (A_PROF, 'A/Prof'),
+        (NOT_DISCLAUSED, NOT_DISCLAUSED),
+        (MR, MR),
+        (MS, MS),
+        # (MISS, MS),
+        (MRS, MRS),
+        (DR, DR),
+        (PROF, PROF),
+        (A_PROF, A_PROF),
     ]
 
     MALE = 'Male'
     FEMALE = 'Female'
     PREFER_NOT_TO_SAY = 'Prefer not to say'
     GENDER_CHOICES = [
-        (MALE, 'Male'),
-        (FEMALE, 'Female'),
-        (PREFER_NOT_TO_SAY, 'Prefer not to say'),
+        (NOT_DISCLAUSED, NOT_DISCLAUSED),
+        (FEMALE, FEMALE),
+        (MALE, MALE),
     ]
 
-    title = models.CharField(max_length=10, choices=TITLE_CHOICES, default=MR)
-    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, default=PREFER_NOT_TO_SAY)
+    title = models.CharField(max_length=10, choices=TITLE_CHOICES, default=NOT_DISCLAUSED, blank=True)
+    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, default=NOT_DISCLAUSED, blank=True)
     is_student = models.BooleanField(default=False)
     institution = models.CharField(max_length=100)
     country = CountryField(blank_label='Select Country', null=False, blank=False)
