@@ -9,14 +9,16 @@ urlpatterns = [
     url(r'^register/$', account.registration, name='register'),
 
     url(r'^accounts/login/$',
-        auth_views.LoginView.as_view(redirect_authenticated_user=True, template_name='accounts/login.html'),
-        name='login'),
+        auth_views.LoginView.as_view(redirect_authenticated_user=True,
+                                     template_name='accounts/login.html'), name='login'),
+
+    url(r'^register/$', account.registration, name='register'),
+
+    url(r'^verify/$', verify.verify, name='verify'),
 
     url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
 
     url(r'^accounts/profile/$', account.profile, name='profile'),
-
-    url(r'^verify/$', verify.verify, name='verify'),
 
     url(r'^password_reset/$', auth_views.password_reset, name='password_reset'),
 
@@ -28,5 +30,4 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
 
     url(r'^new_job/$', job.start, name='job_start'),
-
 ]
