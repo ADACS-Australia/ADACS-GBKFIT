@@ -59,7 +59,6 @@ def registration(request):
 
 @login_required
 def profile(request):
-    # Create template
     data = {}
     if request.method == 'POST':
         form = EditProfileForm(request.POST, instance=request.user)
@@ -71,6 +70,7 @@ def profile(request):
                 request,
                 "accounts/profile.html",
                 {
+                    'form': form,
                     'type': 'update_profile_success',
                     'data': data,
                 },
