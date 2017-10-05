@@ -7,9 +7,6 @@ class EditProfileForm(forms.ModelForm):
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
 
-    def __init(self, *args, **kwargs):
-        del self.fields['password']
-
     class Meta:
         model = User
         fields = ('username', 'title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student',

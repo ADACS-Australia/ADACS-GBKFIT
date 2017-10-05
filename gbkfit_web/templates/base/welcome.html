@@ -21,23 +21,17 @@
 </head>
 <body>
     {% include 'base/header.html' %}
-    <div class="container">
-        <div class="row">
-            <div class="col col-md-2 align-self-center info-bar">
-                {% block info-bar %}
-                {% endblock info-bar %}
-            </div>
-            <div class="col col-md-10 main-content">
-                <div class="page-header">
-                    {% block page_header %}
-                        GBKFIT
-                    {% endblock page_header %}
-                </div>
-                {% block content %}
-                {% endblock content %}
-            </div>
+    <div class="jumbotron" id="welcome-message">
+        <h1>Fitting Galaxies</h1>
+        <h3>Fast. Simple.</h3>
+    </div>
+    <div class="container-fluid">
+    <!--<hr>-->
+    <div class="row">
+        <div class="footer-welcome">
+            <div class="footer-text">&copy;gbkfit</div>
         </div>
     </div>
-    {% include 'base/footer.html' %}
+</div>
 </body>
 </html>
