@@ -1,5 +1,14 @@
 <form class="row" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <div class="{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </ul>
+    {% endif %}
     {% for field in form %}
         <div class="container-fluid field {% if field.errors %}error{% endif %}">
             <label class="col-md-4" for="{{ field.auto_id }}">{{ field.label }}</label>
