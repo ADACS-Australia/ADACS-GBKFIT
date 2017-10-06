@@ -65,7 +65,6 @@ def profile(request):
         if form.is_valid():
             data = form.cleaned_data
             form.save()
-
             return render(
                 request,
                 "accounts/profile.html",
