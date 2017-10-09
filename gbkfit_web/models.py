@@ -90,15 +90,15 @@ class Job(models.Model):
     WALL_TIME_EXCEEDED = 'Wall Time Exceeded'
     DELETED = 'Deleted'
     STATUS_CHOICES = [
-        (DRAFT, 'Draft'),
-        (SUBMITTED, 'Submitted'),
-        (QUEUED, 'Queued'),
-        (IN_PROGRESS, 'In Progress'),
-        (COMPLETED, 'Completed'),
-        (ERROR, 'Error'),
-        (SAVED, 'Saved'),
-        (WALL_TIME_EXCEEDED, 'Wall Time Exceeded'),
-        (DELETED, 'Deleted'),
+        (DRAFT, DRAFT),
+        (SUBMITTED, SUBMITTED),
+        (QUEUED, QUEUED),
+        (IN_PROGRESS, IN_PROGRESS),
+        (COMPLETED, COMPLETED),
+        (ERROR, ERROR),
+        (SAVED, SAVED),
+        (WALL_TIME_EXCEEDED, WALL_TIME_EXCEEDED),
+        (DELETED, DELETED),
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=DRAFT)
     creation_time = models.DateTimeField(auto_now_add=True)
@@ -138,6 +138,170 @@ class DataSet(models.Model):
     mask = models.FileField()
     creation_time = models.DateTimeField(auto_now_add=True)
 
+class DataModel(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_data_model')
+    name = models.CharField(max_length=255, blank=False, null=False)
+
+    SCUBE_OMP = 'scube_omp'
+    SCUBE_CUDA = 'scube_cuda'
+    MMNT_OMP = 'mmnt_omp'
+    MMNT_CUDA = 'mmnt_cuda'
+
+    TYPE_CHOICES = [
+        (SCUBE_OMP, SCUBE_OMP),
+        (SCUBE_CUDA, SCUBE_CUDA),
+        (MMNT_OMP, MMNT_OMP),
+        (MMNT_CUDA, MMNT_CUDA)
+    ]
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=SCUBE_OMP)
+
+    #size (if cube: 3dims, if mmnt: 2dims?)
+    size_x = models.PositiveIntegerField(blank=False, default=1)
+    size_y = models.PositiveIntegerField(blank=False, default=1)
+    # Need to figure out how to require the z field when required.
+    size_z = models.PositiveIntegerField(blank=True)
+
+    step_x = models.PositiveIntegerField(blank=False, default=1)
+    step_y = models.PositiveIntegerField(blank=False, default=1)
+    # Need to figure out how to require the z field when required.
+    step_z = models.PositiveIntegerField(blank=True)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
+class PSF(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_psf')
+    name = models.CharField(max_length=255, blank=False, null=False)
+
+    GAUSS = 'gauss'
+    MOFFAT = 'moffat'
+    LORENTZ = 'lorentz'
+
+    TYPE_CHOICES = [
+        (GAUSS, GAUSS),
+        (MOFFAT, MOFFAT),
+        (LORENTZ, LORENTZ),
+    ]
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
+
+    fwhm_x = models.FloatField(blank=False, default=1.)
+    fwhm_y = models.FloatField(blank=False, default=1.)
+    pa = models.IntegerField(blank=False, default=1)
+    # If Moffat, need to figure out how to require the following field.
+    beta = models.FloatField(blank=False, default=1.)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
+class LSF(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_lsf')
+    name = models.CharField(max_length=255, blank=False, null=False)
+
+    GAUSS = 'gauss'
+    MOFFAT = 'moffat'
+    LORENTZ = 'lorentz'
+
+    TYPE_CHOICES = [
+        (GAUSS, GAUSS),
+        (MOFFAT, MOFFAT),
+        (LORENTZ, LORENTZ),
+    ]
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
+
+    fwhm = models.FloatField(blank=False, default=1.)
+    # If Moffat, need to figure out how to require the following field.
+    beta = models.FloatField(blank=False, default=1.)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
+class GalaxyModel(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_gmodel')
+    name = models.CharField(max_length=255, blank=False, null=False)
+
+    THINDISK_OMP = 'thindisk_omp'
+    THINDISK_CUDA = 'thindisk_cuda'
+
+    TYPE_CHOICES = [
+        (THINDISK_OMP, THINDISK_OMP),
+        (THINDISK_CUDA, THINDISK_CUDA),
+    ]
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
+
+    EXPONENTIAL = 'exponential'
+    FLAT= 'flat'
+    BOISSIER = 'boissier',
+    ARCTAN = 'arctan'
+    EPINAT = 'epinat'
+    RINGS = 'rings'
+
+    FPROFILE_TYPE_CHOICES = [
+        (EXPONENTIAL, EXPONENTIAL),
+        (FLAT, FLAT),
+        (BOISSIER, BOISSIER),
+        (ARCTAN, ARCTAN),
+        (EPINAT, EPINAT),
+        (RINGS, RINGS),
+    ]
+    fprofile_type = models.CharField(max_length=10, choices=FPROFILE_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
+
+    VPROFILE_TYPE_CHOICES = [
+        (EXPONENTIAL, EXPONENTIAL),
+        (FLAT, FLAT),
+        (BOISSIER, BOISSIER),
+        (ARCTAN, ARCTAN),
+        (EPINAT, EPINAT),
+        (RINGS, RINGS),
+    ]
+    vprofile_type = models.CharField(max_length=10, choices=VPROFILE_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
+
+    # Need to figure out how to require these fields when required.
+    nrings = models.PositiveIntegerField(blank=True, default=1)
+    rsize = models.PositiveIntegerField(blank=True, default=1)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
+# class ParameterSet(models.Model):
+#     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_parameter_set')
+#     pass
+
+class Fitter(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_fitter')
+    name = models.CharField(max_length=255, blank=False, null=False)
+
+    MPFIT = 'mpfit'
+    MULTINEST = 'multinest'
+
+    TYPE_CHOICES = [
+        (MPFIT, MPFIT),
+        (MULTINEST, MULTINEST),
+    ]
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=MPFIT)
+
+    # MPFIT properties
+    ftol = models.PositiveIntegerField(blank=True, default=1)
+    xtol = models.PositiveIntegerField(blank=True, default=1)
+    gtol = models.PositiveIntegerField(blank=True, default=1)
+    epsfcn = models.PositiveIntegerField(blank=True, default=1)
+    stepfactor = models.PositiveIntegerField(blank=True, default=1)
+    covtol = models.PositiveIntegerField(blank=True, default=1)
+    maxiter = models.PositiveIntegerField(blank=True, default=1)
+    maxfev = models.PositiveIntegerField(blank=True, default=1)
+    nprint = models.PositiveIntegerField(blank=True, default=1)
+    douserscale = models.PositiveIntegerField(blank=True, default=1)
+    nofinitecheck = models.PositiveIntegerField(blank=True, default=1)
+
+    # Multinest properties
+    efr = models.PositiveIntegerField(blank=True, default=1)
+    tol = models.PositiveIntegerField(blank=True, default=1)
+    ztol = models.PositiveIntegerField(blank=True, default=1)
+    logzero = models.PositiveIntegerField(blank=True, default=1)
+    _is = models.PositiveIntegerField(blank=True, default=1)
+    mmodal = models.PositiveIntegerField(blank=True, default=1)
+    ceff = models.PositiveIntegerField(blank=True, default=1)
+    nlive = models.PositiveIntegerField(blank=True, default=1)
+    maxiter = models.PositiveIntegerField(blank=True, default=1)
+    seed = models.PositiveIntegerField(blank=True, default=1)
+    outfile = models.CharField(max_length=255, blank=False, null=False)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
