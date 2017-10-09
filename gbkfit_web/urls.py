@@ -12,6 +12,8 @@ urlpatterns = [
         auth_views.LoginView.as_view(redirect_authenticated_user=True,
                                      template_name='accounts/login.html'), name='login'),
 
+    url(r'^new_job/$', job.start, name='job_start'),
+
     url(r'^register/$', account.registration, name='register'),
 
     url(r'^verify/$', verify.verify, name='verify'),
@@ -30,6 +32,4 @@ urlpatterns = [
         account.password_reset_confirm, name='password_reset_confirm'),
 
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
-
-    url(r'^new_job/$', job.start, name='job_start'),
 ]

@@ -36,19 +36,101 @@
             </form>
         </div>
         <div id="data-model" class="tab-pane fade{% if active_tab == 'data-model' %} in active{% endif %}">
-            <h3>Data model form will go here</h3>
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ data_model_form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Upload data model" />
+            </form>
+            <!--<h3>Data model (DModels)</h3>-->
+            <!--<p>scube_omp, scube_cuda, mmnt_omp, mmnt_cuda</p>-->
+            <!--<p>"type": "scube_cuda",-->
+                <!--"size": [49, 49, 101],-->
+                <!--"step": [1.0, 1.0, 10.0]</p>-->
+            <!--<p>if mmnt_*; method: [moments, gfit]</p>-->
         </div>
         <div id="psf" class="tab-pane fade{% if active_tab == 'psf' %} in active{% endif %}">
-            <h3>PSF input will go here</h3>
+            <!--<h3>Point Spread Function</h3>-->
+            <!--<p>Type: gauss, moffat, lorentz</p>-->
+            <!--<p>if type==moffat; option: beta.</p>-->
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ psf_form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Upload PSF" />
+            </form>
         </div>
         <div id="lsf" class="tab-pane fade{% if active_tab == 'lsf' %} in active{% endif %}">
-            <h3>LSF input will go here</h3>
+            <!--<h3>Line Spread Function</h3>-->
+            <!--<p>Type: gauss, moffat, lorentz</p>-->
+            <!--<p>if type==moffat; option: beta.</p>-->
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ lsf_form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Upload LSF" />
+            </form>
         </div>
         <div id="galaxy-model" class="tab-pane fade{% if active_tab == 'galaxy-model' %} in active{% endif %}">
-            <h3>Galaxy Model input will go here</h3>
+            <!--<h3>Galaxy Model</h3>-->
+            <!--<p>thindisk_omp, thindisk_cuda</p>-->
+            <!--<p>fprofile or vprofile</p>-->
+            <!--<p>fprofile/vprofile type: [exponential, flat, boissier, arctan, epinat, rings]</p>-->
+            <!--<p>if type==rings: nrings:int, rsize:int</p>-->
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ galaxy_model_form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Upload galaxy model" />
+            </form>
+        </div>
+        <div id="parameter-set" class="tab-pane fade{% if active_tab == 'parameter-set' %} in active{% endif %}">
+            <h3>Parameter set</h3>
+            <ul>
+                <li>value</li>
+                <li>fixed</li>
+                <li>min</li>
+                <li>max</li>
+                <li>wrap</li>
+                <li>step</li>
+                <li>relstep</li>
+                <li>side</li>
+            </ul>
         </div>
         <div id="fitter" class="tab-pane fade{% if active_tab == 'fitter' %} in active{% endif %}">
-            <h3>Fitter input will go here</h3>
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ fitter_form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Upload galaxy model" />
+            </form>
+            <!--<h3>Fitters</h3>-->
+            <!--<ul>-->
+                <!--<li>type: [mpfit, multinest]</li>-->
+                <!--<li>if type==mpfit</li>-->
+                <!--<ul>-->
+                    <!--<li>ftol</li>-->
+                    <!--<li>xtol</li>-->
+                    <!--<li>gtol</li>-->
+                    <!--<li>epsfcn</li>-->
+                    <!--<li>stepfactor</li>-->
+                    <!--<li>covtol</li>-->
+                    <!--<li>maxiter</li>-->
+                    <!--<li>maxfev</li>-->
+                    <!--<li>nprint</li>-->
+                    <!--<li>douserscale</li>-->
+                    <!--<li>nofinitecheck</li>-->
+                <!--</ul>-->
+                <!--<li>if type==multinest</li>-->
+                <!--<ul>-->
+                    <!--<li>efr</li>-->
+                    <!--<li>tol</li>-->
+                    <!--<li>ztol</li>-->
+                    <!--<li>logzero</li>-->
+                    <!--<li>is</li>-->
+                    <!--<li>mmodal</li>-->
+                    <!--<li>ceff</li>-->
+                    <!--<li>nlive</li>-->
+                    <!--<li>maxiter</li>-->
+                    <!--<li>seed</li>-->
+                    <!--<li>outfile</li>-->
+                <!--</ul>-->
+            <!--</ul>-->
         </div>
     </div>
 {% endblock content %}

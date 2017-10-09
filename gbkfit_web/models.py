@@ -64,6 +64,9 @@ class User(auth_models.AbstractUser):
     def __unicode__(self):
         return u'%s %s %s (%s)' % (self.title, self.first_name, self.last_name, self.username)
 
+    def __str__(self):
+        return u'%s %s %s (%s)' % (self.title, self.first_name, self.last_name, self.username)
+
     def as_json(self):
         return dict(
             id=self.id,
@@ -110,6 +113,9 @@ class Job(models.Model):
         )
 
     def __unicode__(self):
+        return '{}'.format(self.name)
+
+    def __str__(self):
         return '{}'.format(self.name)
 
     def as_json(self):
@@ -168,6 +174,12 @@ class DataModel(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
 class PSF(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_psf')
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -191,6 +203,12 @@ class PSF(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
 class LSF(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_lsf')
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -212,6 +230,12 @@ class LSF(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
 class GalaxyModel(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_gmodel')
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -223,11 +247,11 @@ class GalaxyModel(models.Model):
         (THINDISK_OMP, THINDISK_OMP),
         (THINDISK_CUDA, THINDISK_CUDA),
     ]
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
+    type = models.CharField(max_length=12, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
 
     EXPONENTIAL = 'exponential'
     FLAT= 'flat'
-    BOISSIER = 'boissier',
+    BOISSIER = 'boissier'
     ARCTAN = 'arctan'
     EPINAT = 'epinat'
     RINGS = 'rings'
@@ -240,7 +264,7 @@ class GalaxyModel(models.Model):
         (EPINAT, EPINAT),
         (RINGS, RINGS),
     ]
-    fprofile_type = models.CharField(max_length=10, choices=FPROFILE_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
+    fprofile_type = models.CharField(max_length=11, choices=FPROFILE_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
 
     VPROFILE_TYPE_CHOICES = [
         (EXPONENTIAL, EXPONENTIAL),
@@ -250,13 +274,21 @@ class GalaxyModel(models.Model):
         (EPINAT, EPINAT),
         (RINGS, RINGS),
     ]
-    vprofile_type = models.CharField(max_length=10, choices=VPROFILE_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
+    vprofile_type = models.CharField(max_length=11, choices=VPROFILE_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
 
     # Need to figure out how to require these fields when required.
     nrings = models.PositiveIntegerField(blank=True, default=1)
     rsize = models.PositiveIntegerField(blank=True, default=1)
 
     creation_time = models.DateTimeField(auto_now_add=True)
+
+
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
 
 # class ParameterSet(models.Model):
 #     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_parameter_set')
@@ -303,6 +335,12 @@ class Fitter(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return '{}'.format(self.name)
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     information = models.CharField(max_length=1024)
@@ -311,3 +349,7 @@ class Verification(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.information
+
+    def __str__(self):
+        return u'%s' % self.information
+

@@ -7,12 +7,22 @@ from django import forms
 from django.shortcuts import render
 from gbkfit_web.forms.job.dataset import DataSetForm
 from gbkfit_web.forms.job.job_initial import JobInitialForm
+from gbkfit_web.forms.job.data_model import DataModelForm
+from gbkfit_web.forms.job.psf import PSFForm
+from gbkfit_web.forms.job.lsf import LSFForm
+from gbkfit_web.forms.job.galaxy_model import GalaxyModelForm
+from gbkfit_web.forms.job.fitter import FitterForm
 from gbkfit_web.models import Job
 
 
 @login_required
 def start(request):
     data_set_form = DataSetForm()
+    data_model_form = DataModelForm()
+    psf_form = PSFForm()
+    lsf_form = LSFForm()
+    galaxy_model_form = GalaxyModelForm()
+    fitter_form = FitterForm()
 
     active_tab = 'start'
 
@@ -41,5 +51,11 @@ def start(request):
             'active_tab': active_tab,
             'start_form': form,
             'dataset_form': data_set_form,
+            'data_model_form': data_model_form,
+            'psf_form': psf_form,
+            'lsf_form': lsf_form,
+            'galaxy_model_form': galaxy_model_form,
+            'fitter_form': fitter_form,
         }
     )
+
