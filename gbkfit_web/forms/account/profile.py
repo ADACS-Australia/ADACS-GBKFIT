@@ -18,9 +18,11 @@ class EditProfileForm(forms.ModelForm):
         fields = ('username', 'title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student',
                   'country', 'scientific_interests')
 
+        hide={'username'}
+
         widgets = {
             'username': forms.TextInput(
-                attrs={'class': "form-control", 'tabindex': '1'},
+                attrs={'class': "form-control", 'tabindex': '1', 'disabled':''},
             ),
             'title': forms.Select(
                 attrs={'class': 'form-control', 'tabindex': '2'},
