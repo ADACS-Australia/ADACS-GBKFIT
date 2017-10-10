@@ -6,24 +6,16 @@ from django.utils.translation import ugettext_lazy as _
 class EditProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
-        # self.fields['username'] = forms.CharField(required=True)
-        # self.fields['username'].help_text = None
-        self.fields['username'].widget.attrs.update({'autofocus': False})
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['email'].required = True
 
     class Meta:
         model = User
-        fields = ('username', 'title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student',
+        fields = ('title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student',
                   'country', 'scientific_interests')
 
-        hide={'username'}
-
         widgets = {
-            'username': forms.TextInput(
-                attrs={'class': "form-control", 'tabindex': '1', 'disabled':''},
-            ),
             'title': forms.Select(
                 attrs={'class': 'form-control', 'tabindex': '2'},
             ),
