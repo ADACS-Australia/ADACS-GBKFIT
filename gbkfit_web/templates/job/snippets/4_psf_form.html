@@ -1,0 +1,30 @@
+<form action="{% url 'job_psf' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+{#    {{ psf_form.as_p }}#}
+    {% for field in psf_form %}
+
+        <div class="container-fluid field
+                    {% if field.name == 'beta' %}hidden{% endif %}
+                    {% if field.errors %}error{% endif %}
+                    div-{{ field.name }}
+                    ">
+
+            <!-- Label -->
+            <label class="col-md-4" for="{{ field.auto_id }}">
+                {% if field.name == 'psf_type' %}
+                    Type
+                {% else %}
+                    {{ field.label }}
+                {% endif %}
+            </label>
+
+            <!-- Field -->
+            <div class="col-md-12">
+                {{ field }}
+                {{ field.errors }}
+            </div>
+
+        </div>
+    {% endfor %}
+    <input class="btn btn-primary" type="submit" value="Save and next" />
+</form>

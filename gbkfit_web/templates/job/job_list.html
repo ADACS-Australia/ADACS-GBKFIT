@@ -1,0 +1,81 @@
+{% extends 'base/base.html' %}
+
+{% block page_header %}
+    <div class="header-center">Jobs</div>
+{% endblock page_header %}
+
+{% block content %}
+
+    <table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Created on</th>
+            <th>Submitted on</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in object_list %}
+            <tr class="
+                        {% if job.status == job.DRAFT %} active {% endif %}
+                        {% if job.status == job.SUBMITTED %} warning  {% endif %}
+                        {% if job.status == job.QUEUED %} active {% endif %}
+                        {% if job.status == job.IN_PROGRESS %} info {% endif %}
+                        {% if job.status == job.COMPLETED %} success {% endif %}
+                        {% if job.status == job.ERROR %} danger {% endif %}
+                        {% if job.status == job.WALL_TIME_EXCEEDED %} danger {% endif %}
+                        {% if job.status == job.DELETED %} danger {% endif %}
+                      ">
+                <td>{{ job.id }}</td>
+                <td>{{ job.name }}</td>
+                <td>{{ job.creation_time|date }}</td>
+                <td>{% if job.submission_time != None %}{{ job.submission_time|date }}{% else %}Not submitted{% endif %}</td>
+                <td>{{ job.status }}</td>
+                <td>
+                    {% if job.status == job.DRAFT %}
+                        <a href="{% url 'job_start' %}"><span class="glyphicon glyphicon-pencil"></span>Continue</a>
+                     {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>No job yet.</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock content %}
+
+{#<tr class="success">#}
+{#    <td>Success</td>#}
+{#    <td>Doe</td>#}
+{#    <td>john@example.com</td>#}
+{#</tr>#}
+{#<tr class="danger">#}
+{#    <td>Danger</td>#}
+{#    <td>Moe</td>#}
+{#    <td>mary@example.com</td>#}
+{#</tr>#}
+{#<tr class="info">#}
+{#    <td>Info</td>#}
+{#    <td>Dooley</td>#}
+{#    <td>july@example.com</td>#}
+{#</tr>#}
+{#<tr class="warning">#}
+{#    <td>Warning</td>#}
+{#    <td>Refs</td>#}
+{#    <td>bo@example.com</td>#}
+{#</tr>#}
+{#<tr class="active">#}
+{#    <td>Active</td>#}
+{#    <td>Activeson</td>#}
+{#    <td>act@example.com</td>#}
+{#</tr>#}

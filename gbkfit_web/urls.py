@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 
-from gbkfit_web.views import account, index, job, verify
+from gbkfit_web.views import account, index, job, verify, job_info
 
 urlpatterns = [
     url(r'^$', index.index, name='index'),
@@ -12,7 +13,18 @@ urlpatterns = [
         auth_views.LoginView.as_view(redirect_authenticated_user=True,
                                      template_name='accounts/login.html'), name='login'),
 
+    url(r'^jobs/(?P<pk>\d+)/$', login_required(job_info.JobDetailView.as_view(template_name='job/job_detail.html')), name='job_detail'),
+    url(r'^jobs/$', login_required(job_info.JobListView.as_view(template_name='job/job_list.html')), name='job_list'),
+
     url(r'^new_job/$', job.start, name='job_start'),
+    url(r'^new_job/dataset$', job.dataset, name='job_dataset'),
+    url(r'^new_job/data_model$', job.data_model, name='job_data_model'),
+    url(r'^new_job/psf$', job.psf, name='job_psf'),
+    url(r'^new_job/lsf$', job.lsf, name='job_lsf'),
+    url(r'^new_job/galaxy_model$', job.galaxy_model, name='job_galaxy_model'),
+    url(r'^new_job/fitter$', job.fitter, name='job_fitter'),
+    url(r'^new_job/params', job.params, name='job_params'),
+    url(r'^new_job/launch$', job.launch, name='job_launch'),
 
     url(r'^register/$', account.registration, name='register'),
 

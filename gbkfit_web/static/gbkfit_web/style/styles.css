@@ -21,6 +21,10 @@
 .page-header {
     margin: 0 0 20px;
     font-size: xx-large;
+    text-align: left;
+}
+
+.page-header .header-center {
     text-align: center;
 }
 
@@ -52,6 +56,12 @@
     padding-right: 15%;
 }
 
+.navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translatex(-50%);
+  }
+
 /*
 
 Welcome page
@@ -65,7 +75,7 @@ Welcome page
 }
 
 .jumbotron {
-    background-image: url("../gbkfit_web/images/background.jpg");
+    background-image: url("../images/background.jpg");
     /*background-blend-mode: screen;*/
     /*background-repeat: no-repeat;*/
     margin-bottom: 0px;
@@ -131,7 +141,7 @@ Welcome page
 /*                                          */
 /********************************************/
 .info-bar{
-    color: darkcyan;
+    /*color: darkcyan;*/
     text-align: right;
     margin-top: 20px;
 }
@@ -143,7 +153,7 @@ Welcome page
 /*                                          */
 /********************************************/
 .main-content{
-    border-left: 1px dotted #cccccc;
+    border-right: 1px dotted #cccccc;
     /*padding-bottom: 3em;*/
 }
 

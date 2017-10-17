@@ -45,8 +45,6 @@ class EditProfileForm(forms.ModelForm):
             ),
         }
 
-
-
 class SetPasswordForm(forms.Form):
     """
     A form that lets a user change set their password without entering the old
@@ -95,7 +93,6 @@ class SetPasswordForm(forms.Form):
         if commit:
             self.user.save()
         return self.user
-
 
 class PasswordChangeForm(SetPasswordForm):
     """

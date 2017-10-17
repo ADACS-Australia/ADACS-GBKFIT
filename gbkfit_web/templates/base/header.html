@@ -16,11 +16,10 @@
     <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-                <li><a href="{% url 'job_start' %}"><span class="glyphicon glyphicon glyphicon-send"></span>New Job</a></li>
-                <li><a href="{% url 'profile' %}"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+                <li><a href="{% url 'profile' %}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
                 <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             {% else %}
-                <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span>Register</a></li>
+                <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
                 <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             {% endif %}
         </ul>

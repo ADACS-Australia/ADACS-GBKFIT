@@ -1,135 +1,76 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base-two-columns.html' %}
 
 {% block info-bar %}
+    <div class="page-header">Infobar</div>
     {{ request.session.draft_job }}
+    {{ request.session.task }}
 {% endblock info-bar %}
 
 {% block page_header %}
-    New Job Creation
+    New Job
 {% endblock page_header %}
 
 {% block content %}
     <ul class="nav nav-tabs">
-        <li{% if active_tab == 'start' %} class="active"{% endif %}><a data-toggle="tab" href="#start">Start</a></li>
-        <li{% if active_tab == 'data-set' %} class="active"{% endif %}><a data-toggle="tab" href="#data-set">Dataset Upload</a></li>
-        <li{% if active_tab == 'data-model' %} class="active"{% endif %}><a data-toggle="tab" href="#data-model">Data Model</a></li>
-        <li{% if active_tab == 'psf' %} class="active"{% endif %}><a data-toggle="tab" href="#psf">PSF</a></li>
-        <li{% if active_tab == 'lsf' %} class="active"{% endif %}><a data-toggle="tab" href="#lsf">LSF</a></li>
-        <li{% if active_tab == 'galaxy-model' %} class="active"{% endif %}><a data-toggle="tab" href="#galaxy-model">Galaxy Model</a></li>
-        <li{% if active_tab == 'fitter' %} class="active"{% endif %}><a data-toggle="tab" href="#fitter">Fitter</a></li>
+        <li id="li_start" {% if active_tab == 'start' %} class="active"{% endif %}><a data-toggle="tab" href="#start">Start</a></li>
+        <li id="li_data-set" {% if active_tab == 'data-set' %} class="active"{% endif %}><a data-toggle="tab" href="#data-set">Dataset Upload</a></li>
+        <li id="li_data-model" {% if active_tab == 'data-model' %} class="active"{% endif %}><a data-toggle="tab" href="#data-model">Data Model</a></li>
+        <li id="li_psf" {% if active_tab == 'psf' %} class="active"{% endif %}><a data-toggle="tab" href="#psf">PSF</a></li>
+        <li id="li_lsf" {% if active_tab == 'lsf' %} class="active"{% endif %}><a data-toggle="tab" href="#lsf">LSF</a></li>
+        <li id="li_galaxy-model" {% if active_tab == 'galaxy-model' %} class="active"{% endif %}><a data-toggle="tab" href="#galaxy-model">Galaxy Model</a></li>
+        <li id="li_fitter" {% if active_tab == 'fitter' %} class="active"{% endif %}><a data-toggle="tab" href="#fitter">Fitter</a></li>
+        <li id="li_params" {% if active_tab == 'params' %} class="active"{% endif %}><a data-toggle="tab" href="#params">Parameters</a></li>
+        <li id="li_launch" {% if active_tab == 'launch' %} class="active"{% endif %}><a data-toggle="tab" href="#launch">Launch</a></li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content" id="job-tabs">
+
+        <!-- START -->
         <div id="start" class="tab-pane fade{% if active_tab == 'start' %} in active{% endif %}">
-            <form action="{% url 'job_start' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ start_form.as_p }}
-                <input class="btn btn-primary" type="submit" value="Save and Next >>" />
-            </form>
+            {% include 'job/snippets/1_job_start_form.html' %}
         </div>
+
+        <!-- Data Set -->
         <div id="data-set" class="tab-pane fade{% if active_tab == 'data-set' %} in active{% endif %}">
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ dataset_form.as_p }}
-                <input class="btn btn-primary" type="submit" value="Upload Dataset" />
-            </form>
+            {% include 'job/snippets/2_dataset_form.html' %}
         </div>
+
+        <!-- DModel -->
         <div id="data-model" class="tab-pane fade{% if active_tab == 'data-model' %} in active{% endif %}">
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ data_model_form.as_p }}
-                <input class="btn btn-primary" type="submit" value="Upload data model" />
-            </form>
-            <!--<h3>Data model (DModels)</h3>-->
-            <!--<p>scube_omp, scube_cuda, mmnt_omp, mmnt_cuda</p>-->
-            <!--<p>"type": "scube_cuda",-->
-                <!--"size": [49, 49, 101],-->
-                <!--"step": [1.0, 1.0, 10.0]</p>-->
-            <!--<p>if mmnt_*; method: [moments, gfit]</p>-->
+            {% include 'job/snippets/3_data_model_form.html' %}
         </div>
+
+        <!-- PSF -->
         <div id="psf" class="tab-pane fade{% if active_tab == 'psf' %} in active{% endif %}">
-            <!--<h3>Point Spread Function</h3>-->
-            <!--<p>Type: gauss, moffat, lorentz</p>-->
-            <!--<p>if type==moffat; option: beta.</p>-->
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ psf_form.as_p }}
-                <input class="btn btn-primary" type="submit" value="Upload PSF" />
-            </form>
+            {% include 'job/snippets/4_psf_form.html' %}
         </div>
+
+        <!-- LSF -->
         <div id="lsf" class="tab-pane fade{% if active_tab == 'lsf' %} in active{% endif %}">
-            <!--<h3>Line Spread Function</h3>-->
-            <!--<p>Type: gauss, moffat, lorentz</p>-->
-            <!--<p>if type==moffat; option: beta.</p>-->
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ lsf_form.as_p }}
-                <input class="btn btn-primary" type="submit" value="Upload LSF" />
-            </form>
+            {% include 'job/snippets/5_lsf_form.html' %}
         </div>
+
+        <!-- GModel -->
         <div id="galaxy-model" class="tab-pane fade{% if active_tab == 'galaxy-model' %} in active{% endif %}">
-            <!--<h3>Galaxy Model</h3>-->
-            <!--<p>thindisk_omp, thindisk_cuda</p>-->
-            <!--<p>fprofile or vprofile</p>-->
-            <!--<p>fprofile/vprofile type: [exponential, flat, boissier, arctan, epinat, rings]</p>-->
-            <!--<p>if type==rings: nrings:int, rsize:int</p>-->
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ galaxy_model_form.as_p }}
-                <input class="btn btn-primary" type="submit" value="Upload galaxy model" />
-            </form>
+            {% include 'job/snippets/6_galaxy_model_form.html' %}
         </div>
-        <div id="parameter-set" class="tab-pane fade{% if active_tab == 'parameter-set' %} in active{% endif %}">
-            <h3>Parameter set</h3>
-            <ul>
-                <li>value</li>
-                <li>fixed</li>
-                <li>min</li>
-                <li>max</li>
-                <li>wrap</li>
-                <li>step</li>
-                <li>relstep</li>
-                <li>side</li>
-            </ul>
-        </div>
+
+        <!-- Fitter -->
         <div id="fitter" class="tab-pane fade{% if active_tab == 'fitter' %} in active{% endif %}">
-            <form action="" method="post" enctype="multipart/form-data">
+            {% include 'job/snippets/7_fitter_form.html' %}
+        </div>
+
+        <!-- Params -->
+        <div id="params" class="tab-pane fade{% if active_tab == 'params' %} in active{% endif %}">
+            {% include 'job/snippets/8_params_form.html' %}
+        </div>
+
+        <!-- Launch -->
+        <div id="launch" class="tab-pane fade{% if active_tab == 'launch' %} in active{% endif %}">
+            <form action="{% url 'job_launch' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ fitter_form.as_p }}
-                <input class="btn btn-primary" type="submit" value="Upload galaxy model" />
+                <input class="btn btn-primary" type="submit" value="Launch job" />
             </form>
-            <!--<h3>Fitters</h3>-->
-            <!--<ul>-->
-                <!--<li>type: [mpfit, multinest]</li>-->
-                <!--<li>if type==mpfit</li>-->
-                <!--<ul>-->
-                    <!--<li>ftol</li>-->
-                    <!--<li>xtol</li>-->
-                    <!--<li>gtol</li>-->
-                    <!--<li>epsfcn</li>-->
-                    <!--<li>stepfactor</li>-->
-                    <!--<li>covtol</li>-->
-                    <!--<li>maxiter</li>-->
-                    <!--<li>maxfev</li>-->
-                    <!--<li>nprint</li>-->
-                    <!--<li>douserscale</li>-->
-                    <!--<li>nofinitecheck</li>-->
-                <!--</ul>-->
-                <!--<li>if type==multinest</li>-->
-                <!--<ul>-->
-                    <!--<li>efr</li>-->
-                    <!--<li>tol</li>-->
-                    <!--<li>ztol</li>-->
-                    <!--<li>logzero</li>-->
-                    <!--<li>is</li>-->
-                    <!--<li>mmodal</li>-->
-                    <!--<li>ceff</li>-->
-                    <!--<li>nlive</li>-->
-                    <!--<li>maxiter</li>-->
-                    <!--<li>seed</li>-->
-                    <!--<li>outfile</li>-->
-                <!--</ul>-->
-            <!--</ul>-->
         </div>
     </div>
 {% endblock content %}

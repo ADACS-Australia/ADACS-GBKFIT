@@ -16,19 +16,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <!-- Home styles -->
-    <link rel="stylesheet" href="{% static "gbkfit_web/styles.css" %}"/>
+    <link rel="stylesheet" href="{% static 'gbkfit_web/style/styles.css' %}"/>
+    <!-- Home javascript -->
+    <script src="{% static 'gbkfit_web/javascript/job_form.js' %}"></script>
+    <script src="{% static 'gbkfit_web/javascript/csrf.js' %}"></script>
     
     <link href="https://fonts.googleapis.com/css?family=Arvo:400,700|Slabo+27px&effect=anaglyph" rel="stylesheet">
 </head>
 <body>
     {% include 'base/header.html' %}
+    {% include 'base/navigation.html' %}
     <div class="container">
         <div class="row">
-            <div class="col col-md-2 align-self-center info-bar">
-                {% block info-bar %}
-                {% endblock info-bar %}
-            </div>
-            <div class="col col-md-10 main-content">
+            <div class="col col-md-12">
                 <div class="page-header">
                     {% block page_header %}
                         GBKFIT
@@ -37,6 +37,12 @@
                 {% block content %}
                 {% endblock content %}
             </div>
+            {% if user.is_authenticated %}
+            <div class="col col-md-2 align-self-center info-bar">
+                {% block info-bar %}
+                {% endblock info-bar %}
+            </div>
+            {% endif %}
         </div>
     </div>
     {% include 'base/footer.html' %}

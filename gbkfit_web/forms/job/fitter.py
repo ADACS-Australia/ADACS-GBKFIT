@@ -1,26 +1,23 @@
 from django import forms
-
-from gbkfit_web.models import Fitter
+from gbkfit_web.models import Fitter, Job
 
 
 class FitterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
         super(FitterForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Fitter
 
-        fields = ['name', 'type',
-                  'ftol', 'xtol', 'gtol', 'epsfcn', 'stepfactor', 'covtol', 'maxiter', 'maxfev', 'nprint', 'douserscale', 'nofinitecheck',
-                  'efr', 'tol', 'ztol', 'logzero', '_is', 'mmodal', 'ceff', 'nlive', 'maxiter', 'seed', 'outfile',
+        fields = ['fitter_type',
+                  'ftol', 'xtol', 'gtol', 'epsfcn', 'stepfactor', 'covtol', 'mpfit_maxiter', 'maxfev', 'nprint', 'douserscale', 'nofinitecheck',
+                  'efr', 'tol', 'ztol', 'logzero', '_is', 'mmodal', 'ceff', 'nlive', 'multinest_maxiter', 'seed', 'outfile',
                   ]
         
         widgets = {
-            'name': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'type': forms.Select(
+            'fitter_type': forms.Select(
                 attrs={'class': 'form-control'},
             ),
             'ftol': forms.TextInput(
@@ -41,7 +38,7 @@ class FitterForm(forms.ModelForm):
             'covtol': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            'maxiter': forms.TextInput(
+            'mpfit_maxiter': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
             'maxfev': forms.TextInput(
@@ -80,7 +77,7 @@ class FitterForm(forms.ModelForm):
             'nlive': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            'maxiter': forms.TextInput(
+            'multinest_maxiter': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
             'seed': forms.TextInput(
@@ -90,3 +87,64 @@ class FitterForm(forms.ModelForm):
                 attrs={'class': 'form-control'},
             ),
         }
+
+    def save(self):
+        self.full_clean()
+        data = self.cleaned_data
+
+        id = self.request.session['draft_job']['id']
+        job = Job.objects.get(id=id)
+
+        try:
+            Fitter.objects.create(
+                job=job,
+                fitter_type=data.get('fitter_type'),
+                ftol=data.get('ftol'),
+                xtol=data.get('xtol'),
+                gtol=data.get('gtol'),
+                epsfcn=data.get('epsfcn'),
+                stepfactor=data.get('stepfactor'),
+                covtol=data.get('covtol'),
+                mpfit_maxiter=data.get('mpfit_maxiter'),
+                maxfev=data.get('maxfev'),
+                nprint=data.get('nprint'),
+                douserscale=data.get('douserscale'),
+                nofinitecheck=data.get('nofinitecheck'),
+                _is=data.get('_is'),
+                mmodal=data.get('mmodal'),
+                nlive=data.get('nlive'),
+                tol=data.get('tol'),
+                efr=data.get('efr'),
+                ceff=data.get('ceff'),
+                ztol=data.get('ztol'),
+                logzero=data.get('logzero'),
+                multinest_maxiter=data.get('multinest_maxiter'),
+                seed=data.get('seed'),
+                outfile=data.get('outfile'),
+            )
+        except:
+            Fitter.objects.filter(job_id=id).update(
+                fitter_type=data.get('fitter_type'),
+                ftol=data.get('ftol'),
+                xtol=data.get('xtol'),
+                gtol=data.get('gtol'),
+                epsfcn=data.get('epsfcn'),
+                stepfactor=data.get('stepfactor'),
+                covtol=data.get('covtol'),
+                mpfit_maxiter=data.get('mpfit_maxiter'),
+                maxfev=data.get('maxfev'),
+                nprint=data.get('nprint'),
+                douserscale=data.get('douserscale'),
+                nofinitecheck=data.get('nofinitecheck'),
+                _is=data.get('_is'),
+                mmodal=data.get('mmodal'),
+                nlive=data.get('nlive'),
+                tol=data.get('tol'),
+                efr=data.get('efr'),
+                ceff=data.get('ceff'),
+                ztol=data.get('ztol'),
+                logzero=data.get('logzero'),
+                multinest_maxiter=data.get('multinest_maxiter'),
+                seed=data.get('seed'),
+                outfile=data.get('outfile'),
+            )
