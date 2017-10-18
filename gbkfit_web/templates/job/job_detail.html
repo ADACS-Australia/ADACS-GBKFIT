@@ -1,0 +1,16 @@
+{% extends 'base/base.html' %}
+
+{% block page_header %}
+    Job details
+{% endblock page_header %}
+
+{% block content %}
+
+<h1>ID: {{ object.id }}</h1>
+<p>Name: {{ object.name }}</p>
+<p>Status: {{ object.status }}</p>
+<p>Created on {{ object.creation_time|date }}</p>
+<p>{% if object.submission_time != None %} Submitted on {{ object.submission_time|date }} {% else %} Not yet submitted {% endif %}</p>
+<p>Date: {{ now|date }}</p>
+
+{% endblock content %}

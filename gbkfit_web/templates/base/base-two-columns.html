@@ -28,7 +28,8 @@
     {% include 'base/navigation.html' %}
     <div class="container">
         <div class="row">
-            <div class="col col-md-12">
+            <div class="col col-md-10 main-content">
+
                 <div class="page-header">
                     {% block page_header %}
                         GBKFIT
@@ -38,10 +39,10 @@
                 {% endblock content %}
             </div>
             {% if user.is_authenticated %}
-                <div class="col col-md-2 align-self-center info-bar">
-                    {% block info-bar %}
-                    {% endblock info-bar %}
-                </div>
+            <div class="col col-md-2 align-self-center info-bar">
+                {% block info-bar %}
+                {% endblock info-bar %}
+            </div>
             {% endif %}
         </div>
     </div>

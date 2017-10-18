@@ -1,13 +1,13 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base-two-columns.html' %}
 
 {% block info-bar %}
-    Profile of the User
+        <a href="{% url 'change_password' %}">Change password</a>
 {% endblock info-bar %}
 
 {% block page_header %}
-    User Profile of {{ request.user.title }} {{ request.user.first_name }} {{ request.user.last_name }}
+    Profile
 {% endblock page_header %}
 
 {% block content %}
-    {% include 'snippets/render_form.html' %}
+    {% include 'snippets/render_form_submit_only.html' %}
 {% endblock content %}

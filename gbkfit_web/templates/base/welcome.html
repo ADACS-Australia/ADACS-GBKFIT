@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>GBKFIT web</title>
+    <title>GBKFIT</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,35 +16,29 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <!-- Home styles -->
-    <link rel="stylesheet" href="{% static 'gbkfit_web/style/styles.css' %}"/>
+    <link rel="stylesheet" href="{% static "gbkfit_web/style/styles.css" %}"/>
     <!-- Home javascript -->
     <script src="{% static 'gbkfit_web/javascript/job_form.js' %}"></script>
     <script src="{% static 'gbkfit_web/javascript/csrf.js' %}"></script>
-    
+
     <link href="https://fonts.googleapis.com/css?family=Arvo:400,700|Slabo+27px&effect=anaglyph" rel="stylesheet">
 </head>
 <body>
     {% include 'base/header.html' %}
-    {% include 'base/navigation.html' %}
-    <div class="container">
-        <div class="row">
-            <div class="col col-md-12">
-                <div class="page-header">
-                    {% block page_header %}
-                        GBKFIT
-                    {% endblock page_header %}
-                </div>
-                {% block content %}
-                {% endblock content %}
-            </div>
-            {% if user.is_authenticated %}
-                <div class="col col-md-2 align-self-center info-bar">
-                    {% block info-bar %}
-                    {% endblock info-bar %}
-                </div>
-            {% endif %}
+    {% if user.is_authenticated %}
+        {% include 'base/navigation.html' %}
+    {% endif %}
+    <div class="jumbotron" id="welcome-message">
+        <h1>Fitting Galaxies</h1>
+        <h3>Fast. Simple.</h3>
+    </div>
+    <div class="container-fluid">
+    <!--<hr>-->
+    <div class="row">
+        <div class="footer-welcome">
+            <div class="footer-text">&copy; Copyright 2017 GBKFIT - All Rights Reserved</div>
         </div>
     </div>
-    {% include 'base/footer.html' %}
+</div>
 </body>
 </html>

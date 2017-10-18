@@ -1,11 +1,11 @@
 {% extends 'base/base.html' %}
 
 {% block info-bar %}
-    Login Page
+
 {% endblock info-bar %}
 
 {% block page_header %}
-    Login
+    <div class="header-center">Login</div>
 {% endblock page_header %}
 
 {% block content %}
@@ -31,6 +31,20 @@
             <label class="col-md-4 text-right" for="password">Password</label>
             <div class="col-md-4">
                 <input class="form-control" type="password" id="password" name="password" required placeholder="password">
+            </div>
+        </div>
+        <div class="container-fluid text-right">
+            <div class="col-md-8">
+                <label class="text-right" for="register">
+                    Don't have an account yet? <a href="{% url 'register' %}" id="register">Register here</a>.
+                </label>
+            </div>
+        </div>
+        <div class="container-fluid text-right">
+            <div class="col-md-8">
+                <label class="text-right" for="change_password">
+                    Forgot your username or password? <a href="{% url 'password_reset' %}" id="change_password">Reset it here</a>.
+                </label>
             </div>
         </div>
         <div class="container-fluid text-right">

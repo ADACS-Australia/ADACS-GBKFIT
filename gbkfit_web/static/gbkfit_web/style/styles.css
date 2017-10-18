@@ -1,0 +1,217 @@
+/********************************************/
+/*                                          */
+/*                  Header                  */
+/*                                          */
+/********************************************/
+.header{
+    /*min-height: 3.5em;*/
+    background-color: #ffffff00;
+    color: #fff;
+	background-color: rgb(23, 24, 28);
+/*     background-image: linear-gradient(to right, #1f0e12 0%, black 100%), url("../gbkfit_web/images/background.jpg");
+    background-blend-mode: screen;
+    background-repeat: no-repeat; */
+}
+
+.header .heading {
+/*     padding: 10px; */
+    font-size: xx-large;
+}
+
+.page-header {
+    margin: 0 0 20px;
+    font-size: xx-large;
+    text-align: left;
+}
+
+.page-header .header-center {
+    text-align: center;
+}
+
+/*!********************************************!*/
+/*!*                                          *!*/
+/*!*                  Navbar                  *!*/
+/*!*                                          *!*/
+/*!********************************************!*/
+/*.navbar{*/
+    /*background-color: #eeeeee;*/
+/*}*/
+.navbar {
+    border-radius: 0px;
+    margin-bottom: 0px;
+}
+
+.navbar-left label{
+    color: #fff;
+    text-align: left;
+    font-family: 'Arvo', serif;
+    font-size: 30px;
+}
+
+.navbar-left {
+    padding-left: 15%;
+}
+
+.navbar-right {
+    padding-right: 15%;
+}
+
+.navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translatex(-50%);
+  }
+
+/*
+
+Welcome page
+
+*/
+.welcome-page {
+    margin: 0 0;
+    min-height: 50em;
+    color:white;
+    background-color: transparent;
+}
+
+.jumbotron {
+    background-image: url("../images/background.jpg");
+    /*background-blend-mode: screen;*/
+    /*background-repeat: no-repeat;*/
+    margin-bottom: 0px;
+    padding-top: 15em;
+    padding-bottom: 40em;
+}
+
+#welcome-message{
+    text-align: center;
+    color: white;
+}
+
+
+.container {
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
+
+/********************************************/
+/*                                          */
+/*                  Footer                  */
+/*                                          */
+/********************************************/
+
+.footer-welcome{
+    /*margin-top: -10px;*/
+    /*background-color: cadetblue;*/
+    background-color: #fff;
+    color: #000;
+
+    padding-bottom: 2em;
+    padding-top: 2em;
+
+/*     background-image: linear-gradient(to right, #1f0e12 0%, black 100%), url("../gbkfit_web/images/background.jpg");
+    background-blend-mode: screen;
+    background-repeat: no-repeat; */
+}
+
+.footer{
+    /*margin-top: -10px;*/
+    /*background-color: cadetblue;*/
+    background-color: #fff;
+    color: #000;
+
+    padding-bottom: 2em;
+    padding-top: 2em;
+
+/*     background-image: linear-gradient(to right, #1f0e12 0%, black 100%), url("../gbkfit_web/images/background.jpg");
+    background-blend-mode: screen;
+    background-repeat: no-repeat; */
+}
+
+.footer .footer-text, .footer-welcome .footer-text {
+    /*padding: 35px;*/
+    text-align: center;
+    font-family: 'Slabo 27px', serif;
+    font-size: 18px;
+}
+
+/********************************************/
+/*                                          */
+/*                 Info-bar                 */
+/*                                          */
+/********************************************/
+.info-bar{
+    /*color: darkcyan;*/
+    text-align: right;
+    margin-top: 20px;
+}
+
+
+/********************************************/
+/*                                          */
+/*                 Main-Content             */
+/*                                          */
+/********************************************/
+.main-content{
+    border-right: 1px dotted #cccccc;
+    /*padding-bottom: 3em;*/
+}
+
+
+/********************************************/
+/*                                          */
+/*                 Job-Tabs                 */
+/*                                          */
+/********************************************/
+.tab-content{
+    margin-top: 20px;
+}
+
+
+/********************************************/
+/*                                          */
+/*                 Forms                    */
+/*                                          */
+/********************************************/
+.field {
+    padding-bottom: 10px;
+}
+.field.error label {
+    color: darkred;
+}
+
+.field.error input {
+    border-color: darkred;
+    border-radius: 4px 4px 0 0;
+}
+
+.field.error ul {
+    list-style: none;
+    color: darkred;
+    padding: 5px 5px 5px 10px;
+    border: 1px solid darkred;
+    border-top-width: 0;
+    border-radius: 0 0 4px 4px;
+    background-color: darksalmon;
+}
+
+/* non field errors */
+
+.non-field-error div {
+    margin-top: -20px;
+    border-top: 1px solid darkred;
+    padding: 0 80px 10px;
+}
+
+.non-field-error ul {
+    list-style: none;
+    color: darkred;
+    padding: 5px 5px 5px 10px;
+    border: 1px solid darkred;
+    border-top-width: 0;
+    border-radius: 0 0 4px 4px;
+    background-color: darksalmon;
+}
+
+
+
