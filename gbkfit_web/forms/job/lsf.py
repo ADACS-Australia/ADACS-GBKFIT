@@ -1,6 +1,19 @@
 from django import forms
 from gbkfit_web.models import LSF, Job
 
+FIELDS = ['lsf_type', 'fwhm', 'beta']
+
+WIDGETS = {
+    'lsf_type': forms.Select(
+        attrs={'class': 'form-control'},
+    ),
+    'fwhm': forms.TextInput(
+        attrs={'class': "form-control"},
+    ),
+    'beta': forms.TextInput(
+        attrs={'class': "form-control"},
+    ),
+}
 
 class LSFForm(forms.ModelForm):
 
@@ -10,20 +23,8 @@ class LSFForm(forms.ModelForm):
 
     class Meta:
         model = LSF
-
-        fields = ['lsf_type', 'fwhm', 'beta']
-
-        widgets = {
-            'lsf_type': forms.Select(
-                attrs={'class': 'form-control'},
-            ),
-            'fwhm': forms.TextInput(
-                attrs={'class': "form-control"},
-            ),
-            'beta': forms.TextInput(
-                attrs={'class': "form-control"},
-            ),
-        }
+        fields = FIELDS
+        widgets = WIDGETS
 
     def save(self):
         self.full_clean()
@@ -33,15 +34,26 @@ class LSFForm(forms.ModelForm):
         job = Job.objects.get(id=id)
 
         try:
-            LSF.objects.create(
+            result = LSF.objects.create(
                 job=job,
                 lsf_type=data.get('lsf_type'),
                 fwhm=data.get('fwhm'),
                 beta=data.get('beta'),
             )
         except:
-            LSF.objects.filter(job_id=id).update(
+            result = LSF.objects.filter(job_id=id).update(
                 lsf_type=data.get('lsf_type'),
                 fwhm=data.get('fwhm'),
                 beta=data.get('beta'),
             )
+
+        self.request.session['lsf'] = LSF.objects.get(job_id=id).as_json()
+
+class EditLSFForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditLSFForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = LSF
+        fields = FIELDS
+        widgets = WIDGETS

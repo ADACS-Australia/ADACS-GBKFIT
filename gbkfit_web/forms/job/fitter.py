@@ -1,6 +1,83 @@
 from django import forms
 from gbkfit_web.models import Fitter, Job
 
+FIELDS = ['fitter_type',
+          'ftol', 'xtol', 'gtol', 'epsfcn', 'stepfactor', 'covtol', 'mpfit_maxiter', 'maxfev', 'nprint', 'douserscale',
+          'nofinitecheck',
+          'efr', 'tol', 'ztol', 'logzero', '_is', 'mmodal', 'ceff', 'nlive', 'multinest_maxiter', 'seed', 'outfile',
+          ]
+
+WIDGETS = {
+    'fitter_type': forms.Select(
+        attrs={'class': 'form-control'},
+    ),
+    'ftol': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'xtol': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'gtol': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'epsfcn': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'stepfactor': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'covtol': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'mpfit_maxiter': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'maxfev': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'nprint': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'douserscale': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'nofinitecheck': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'efr': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'tol': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'ztol': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'logzero': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    '_is': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'mmodal': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'ceff': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'nlive': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'multinest_maxiter': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'seed': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'outfile': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+}
 
 class FitterForm(forms.ModelForm):
 
@@ -10,83 +87,8 @@ class FitterForm(forms.ModelForm):
 
     class Meta:
         model = Fitter
-
-        fields = ['fitter_type',
-                  'ftol', 'xtol', 'gtol', 'epsfcn', 'stepfactor', 'covtol', 'mpfit_maxiter', 'maxfev', 'nprint', 'douserscale', 'nofinitecheck',
-                  'efr', 'tol', 'ztol', 'logzero', '_is', 'mmodal', 'ceff', 'nlive', 'multinest_maxiter', 'seed', 'outfile',
-                  ]
-        
-        widgets = {
-            'fitter_type': forms.Select(
-                attrs={'class': 'form-control'},
-            ),
-            'ftol': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'xtol': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'gtol': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'epsfcn': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'stepfactor': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'covtol': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'mpfit_maxiter': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'maxfev': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'nprint': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'douserscale': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'nofinitecheck': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'efr': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'tol': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'ztol': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'logzero': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            '_is': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'mmodal': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'ceff': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'nlive': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'multinest_maxiter': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'seed': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'outfile': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-        }
+        fields = FIELDS
+        widgets = WIDGETS
 
     def save(self):
         self.full_clean()
@@ -96,7 +98,7 @@ class FitterForm(forms.ModelForm):
         job = Job.objects.get(id=id)
 
         try:
-            Fitter.objects.create(
+            result = Fitter.objects.create(
                 job=job,
                 fitter_type=data.get('fitter_type'),
                 ftol=data.get('ftol'),
@@ -123,7 +125,7 @@ class FitterForm(forms.ModelForm):
                 outfile=data.get('outfile'),
             )
         except:
-            Fitter.objects.filter(job_id=id).update(
+            result = Fitter.objects.filter(job_id=id).update(
                 fitter_type=data.get('fitter_type'),
                 ftol=data.get('ftol'),
                 xtol=data.get('xtol'),
@@ -148,3 +150,14 @@ class FitterForm(forms.ModelForm):
                 seed=data.get('seed'),
                 outfile=data.get('outfile'),
             )
+
+        self.request.session['fitter'] = Fitter.objects.get(job_id=id).as_json()
+
+class EditFitterForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditFitterForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Fitter
+        fields = FIELDS
+        widgets = WIDGETS

@@ -25,6 +25,9 @@
 </head>
 <body>
     {% include 'base/header.html' %}
+    {% if user.is_authenticated %}
+        {% include 'base/navigation.html' %}
+    {% endif %}
     <div class="jumbotron" id="welcome-message">
         <h1>Fitting Galaxies</h1>
         <h3>Fast. Simple.</h3>

@@ -36,7 +36,7 @@
                 <td>{{ job.status }}</td>
                 <td>
                     {% if job.status == job.DRAFT %}
-                        <a href="{% url 'job_start' %}"><span class="glyphicon glyphicon-pencil"></span>Continue</a>
+                        <a href="{% url 'job_name_edit' id=job.id %}"><span class="glyphicon glyphicon-pencil"></span>Continue</a>
                      {% endif %}
                 </td>
             </tr>

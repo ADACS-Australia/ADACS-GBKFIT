@@ -54,3 +54,18 @@ class JobInitialForm(forms.Form):
             self.request.session['draft_job'] = job_created.as_json()
         else:  # will edit an old draft
             self.request.session['draft_job'] = data.get('job').as_json()
+
+
+class EditJobForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(EditJobForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Job
+        fields = ['name']
+        widget={
+            'name': forms.TextInput(
+                attrs={'class': "form-control"}
+            ),
+        }

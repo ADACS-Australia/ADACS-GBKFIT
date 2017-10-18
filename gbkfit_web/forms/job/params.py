@@ -1,16 +1,8 @@
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 from gbkfit_web.models import ParameterSet, Job
 
-
-class ParamsForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        super(ParamsForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = ParameterSet
-
-        fields = [
+FIELDS = [
             #i0
             'i0_fixed',
             'i0_value',
@@ -20,7 +12,7 @@ class ParamsForm(forms.ModelForm):
             'i0_step',
             'i0_relstep',
             'i0_side',
-            
+
             #r0
             'r0_fixed',
             'r0_value',
@@ -40,7 +32,7 @@ class ParamsForm(forms.ModelForm):
             'xo_step',
             'xo_relstep',
             'xo_side',
-    
+
             #yo
             'yo_fixed',
             'yo_value',
@@ -112,7 +104,7 @@ class ParamsForm(forms.ModelForm):
             'vsig_side',
         ]
 
-        widgets = {
+WIDGETS= {
             'i0_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
@@ -137,7 +129,7 @@ class ParamsForm(forms.ModelForm):
             'i0_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # r0
             'r0_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -163,7 +155,7 @@ class ParamsForm(forms.ModelForm):
             'r0_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # xo
             'xo_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -189,7 +181,7 @@ class ParamsForm(forms.ModelForm):
             'xo_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # yo
             'yo_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -215,7 +207,7 @@ class ParamsForm(forms.ModelForm):
             'yo_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # pa
             'pa_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -241,7 +233,7 @@ class ParamsForm(forms.ModelForm):
             'pa_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # incl
             'incl_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -267,7 +259,7 @@ class ParamsForm(forms.ModelForm):
             'incl_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # rt
             'rt_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -293,7 +285,7 @@ class ParamsForm(forms.ModelForm):
             'rt_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # vt
             'vt_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -319,7 +311,7 @@ class ParamsForm(forms.ModelForm):
             'vt_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # vsys
             'vsys_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -345,7 +337,7 @@ class ParamsForm(forms.ModelForm):
             'vsys_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
-            
+
             # vsig
             'vsig_fixed': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -373,6 +365,119 @@ class ParamsForm(forms.ModelForm):
             ),
         }
 
+LABELS = {
+    'i0_fixed': _('Fixed'),
+    'i0_value': _('Value'),
+    'i0_min': _('Minimum'),
+    'i0_max': _('Maximum'),
+    'i0_wrap': _('Wrap'),
+    'i0_step': _('Step'),
+    'i0_relstep': _('Relstep'),
+    'i0_side': _('Side'),
+
+    #r0
+    'r0_fixed': _('Fixed'),
+    'r0_value': _('Value'),
+    'r0_min': _('Minimum'),
+    'r0_max': _('Maximum'),
+    'r0_wrap': _('Wrap'),
+    'r0_step': _('Step'),
+    'r0_relstep': _('Relstep'),
+    'r0_side': _('Side'),
+
+    #xo
+    'xo_fixed': _('Fixed'),
+    'xo_value': _('Value'),
+    'xo_min': _('Minimum'),
+    'xo_max': _('Maximum'),
+    'xo_wrap': _('Wrap'),
+    'xo_step': _('Step'),
+    'xo_relstep': _('Relstep'),
+    'xo_side': _('Side'),
+
+    #yo
+    'yo_fixed': _('Fixed'),
+    'yo_value': _('Value'),
+    'yo_min': _('Minimum'),
+    'yo_max': _('Maximum'),
+    'yo_wrap': _('Wrap'),
+    'yo_step': _('Step'),
+    'yo_relstep': _('Relstep'),
+    'yo_side': _('Side'),
+
+    #pa
+    'pa_fixed': _('Fixed'),
+    'pa_value': _('Value'),
+    'pa_min': _('Minimum'),
+    'pa_max': _('Maximum'),
+    'pa_wrap': _('Wrap'),
+    'pa_step': _('Step'),
+    'pa_relstep': _('Relstep'),
+    'pa_side': _('Side'),
+
+    #incl
+    'incl_fixed': _('Fixed'),
+    'incl_value': _('Value'),
+    'incl_min': _('Minimum'),
+    'incl_max': _('Maximum'),
+    'incl_wrap': _('Wrap'),
+    'incl_step': _('Step'),
+    'incl_relstep': _('Relstep'),
+    'incl_side': _('Side'),
+
+    #rt
+    'rt_fixed': _('Fixed'),
+    'rt_value': _('Value'),
+    'rt_min': _('Minimum'),
+    'rt_max': _('Maximum'),
+    'rt_wrap': _('Wrap'),
+    'rt_step': _('Step'),
+    'rt_relstep': _('Relstep'),
+    'rt_side': _('Side'),
+
+    #vt
+    'vt_fixed': _('Fixed'),
+    'vt_value': _('Value'),
+    'vt_min': _('Minimum'),
+    'vt_max': _('Maximum'),
+    'vt_wrap': _('Wrap'),
+    'vt_step': _('Step'),
+    'vt_relstep': _('Relstep'),
+    'vt_side': _('Side'),
+
+    #vsys
+    'vsys_fixed': _('Fixed'),
+    'vsys_value': _('Value'),
+    'vsys_min': _('Minimum'),
+    'vsys_max': _('Maximum'),
+    'vsys_wrap': _('Wrap'),
+    'vsys_step': _('Step'),
+    'vsys_relstep': _('Relstep'),
+    'vsys_side': _('Side'),
+
+    #vsig
+    'vsig_fixed': _('Fixed'),
+    'vsig_value': _('Value'),
+    'vsig_min': _('Minimum'),
+    'vsig_max': _('Maximum'),
+    'vsig_wrap': _('Wrap'),
+    'vsig_step': _('Step'),
+    'vsig_relstep': _('Relstep'),
+    'vsig_side': _('Side'),
+}
+
+class ParamsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(ParamsForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ParameterSet
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS
+
+
     def save(self):
         self.full_clean()
         data = self.cleaned_data
@@ -381,7 +486,7 @@ class ParamsForm(forms.ModelForm):
         job = Job.objects.get(id=id)
 
         try:
-            ParameterSet.objects.create(
+            result = ParameterSet.objects.create(
                 job=job,
 
                 i0_fixed=data.get('i0_fixed'),
@@ -435,7 +540,7 @@ class ParamsForm(forms.ModelForm):
                 incl_max=data.get('incl_max'),
                 incl_wrap=data.get('incl_wrap'),
                 incl_step=data.get('incl_step'),
-                incl_relst=data.get('incl_relstep'),
+                incl_relstep=data.get('incl_relstep'),
                 incl_side=data.get('incl_side'),
 
                 rt_fixed=data.get('rt_fixed'),
@@ -462,7 +567,7 @@ class ParamsForm(forms.ModelForm):
                 vsys_max=data.get('vsys_max'),
                 vsys_wrap=data.get('vsys_wrap'),
                 vsys_step=data.get('vsys_step'),
-                vsys_relst=data.get('vsys_relstep'),
+                vsys_relstep=data.get('vsys_relstep'),
                 vsys_side=data.get('vsys_side'),
 
                 vsig_fixed=data.get('vsig_fixed'),
@@ -471,11 +576,11 @@ class ParamsForm(forms.ModelForm):
                 vsig_max=data.get('vsig_max'),
                 vsig_wrap=data.get('vsig_wrap'),
                 vsig_step=data.get('vsig_step'),
-                vsig_relst=data.get('vsig_relstep'),
+                vsig_relstep=data.get('vsig_relstep'),
                 vsig_side=data.get('vsig_side'),
             )
         except:
-            ParameterSet.objects.filter(job_id=id).update(
+            result = ParameterSet.objects.filter(job_id=id).update(
                 i0_fixed=data.get('i0_fixed'),
                 i0_value=data.get('i0_value'),
                 i0_min=data.get('i0_min'),
@@ -527,7 +632,7 @@ class ParamsForm(forms.ModelForm):
                 incl_max=data.get('incl_max'),
                 incl_wrap=data.get('incl_wrap'),
                 incl_step=data.get('incl_step'),
-                incl_relst=data.get('incl_relstep'),
+                incl_relstep=data.get('incl_relstep'),
                 incl_side=data.get('incl_side'),
 
                 rt_fixed=data.get('rt_fixed'),
@@ -554,7 +659,7 @@ class ParamsForm(forms.ModelForm):
                 vsys_max=data.get('vsys_max'),
                 vsys_wrap=data.get('vsys_wrap'),
                 vsys_step=data.get('vsys_step'),
-                vsys_relst=data.get('vsys_relstep'),
+                vsys_relstep=data.get('vsys_relstep'),
                 vsys_side=data.get('vsys_side'),
 
                 vsig_fixed=data.get('vsig_fixed'),
@@ -563,6 +668,19 @@ class ParamsForm(forms.ModelForm):
                 vsig_max=data.get('vsig_max'),
                 vsig_wrap=data.get('vsig_wrap'),
                 vsig_step=data.get('vsig_step'),
-                vsig_relst=data.get('vsig_relstep'),
+                vsig_relstep=data.get('vsig_relstep'),
                 vsig_side=data.get('vsig_side'),
             )
+
+        self.request.session['params'] = ParameterSet.objects.get(job_id=id).as_array()
+
+class EditParamsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditParamsForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ParameterSet
+        fields = FIELDS
+        widgets = WIDGETS
+        labels = LABELS
+

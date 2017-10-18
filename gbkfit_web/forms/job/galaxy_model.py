@@ -1,6 +1,18 @@
 from django import forms
 from gbkfit_web.models import GalaxyModel, Job
 
+FIELDS = ['gmodel_type', 'flx_profile', 'vel_profile']
+WIDGETS = {
+    'gmodel_type': forms.Select(
+        attrs={'class': 'form-control'},
+    ),
+    "flx_profile": forms.Select(
+        attrs={'class': "form-control"},
+    ),
+    "vel_profile": forms.Select(
+        attrs={'class': "form-control"},
+    ),
+}
 
 class GalaxyModelForm(forms.ModelForm):
 
@@ -10,23 +22,8 @@ class GalaxyModelForm(forms.ModelForm):
 
     class Meta:
         model = GalaxyModel
-
-        fields = ['gmodel_type',
-                  "flx_profile",
-                  "vel_profile",
-                  ]
-
-        widgets = {
-            'gmodel_type': forms.Select(
-                attrs={'class': 'form-control'},
-            ),
-            "flx_profile": forms.Select(
-                attrs={'class': "form-control"},
-            ),
-            "vel_profile": forms.Select(
-                attrs={'class': "form-control"},
-            ),
-        }
+        fields = FIELDS
+        widgets = WIDGETS
 
     def save(self):
         self.full_clean()
@@ -36,15 +33,26 @@ class GalaxyModelForm(forms.ModelForm):
         job = Job.objects.get(id=id)
 
         try:
-            GalaxyModel.objects.create(
+            result = GalaxyModel.objects.create(
                 job=job,
                 gmodel_type=data.get('gmodel_type'),
                 flx_profile=data.get('flx_profile'),
                 vel_profile=data.get('vel_profile'),
             )
         except:
-            GalaxyModel.objects.filter(job_id=id).update(
+            result = GalaxyModel.objects.filter(job_id=id).update(
                 gmodel_type=data.get('gmodel_type'),
                 flx_profile=data.get('flx_profile'),
                 vel_profile=data.get('vel_profile'),
             )
+
+        self.request.session['fitter'] = GalaxyModel.objects.get(job_id=id).as_json()
+            
+class EditGalaxyModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditGalaxyModelForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = GalaxyModel
+        fields = FIELDS
+        widgets = WIDGETS
