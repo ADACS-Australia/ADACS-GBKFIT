@@ -125,3 +125,96 @@ for setting up a local settings file)
 * `./development-manage.py migrate` (migrate, for staging or production 
 specify the required manage.py file instead)
 * `./development-manage.py runserver` (running the server)
+
+## Running with MySQL, Docker and docker-compose
+
+To run the website using docker and MySQL, modify the `local.py` configuration file. Instead of using the `sqlite` setting described above, use something in the lines of the following:
+
+```
+DATABASES = {
+'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'gbkfit_dev',
+    'USER': 'django',
+    'PASSWORD': 'test-docker_#1',
+    'HOST': 'db',
+    'PORT': 3306,
+    }
+}
+```
+
+The user and password information should be in accordance with the information provided in the file `docker-compose.yml` included at the root of the project repository. In particular, the content of `docker-compose.yml` should look something like this: 
+
+```
+version: '3'
+
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: gbkfit_dev
+      MYSQL_USER: django
+      MYSQL_PASSWORD: test-docker_#1
+  web:
+    build: ./
+    command: python3 development-manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+```
+
+This file defines two modules: `db` (the database) and `web` (the gbkfit website).
+
+From there, the website can be set and run using docker and docker-compose. 
+
+##### Build:
+`docker-compose build -f path/to/docker-compose.yml`
+##### Run:
+`docker-compose up -f path/to/docker-compose.yml`
+
+##### Stop:
+`docker-compose down -f path/to/docker-compose.yml`
+
+### Execute common Django actions with docker-compose
+
+When a model is modified, or when running the server for the first time, one needs to make migrations, and migrate the database so the web application and the database are in sync with one another.
+
+This is typically done using the `manage.py` file (or `development-manage.py`) like so: 
+
+##### Make migrations:
+`python development-manage.py makemigrations`
+
+##### Migrate:
+`python development-manage.py migrate`
+
+##### Create a super user:
+`python development-manage.py createsuperuser`
+
+Using docker, this is still done via these commands. The main difference is the need to connect to the docker process, like so: 
+
+##### 1. start the web server and database:
+`docker-compose up -f path/to/docker-compose.yml -d` 
+
+> Note the `-d` to run the processes in detached mode. 
+
+##### 2. Display docker running containers :
+`docker ps`
+
+which results in something like:
+```
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+040b6ee54f20        adacsgbkfit_web     "python3 developme..."   3 seconds ago       Up 2 seconds        0.0.0.0:8000->8000/tcp   adacsgbkfit_web_1
+9a5542872556        mysql               "docker-entrypoint..."   4 seconds ago       Up 3 seconds        3306/tcp                 adacsgbkfit_db_1
+```
+
+##### 3. Find the container id of the web application and log into it:
+`docker exec -t -i 040b6ee54f20 bash`
+
+##### 4. Now you are logged into, then go to the right folder and act as usual.
+
+e.g. `python development-manage.py makemigrations`
+...
