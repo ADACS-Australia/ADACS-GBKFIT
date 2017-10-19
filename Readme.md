@@ -126,7 +126,9 @@ for setting up a local settings file)
 specify the required manage.py file instead)
 * `./development-manage.py runserver` (running the server)
 
-## Running with MySQL, Docker and docker-compose
+
+Running with MySQL, Docker and docker-compose
+=============================================
 
 To run the website using docker and MySQL, modify the `local.py` configuration file. Instead of using the `sqlite` setting described above, use something in the lines of the following:
 
