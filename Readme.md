@@ -126,7 +126,9 @@ for setting up a local settings file)
 specify the required manage.py file instead)
 * `./development-manage.py runserver` (running the server)
 
-## Running with MySQL, Docker and docker-compose
+
+Running with MySQL, Docker and docker-compose
+=============================================
 
 To run the website using docker and MySQL, modify the `local.py` configuration file. Instead of using the `sqlite` setting described above, use something in the lines of the following:
 
@@ -213,7 +215,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 ##### 3. Find the container id of the web application and log into it:
 `docker exec -t -i 040b6ee54f20 bash`
 
-##### 4. Now you are logged into, then go to the right folder and act as usual.
+##### 4. Now that you are logged in, go to the right folder and act as usual.
 
 e.g. `python development-manage.py makemigrations`
 ...
