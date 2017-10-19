@@ -173,6 +173,7 @@ From there, the website can be set and run using docker and docker-compose.
 
 ##### Build:
 `docker-compose build -f path/to/docker-compose.yml`
+
 ##### Run:
 `docker-compose up -f path/to/docker-compose.yml`
 
