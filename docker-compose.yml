@@ -1,6 +1,13 @@
 version: '3'
 
 services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: gbkfit_dev
+      MYSQL_USER: django
+      MYSQL_PASSWORD: test-docker_#1
   web:
     build: ./
     command: python3 development-manage.py runserver 0.0.0.0:8000
@@ -8,3 +15,5 @@ services:
       - ./:/code
     ports:
       - "8000:8000"
+    depends_on:
+      - db
