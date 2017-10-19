@@ -171,20 +171,6 @@ This file defines two modules: `db` (the database) and `web` (the gbkfit website
 
 From there, the website can be set and run using docker and docker-compose. 
 
-##### Build:
-`docker-compose build -f path/to/docker-compose.yml`
-##### Run:
-`docker-compose up -f path/to/docker-compose.yml`
-
-##### Stop:
-`docker-compose down -f path/to/docker-compose.yml`
-
-### Execute common Django actions with docker-compose
-
-When a model is modified, or when running the server for the first time, one needs to make migrations, and migrate the database so the web application and the database are in sync with one another.
-
-This is typically done using the `manage.py` file (or `development-manage.py`) like so: 
-
 ##### Make migrations:
 `python development-manage.py makemigrations`
 
@@ -192,6 +178,14 @@ This is typically done using the `manage.py` file (or `development-manage.py`) l
 `python development-manage.py migrate`
 
 ##### Create a super user:
+=======
+#####Make migrations:
+`python development-manage.py makemigrations`
+
+#####Migrate:
+`python development-manage.py migrate`
+
+#####Create a super user:
 `python development-manage.py createsuperuser`
 
 Using docker, this is still done via these commands. The main difference is the need to connect to the docker process, like so: 
