@@ -1,4 +1,4 @@
-<form action="{% url 'job_start' %}}" method="post" enctype="multipart/form-data">
+<form action="{% url 'job_start' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 {#    {{ start_form.as_p }}#}
     {% for field in start_form %}
