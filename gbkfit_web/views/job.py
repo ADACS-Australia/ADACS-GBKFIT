@@ -90,9 +90,6 @@ MODELS_EDIT = {START: Job,
 def next_tab(active_tab):
     return TABS[TABS_INDEXES[active_tab] + 1]
 
-def previous_tab(active_tab):
-    return TABS[TABS_INDEXES[active_tab] - 1]
-
 def set_job_menu(request, id=None):
     if id == None:
         return forms.ModelChoiceField(
@@ -151,7 +148,7 @@ def build_task_json(request):
 """
 
 def act_on_request_method_create(request, active_tab):
-    JobInitialForm.base_fields['job'] = set_job_menu(request)
+    # JobInitialForm.base_fields['job'] = set_job_menu(request)
     tab_checker = active_tab
 
     if active_tab != DATASET:
@@ -406,7 +403,7 @@ def launch(request):
 """  
 
 def act_on_request_method_edit(request, active_tab, id):
-    JobInitialForm.base_fields['job'] = set_job_menu(request, id)
+    # JobInitialForm.base_fields['job'] = set_job_menu(request, id)
 
     tab_checker = active_tab
 

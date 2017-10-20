@@ -30,10 +30,17 @@ def verify(request):
                         message='The requested user account to verify does not exist',
                     )
         except ValueError as e:
-            data.update(
-                success=False,
-                message=e.message if e.message else 'Invalid verification code',
-            )
+            # This may be a variant between versions...
+            try:
+                data.update(
+                    success=False,
+                    message=e.message if e.message else 'Invalid verification code',
+                )
+            except:
+                data.update(
+                    success=False,
+                    message=e if e else 'Invalid verification code',
+                )
     else:
         data.update(
             success=False,

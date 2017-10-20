@@ -466,6 +466,7 @@ LABELS = {
     'vsig_side': _('Side'),
 }
 
+
 class ParamsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -672,7 +673,569 @@ class ParamsForm(forms.ModelForm):
                 vsig_side=data.get('vsig_side'),
             )
 
-        self.request.session['params'] = ParameterSet.objects.get(job_id=id).as_array()
+        self.request.session['params'] = self.as_array(data)
+
+    def as_array(self, data):
+        return [self.i0_dict(data),
+                self.r0_dict(data),
+                self.xo_dict(data),
+                self.yo_dict(data),
+                self.pa_dict(data),
+                self.incl_dict(data),
+                self.rt_dict(data),
+                self.vt_dict(data),
+                self.vsys_dict(data),
+                self.vsig_dict(data)]
+
+    def i0_dict(data):
+        # i0
+        i0_dict = {
+            'name': 'i0'
+        }
+        try:
+            i0_dict['fixed'] = data.get('i0_fixed')
+        except:
+            pass
+
+        try:
+            i0_dict['value'] = data.get('i0_value')
+        except:
+            pass
+
+        try:
+            i0_dict['min'] = data.get('i0_min')
+        except:
+            pass
+
+        try:
+            i0_dict['max'] = data.get('i0_max')
+        except:
+            pass
+        try:
+            i0_dict['wrap'] = data.get('i0_wrap')
+        except:
+            pass
+
+        try:
+            i0_dict['step'] = data.get('i0_step')
+        except:
+            pass
+
+        try:
+            i0_dict['relstep'] = data.get('i0_relstep')
+        except:
+            pass
+
+        try:
+            i0_dict['side'] = data.get('i0_side')
+        except:
+            pass
+
+        try:
+            i0_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            i0_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return i0_dict
+
+    def r0_dict(data):
+        # r0
+        r0_dict = {
+            'name': 'r0'
+        }
+        try:
+            r0_dict['fixed'] = data.get('r0_fixed')
+        except:
+            pass
+
+        try:
+            r0_dict['value'] = data.get('r0_value')
+        except:
+            pass
+
+        try:
+            r0_dict['min'] = data.get('r0_min')
+        except:
+            pass
+
+        try:
+            r0_dict['max'] = data.get('r0_max')
+        except:
+            pass
+        try:
+            r0_dict['wrap'] = data.get('r0_wrap')
+        except:
+            pass
+
+        try:
+            r0_dict['step'] = data.get('r0_step')
+        except:
+            pass
+
+        try:
+            r0_dict['relstep'] = data.get('r0_relstep')
+        except:
+            pass
+
+        try:
+            r0_dict['side'] = data.get('r0_side')
+        except:
+            pass
+
+        try:
+            r0_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            r0_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return r0_dict
+
+    def xo_dict(data):
+        # xo
+        xo_dict = {
+            'name': 'xo'
+        }
+        try:
+            xo_dict['fixed'] = data.get('xo_fixed')
+        except:
+            pass
+
+        try:
+            xo_dict['value'] = data.get('xo_value')
+        except:
+            pass
+
+        try:
+            xo_dict['min'] = data.get('xo_min')
+        except:
+            pass
+
+        try:
+            xo_dict['max'] = data.get('xo_max')
+        except:
+            pass
+        try:
+            xo_dict['wrap'] = data.get('xo_wrap')
+        except:
+            pass
+
+        try:
+            xo_dict['step'] = data.get('xo_step')
+        except:
+            pass
+
+        try:
+            xo_dict['relstep'] = data.get('xo_relstep')
+        except:
+            pass
+
+        try:
+            xo_dict['side'] = data.get('xo_side')
+        except:
+            pass
+
+        try:
+            xo_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            xo_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return xo_dict
+
+    def yo_dict(data):
+        # yo
+        yo_dict = {
+            'name': 'yo'
+        }
+        try:
+            yo_dict['fixed'] = data.get('yo_fixed')
+        except:
+            pass
+
+        try:
+            yo_dict['value'] = data.get('yo_value')
+        except:
+            pass
+
+        try:
+            yo_dict['min'] = data.get('yo_min')
+        except:
+            pass
+
+        try:
+            yo_dict['max'] = data.get('yo_max')
+        except:
+            pass
+        try:
+            yo_dict['wrap'] = data.get('yo_wrap')
+        except:
+            pass
+
+        try:
+            yo_dict['step'] = data.get('yo_step')
+        except:
+            pass
+
+        try:
+            yo_dict['relstep'] = data.get('yo_relstep')
+        except:
+            pass
+
+        try:
+            yo_dict['side'] = data.get('yo_side')
+        except:
+            pass
+
+        try:
+            yo_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            yo_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return yo_dict
+
+    def pa_dict(data):
+        # pa
+        pa_dict = {
+            'name': 'pa'
+        }
+        try:
+            pa_dict['fixed'] = data.get('pa_fixed')
+        except:
+            pass
+
+        try:
+            pa_dict['value'] = data.get('pa_value')
+        except:
+            pass
+
+        try:
+            pa_dict['min'] = data.get('pa_min')
+        except:
+            pass
+
+        try:
+            pa_dict['max'] = data.get('pa_max')
+        except:
+            pass
+        try:
+            pa_dict['wrap'] = data.get('pa_wrap')
+        except:
+            pass
+
+        try:
+            pa_dict['step'] = data.get('pa_step')
+        except:
+            pass
+
+        try:
+            pa_dict['relstep'] = data.get('pa_relstep')
+        except:
+            pass
+
+        try:
+            pa_dict['side'] = data.get('pa_side')
+        except:
+            pass
+
+        try:
+            pa_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            pa_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return pa_dict
+
+    def incl_dict(data):
+        # incl
+        incl_dict = {
+            'name': 'incl'
+        }
+        try:
+            incl_dict['fixed'] = data.get('incl_fixed')
+        except:
+            pass
+
+        try:
+            incl_dict['value'] = data.get('incl_value')
+        except:
+            pass
+
+        try:
+            incl_dict['min'] = data.get('incl_min')
+        except:
+            pass
+
+        try:
+            incl_dict['max'] = data.get('incl_max')
+        except:
+            pass
+        try:
+            incl_dict['wrap'] = data.get('incl_wrap')
+        except:
+            pass
+
+        try:
+            incl_dict['step'] = data.get('incl_step')
+        except:
+            pass
+
+        try:
+            incl_dict['relstep'] = data.get('incl_relstep')
+        except:
+            pass
+
+        try:
+            incl_dict['side'] = data.get('incl_side')
+        except:
+            pass
+
+        try:
+            incl_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            incl_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return incl_dict
+
+    def rt_dict(data):
+        # rt
+        rt_dict = {
+            'name': 'rt'
+        }
+        try:
+            rt_dict['fixed'] = data.get('rt_fixed')
+        except:
+            pass
+
+        try:
+            rt_dict['value'] = data.get('rt_value')
+        except:
+            pass
+
+        try:
+            rt_dict['min'] = data.get('rt_min')
+        except:
+            pass
+
+        try:
+            rt_dict['max'] = data.get('rt_max')
+        except:
+            pass
+        try:
+            rt_dict['wrap'] = data.get('rt_wrap')
+        except:
+            pass
+
+        try:
+            rt_dict['step'] = data.get('rt_step')
+        except:
+            pass
+
+        try:
+            rt_dict['relstep'] = data.get('rt_relstep')
+        except:
+            pass
+
+        try:
+            rt_dict['side'] = data.get('rt_side')
+        except:
+            pass
+
+        try:
+            rt_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            rt_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return rt_dict
+
+    def vt_dict(data):
+        # vt
+        vt_dict = {
+            'name': 'vt'
+        }
+        try:
+            vt_dict['fixed'] = data.get('vt_fixed')
+        except:
+            pass
+
+        try:
+            vt_dict['value'] = data.get('vt_value')
+        except:
+            pass
+
+        try:
+            vt_dict['min'] = data.get('vt_min')
+        except:
+            pass
+
+        try:
+            vt_dict['max'] = data.get('vt_max')
+        except:
+            pass
+        try:
+            vt_dict['wrap'] = data.get('vt_wrap')
+        except:
+            pass
+
+        try:
+            vt_dict['step'] = data.get('vt_step')
+        except:
+            pass
+
+        try:
+            vt_dict['relstep'] = data.get('vt_relstep')
+        except:
+            pass
+
+        try:
+            vt_dict['side'] = data.get('vt_side')
+        except:
+            pass
+
+        try:
+            vt_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            vt_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return vt_dict
+
+    def vsys_dict(data):
+        # vsys
+        vsys_dict = {
+            'name': 'vsys'
+        }
+        try:
+            vsys_dict['fixed'] = data.get('vsys_fixed')
+        except:
+            pass
+
+        try:
+            vsys_dict['value'] = data.get('vsys_value')
+        except:
+            pass
+
+        try:
+            vsys_dict['min'] = data.get('vsys_min')
+        except:
+            pass
+
+        try:
+            vsys_dict['max'] = data.get('vsys_max')
+        except:
+            pass
+        try:
+            vsys_dict['wrap'] = data.get('vsys_wrap')
+        except:
+            pass
+
+        try:
+            vsys_dict['step'] = data.get('vsys_step')
+        except:
+            pass
+
+        try:
+            vsys_dict['relstep'] = data.get('vsys_relstep')
+        except:
+            pass
+
+        try:
+            vsys_dict['side'] = data.get('vsys_side')
+        except:
+            pass
+
+        try:
+            vsys_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            vsys_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return vsys_dict
+
+    def vsig_dict(data):
+        # vsig
+        vsig_dict = {
+            'name': 'vsig'
+        }
+        try:
+            vsig_dict['fixed'] = data.get('vsig_fixed')
+        except:
+            pass
+
+        try:
+            vsig_dict['value'] = data.get('vsig_value')
+        except:
+            pass
+
+        try:
+            vsig_dict['min'] = data.get('vsig_min')
+        except:
+            pass
+
+        try:
+            vsig_dict['max'] = data.get('vsig_max')
+        except:
+            pass
+        try:
+            vsig_dict['wrap'] = data.get('vsig_wrap')
+        except:
+            pass
+
+        try:
+            vsig_dict['step'] = data.get('vsig_step')
+        except:
+            pass
+
+        try:
+            vsig_dict['relstep'] = data.get('vsig_relstep')
+        except:
+            pass
+
+        try:
+            vsig_dict['side'] = data.get('vsig_side')
+        except:
+            pass
+
+        try:
+            vsig_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            vsig_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return vsig_dict
 
 class EditParamsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

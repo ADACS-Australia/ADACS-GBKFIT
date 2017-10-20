@@ -1,7 +1,9 @@
 from django import forms
 from gbkfit_web.models import GalaxyModel, Job
+from django.utils.translation import ugettext_lazy as _
 
 FIELDS = ['gmodel_type', 'flx_profile', 'vel_profile']
+
 WIDGETS = {
     'gmodel_type': forms.Select(
         attrs={'class': 'form-control'},
@@ -14,6 +16,13 @@ WIDGETS = {
     ),
 }
 
+LABELS = {
+    'gmodel_type': _('Type'),
+    'flx_profile': _('Flux profile'),
+    'vel_profile': _('Velocity profile'),
+}
+
+
 class GalaxyModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -24,6 +33,7 @@ class GalaxyModelForm(forms.ModelForm):
         model = GalaxyModel
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS
 
     def save(self):
         self.full_clean()
@@ -46,7 +56,14 @@ class GalaxyModelForm(forms.ModelForm):
                 vel_profile=data.get('vel_profile'),
             )
 
-        self.request.session['fitter'] = GalaxyModel.objects.get(job_id=id).as_json()
+        self.request.session['fitter'] = self.as_json(data)
+
+    def as_json(data):
+        return dict(
+            type=data.get('gmodel_type'),
+            flx_profile=data.get('flx_profile'),
+            vel_profile=data.get('vel_profile'),
+        )
             
 class EditGalaxyModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -56,3 +73,4 @@ class EditGalaxyModelForm(forms.ModelForm):
         model = GalaxyModel
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS

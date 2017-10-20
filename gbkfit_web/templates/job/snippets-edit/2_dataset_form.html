@@ -11,11 +11,7 @@
 
             <!-- Label -->
             <label class="col-md-4" for="{{ field.auto_id }}">
-                {% if field.name == 'dmodel_type' %}
-                    Type
-                {% else %}
-                    {{ field.label }}
-                {% endif %}
+                {{ field.label }}
             </label>
 
             <!-- Field -->

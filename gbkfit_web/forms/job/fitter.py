@@ -1,10 +1,11 @@
 from django import forms
 from gbkfit_web.models import Fitter, Job
+from django.utils.translation import ugettext_lazy as _
 
 FIELDS = ['fitter_type',
           'ftol', 'xtol', 'gtol', 'epsfcn', 'stepfactor', 'covtol', 'mpfit_maxiter', 'maxfev', 'nprint', 'douserscale',
           'nofinitecheck',
-          'efr', 'tol', 'ztol', 'logzero', '_is', 'mmodal', 'ceff', 'nlive', 'multinest_maxiter', 'seed', 'outfile',
+          'efr', 'tol', 'ztol', 'logzero', 'multinest_is', 'mmodal', 'ceff', 'nlive', 'multinest_maxiter', 'seed', 'outfile',
           ]
 
 WIDGETS = {
@@ -56,7 +57,7 @@ WIDGETS = {
     'logzero': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    '_is': forms.TextInput(
+    'multinest_is': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
     'mmodal': forms.TextInput(
@@ -79,6 +80,33 @@ WIDGETS = {
     ),
 }
 
+LABELS = {
+    'fitter_type': _('Type'),
+    'ftol': _('ftol'),
+    'xtol': _('xtol'),
+    'gtol': _('gtol'),
+    'epsfcn': _('epsfcn'),
+    'stepfactor': _('stepfactor'),
+    'covtol': _('covtol'),
+    'mpfit_maxiter': _('maxiter'),
+    'maxfev': _('maxfev'),
+    'nprint': _('nprint'),
+    'douserscale': _('douserscale'),
+    'nofinitecheck': _('nofinitecheck'),
+    'efr': _('efr'),
+    'tol': _('tol'),
+    'ztol': _('ztol'),
+    'logzero': _('logzero'),
+    'multinest_is': _('is'),
+    'mmodal': _('mmodal'),
+    'ceff': _('ceff'),
+    'nlive': _('nlive'),
+    'multinest_maxiter': _('maxiter'),
+    'seed': _('seed'),
+    'outfile': _('outfile'),
+}
+
+
 class FitterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -89,6 +117,7 @@ class FitterForm(forms.ModelForm):
         model = Fitter
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS
 
     def save(self):
         self.full_clean()
@@ -112,7 +141,7 @@ class FitterForm(forms.ModelForm):
                 nprint=data.get('nprint'),
                 douserscale=data.get('douserscale'),
                 nofinitecheck=data.get('nofinitecheck'),
-                _is=data.get('_is'),
+                multinest_is=data.get('multinest_is'),
                 mmodal=data.get('mmodal'),
                 nlive=data.get('nlive'),
                 tol=data.get('tol'),
@@ -138,7 +167,7 @@ class FitterForm(forms.ModelForm):
                 nprint=data.get('nprint'),
                 douserscale=data.get('douserscale'),
                 nofinitecheck=data.get('nofinitecheck'),
-                _is=data.get('_is'),
+                multinest_is=data.get('multinest_is'),
                 mmodal=data.get('mmodal'),
                 nlive=data.get('nlive'),
                 tol=data.get('tol'),
@@ -151,7 +180,44 @@ class FitterForm(forms.ModelForm):
                 outfile=data.get('outfile'),
             )
 
-        self.request.session['fitter'] = Fitter.objects.get(job_id=id).as_json()
+        self.request.session['fitter'] = self.as_json(data)
+
+    def as_json(data):
+        """
+        Return 'fitter' parameters into a json string (dictionary)
+
+        :return: json dict
+        """
+        if data.get('fitter_type') == Fitter.MPFIT:
+            return dict(
+                    type="gbkfit.fitter." + data.get('fitter_type'),
+                    ftol = data.get('ftol'),
+                    xtol = data.get('xtol'),
+                    gtol = data.get('gtol'),
+                    epsfcn = data.get('epsfcn'),
+                    stepfactor = data.get('stepfactor'),
+                    covtol = data.get('covtol'),
+                    maxiter = data.get('mpfit_maxiter'),
+                    maxfev = data.get('maxfev'),
+                    nprint = data.get('nprint'),
+                    douserscale = data.get('douserscale'),
+                    nofinitecheck = data.get('nofinitecheck')
+                )
+        else:
+            return dict(
+                    type="gbkfit.fitter." + data.get('fitter_type'),
+                    multinest_is = data.get('multinest_is'),
+                    mmodal = data.get('mmodal'),
+                    nlive = data.get('nlive'),
+                    tol = data.get('tol'),
+                    efr = data.get('efr'),
+                    ceff = data.get('ceff'),
+                    ztol = data.get('ztol'),
+                    logzero = data.get('logzero'),
+                    maxiter = data.get('multinest_maxiter'),
+                    seed = data.get('seed'),
+                    outfile = data.get('outfile')
+                )
 
 class EditFitterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -161,3 +227,4 @@ class EditFitterForm(forms.ModelForm):
         model = Fitter
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS
