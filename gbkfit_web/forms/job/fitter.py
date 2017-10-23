@@ -182,7 +182,7 @@ class FitterForm(forms.ModelForm):
 
         self.request.session['fitter'] = self.as_json(data)
 
-    def as_json(data):
+    def as_json(self, data):
         """
         Return 'fitter' parameters into a json string (dictionary)
 

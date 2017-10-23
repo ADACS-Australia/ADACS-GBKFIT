@@ -1,6 +1,7 @@
 <form action="{% url 'job_psf' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-{#    {{ psf_form.as_p }}#}
+    {% include 'job/snippets-actions/pager.html' %}
+
     {% for field in psf_form %}
 
         <div class="container-fluid field
@@ -22,5 +23,6 @@
 
         </div>
     {% endfor %}
-    <input class="btn btn-primary" type="submit" value="Save and next" />
+
+    {% include 'job/snippets-actions/pager.html' %}
 </form>

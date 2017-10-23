@@ -131,8 +131,8 @@ Welcome page
 .footer .footer-text, .footer-welcome .footer-text {
     /*padding: 35px;*/
     text-align: center;
-    font-family: 'Slabo 27px', serif;
-    font-size: 18px;
+    /*font-family: 'Slabo 27px', serif;*/
+    /*font-size: 15px;*/
 }
 
 /********************************************/
@@ -167,6 +167,21 @@ Welcome page
     margin-top: 20px;
 }
 
+
+/********************************************/
+/*                                          */
+/*                 Pager                    */
+/*                                          */
+/********************************************/
+.container-fluid .pager .previous{
+    float: left;
+    margin-left: 15px;
+}
+
+.container-fluid .pager .next{
+    float: right;
+    margin-right: 15px;
+}
 
 /********************************************/
 /*                                          */
@@ -277,6 +292,11 @@ Welcome page
   width: 11%;
 }
 
+.breadcrumbs li.disabled {
+    pointer-events:none;
+    opacity:0.6;
+}
+
 .breadcrumbs li a {
   position: relative;
   display: block;
@@ -314,6 +334,7 @@ Welcome page
   border: 2px solid #aaa;
   border-radius: 50%;
   background-color: #fff;
+  text-align: center;
 }
 
 .breadcrumbs li.active a span:first-child {
@@ -322,8 +343,9 @@ Welcome page
   background-color: #777;
 }
 
-.breadcrumbs li a span:first-child {
+.breadcrumbs li a span:nth-child(2) {
   display: block;
+  text-align: center;
 }
 
 .breadcrumbs li a:before,

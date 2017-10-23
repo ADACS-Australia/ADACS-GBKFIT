@@ -87,6 +87,9 @@ MODELS_EDIT = {START: Job,
               FITTER: Fitter_model,
               PARAMS: Params}
 
+def previous_tab(active_tab):
+    return TABS[TABS_INDEXES[active_tab] - 1]
+
 def next_tab(active_tab):
     return TABS[TABS_INDEXES[active_tab] + 1]
 
@@ -148,24 +151,18 @@ def build_task_json(request):
 """
 
 def act_on_request_method_create(request, active_tab):
-    # JobInitialForm.base_fields['job'] = set_job_menu(request)
     tab_checker = active_tab
 
     if active_tab != DATASET:
         if request.method == 'POST':
             form = FORMS_NEW[active_tab](request.POST, request=request)
-            if form.is_valid():
-                form.save()
-                active_tab = next_tab(active_tab)
+            active_tab = save_form(form, request, active_tab)
         else:
             form = FORMS_NEW[active_tab](request=request)
     else:
         if request.method == 'POST' and request.FILES['datafile1']:
             form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request)
-
-            if form.is_valid():
-                form.save()
-                active_tab = next_tab(active_tab)
+            active_tab = save_form(form, request, active_tab)
         else:
             form = FORMS_NEW[active_tab]()
 
@@ -213,7 +210,14 @@ def act_on_request_method_create(request, active_tab):
     return active_tab, [start_form, dataset_form, data_model_form, psf_form,
                         lsf_form, galaxy_model_form, fitter_form, params_form]
 
-
+def save_form(form, request, active_tab):
+    if form.is_valid():
+        form.save()
+        if 'next' in request.POST:
+            active_tab = next_tab(active_tab)
+        if 'previous' in request.POST:
+            active_tab = previous_tab(active_tab)
+    return active_tab
 
 @login_required
 def start(request):
@@ -225,6 +229,7 @@ def start(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': True,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -246,6 +251,7 @@ def dataset(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -267,6 +273,7 @@ def data_model(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -288,6 +295,7 @@ def psf(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -309,6 +317,7 @@ def lsf(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -330,6 +339,7 @@ def galaxy_model(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -351,6 +361,7 @@ def fitter(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -372,6 +383,7 @@ def params(request):
         "job/create.html",
         {
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -427,9 +439,8 @@ def act_on_request_method_edit(request, active_tab, id):
                     else:
                         form = FORMS_NEW[active_tab]()
 
-        if form.is_valid():
-            form.save()
-            active_tab = next_tab(active_tab)
+        active_tab = save_form(form, request, active_tab)
+
     else:
         if active_tab == START:
             form = FORMS_EDIT[active_tab](instance=MODELS_EDIT[active_tab].objects.get(id=id))
@@ -516,6 +527,7 @@ def edit_job_name(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -538,6 +550,7 @@ def edit_job_dataset(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -560,6 +573,7 @@ def edit_job_data_model(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -582,6 +596,7 @@ def edit_job_psf(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -604,6 +619,7 @@ def edit_job_lsf(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -626,6 +642,7 @@ def edit_job_galaxy_model(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -648,6 +665,7 @@ def edit_job_fitter(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],
@@ -670,6 +688,7 @@ def edit_job_params(request, id):
         {
             'job_id': id,
             'active_tab': active_tab,
+            'disable_other_tabs': False,
             'start_form': forms[TABS_INDEXES[START]],
             'dataset_form': forms[TABS_INDEXES[DATASET]],
             'data_model_form': forms[TABS_INDEXES[DMODEL]],

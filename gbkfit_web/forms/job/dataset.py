@@ -87,9 +87,9 @@ class DataSetForm(forms.ModelForm):
                 maskfile2=data.get('maskfile2'),
             )
 
-        self.request.session['dataset'] = self.as_json(data)
+        self.request.session['dataset'] = self.as_array(data)
 
-    def as_array(data):
+    def as_array(self, data):
         # 1st batch of files
         file1_dict = {}
         file1_dict['type'] = data.get('dataset1_type')

@@ -1,5 +1,6 @@
 <form action="{% url 'job_galaxy_model' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {% include 'job/snippets-actions/pager.html' %}
 {#    {{ galaxy_model_form.as_p }}#}
     {% for field in galaxy_model_form %}
 
@@ -24,5 +25,6 @@
 
         </div>
     {% endfor %}
-    <input class="btn btn-primary" type="submit" value="Save and next" />
+
+    {% include 'job/snippets-actions/pager.html' %}
 </form>

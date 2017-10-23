@@ -87,7 +87,7 @@ class DataModelForm(forms.ModelForm):
             )
         self.request.session['data_model'] = self.as_json(data)
 
-    def as_json(data):
+    def as_json(self, data):
         if data.get('dmodel_type') in [DataModel.SCUBE_OMP, DataModel.SCUBE_CUDA]:
             return dict(
                 type="gbkfit.dmodel." + data.get('dmodel_type'),

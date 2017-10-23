@@ -431,7 +431,7 @@ class GalaxyModel(models.Model):
         (THINDISK_OMP, THINDISK_OMP),
         (THINDISK_CUDA, THINDISK_CUDA),
     ]
-    gmodel_type = models.CharField(max_length=12, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
+    gmodel_type = models.CharField(max_length=13, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
 
     EXPONENTIAL = 'exponential'
     FLAT= 'flat'

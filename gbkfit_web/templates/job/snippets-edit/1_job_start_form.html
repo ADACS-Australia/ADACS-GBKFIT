@@ -1,6 +1,6 @@
 <form action="{% url 'job_name_edit' id=job_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-{#    {{ start_form.as_p }}#}
+
     {% for field in start_form %}
         <div class="container-fluid field
                     {% if field.errors %}error{% endif %}
@@ -21,5 +21,6 @@
 
         </div>
     {% endfor %}
-    <input class="btn btn-primary" type="submit" value="Save and Next >>" />
+
+    {% include 'job/snippets-actions/pager-next-only.html' %}
 </form>

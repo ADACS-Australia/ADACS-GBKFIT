@@ -687,7 +687,7 @@ class ParamsForm(forms.ModelForm):
                 self.vsys_dict(data),
                 self.vsig_dict(data)]
 
-    def i0_dict(data):
+    def i0_dict(self, data):
         # i0
         i0_dict = {
             'name': 'i0'
@@ -742,7 +742,7 @@ class ParamsForm(forms.ModelForm):
 
         return i0_dict
 
-    def r0_dict(data):
+    def r0_dict(self, data):
         # r0
         r0_dict = {
             'name': 'r0'
@@ -797,7 +797,7 @@ class ParamsForm(forms.ModelForm):
 
         return r0_dict
 
-    def xo_dict(data):
+    def xo_dict(self, data):
         # xo
         xo_dict = {
             'name': 'xo'
@@ -852,7 +852,7 @@ class ParamsForm(forms.ModelForm):
 
         return xo_dict
 
-    def yo_dict(data):
+    def yo_dict(self, data):
         # yo
         yo_dict = {
             'name': 'yo'
@@ -907,7 +907,7 @@ class ParamsForm(forms.ModelForm):
 
         return yo_dict
 
-    def pa_dict(data):
+    def pa_dict(self, data):
         # pa
         pa_dict = {
             'name': 'pa'
@@ -962,7 +962,7 @@ class ParamsForm(forms.ModelForm):
 
         return pa_dict
 
-    def incl_dict(data):
+    def incl_dict(self, data):
         # incl
         incl_dict = {
             'name': 'incl'
@@ -1017,7 +1017,7 @@ class ParamsForm(forms.ModelForm):
 
         return incl_dict
 
-    def rt_dict(data):
+    def rt_dict(self, data):
         # rt
         rt_dict = {
             'name': 'rt'
@@ -1072,7 +1072,7 @@ class ParamsForm(forms.ModelForm):
 
         return rt_dict
 
-    def vt_dict(data):
+    def vt_dict(self, data):
         # vt
         vt_dict = {
             'name': 'vt'
@@ -1127,7 +1127,7 @@ class ParamsForm(forms.ModelForm):
 
         return vt_dict
 
-    def vsys_dict(data):
+    def vsys_dict(self, data):
         # vsys
         vsys_dict = {
             'name': 'vsys'
@@ -1182,7 +1182,7 @@ class ParamsForm(forms.ModelForm):
 
         return vsys_dict
 
-    def vsig_dict(data):
+    def vsig_dict(self, data):
         # vsig
         vsig_dict = {
             'name': 'vsig'

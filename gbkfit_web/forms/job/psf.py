@@ -69,7 +69,7 @@ class PSFForm(forms.ModelForm):
             )
         self.request.session['psf'] = self.as_json(data)
         
-    def as_json(data):
+    def as_json(self, data):
         if data.get('psf_type') in [PSF.MOFFAT]:
             return dict(
                 type=data.get('psf_type'),

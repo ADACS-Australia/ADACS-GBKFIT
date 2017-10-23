@@ -1,5 +1,7 @@
 <form action="{% url 'job_fitter' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {% include 'job/snippets-actions/pager.html' %}
+
     <!-- 'type' -->
     <div class="container-fluid field
         {% if fitter_form.fitter_type.errors %}error{% endif %}
@@ -398,5 +400,5 @@
         </div>
     </div>
 
-    <input class="btn btn-primary" type="submit" value="Save and next" />
+    {% include 'job/snippets-actions/pager.html' %}
 </form>

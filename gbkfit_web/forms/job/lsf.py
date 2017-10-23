@@ -58,7 +58,7 @@ class LSFForm(forms.ModelForm):
 
         self.request.session['lsf'] = self.as_json(data)
 
-    def as_json(data):
+    def as_json(self, data):
         if data.get('lsf_type') in [LSF.MOFFAT]:
             return dict(
                 type=data.get('lsf_type'),

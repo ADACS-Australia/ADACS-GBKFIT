@@ -58,7 +58,7 @@ class GalaxyModelForm(forms.ModelForm):
 
         self.request.session['fitter'] = self.as_json(data)
 
-    def as_json(data):
+    def as_json(self, data):
         return dict(
             type=data.get('gmodel_type'),
             flx_profile=data.get('flx_profile'),

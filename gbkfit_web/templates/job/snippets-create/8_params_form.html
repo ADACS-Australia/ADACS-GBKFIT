@@ -1,5 +1,6 @@
 <form action="{% url 'job_params' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {% include 'job/snippets-actions/pager.html' %}
 
     {% for field in params_form %}
         {% if not forloop.first and forloop.counter0|divisibleby:8 %}
@@ -31,6 +32,6 @@
             </div>
         {% endif %}
     {% endfor %}
-    <p></p>
-    <input class="btn btn-primary" type="submit" value="Save and next" />
+
+    {% include 'job/snippets-actions/pager.html' %}
 </form>
