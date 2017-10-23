@@ -1,5 +1,6 @@
 from django import forms
 from gbkfit_web.models import PSF, Job
+from django.utils.translation import ugettext_lazy as _
 
 FIELDS = ['psf_type', 'fwhm_x', 'fwhm_y', 'pa', 'beta']
 
@@ -21,6 +22,15 @@ WIDGETS = {
     ),
 }
 
+LABELS = {
+    'psf_type': _('Type'),
+    'fwhm_x': _('FWHM X'),
+    'fwhm_y': _('FWHM Y'),
+    'pa': _('pa'),
+    'beta': _('beta'),
+}
+
+
 class PSFForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -31,6 +41,7 @@ class PSFForm(forms.ModelForm):
         model = PSF
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS
 
     def save(self):
         self.full_clean()
@@ -56,7 +67,24 @@ class PSFForm(forms.ModelForm):
                 pa=data.get('pa'),
                 beta=data.get('beta'),
             )
-        self.request.session['psf'] = PSF.objects.get(job_id=id).as_json()
+        self.request.session['psf'] = self.as_json(data)
+        
+    def as_json(self, data):
+        if data.get('psf_type') in [PSF.MOFFAT]:
+            return dict(
+                type=data.get('psf_type'),
+                fwhm_x=data.get('fwhm_x'),
+                fwhm_y=data.get('fwhm_y'),
+                pa=data.get('pa'),
+                beta=data.get('beta')
+            )
+        else:
+            return dict(
+                type=data.get('psf_type'),
+                fwhm_x=data.get('fwhm_x'),
+                fwhm_y=data.get('fwhm_y'),
+                pa=data.get('pa')
+            )
 
 class EditPSFForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -66,3 +94,4 @@ class EditPSFForm(forms.ModelForm):
         model = PSF
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS

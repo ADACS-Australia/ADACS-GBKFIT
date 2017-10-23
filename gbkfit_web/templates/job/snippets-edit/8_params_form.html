@@ -1,21 +1,18 @@
 <form action="{% url 'job_params_edit' id=job_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {% include 'job/snippets-actions/pager.html' %}
 
     {% for field in params_form %}
         {% if not forloop.first and forloop.counter0|divisibleby:8 %}
-                    </div>
-                </div>
             </div>
             <br />
         {% endif %}
 
         {% if forloop.counter0|divisibleby:8 %}
-            <div class="wrapper">
+            <div class="container-fluid field">
                 <legend>{{ field.name|cut:"_fixed" }}</legend>
-                <div class="control-group">
-                    <div class="row">
         {% endif %}
-            <div class="col-md-4
+            <div class="col-md-6
                     {% if field.name == 'outfile' %}hidden{% endif %}
                     {% if field.errors %}error{% endif %}
                     div-{{ field.name }}
@@ -32,11 +29,9 @@
                 </div>
             </div>
         {% if forloop.last %}
-                    </div>
-                </div>
             </div>
         {% endif %}
     {% endfor %}
-    <br />
-    <input class="btn btn-primary" type="submit" value="Save and next" />
+
+    {% include 'job/snippets-actions/pager.html' %}
 </form>

@@ -182,6 +182,9 @@ From there, the website can be set and run using docker and docker-compose.
 ##### Stop:
 `docker-compose down -f path/to/docker-compose.yml`
 
+##### Building one specific container only 
+`docker-compose build web`
+
 ### Execute common Django actions with docker-compose
 
 When a model is modified, or when running the server for the first time, one needs to make migrations, and migrate the database so the web application and the database are in sync with one another.
@@ -219,3 +222,4 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 
 e.g. `python development-manage.py makemigrations`
 ...
+

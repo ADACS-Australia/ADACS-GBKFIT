@@ -1,6 +1,7 @@
 <form action="{% url 'job_dataset_edit' id=job_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-{#    {{ dataset_form.as_p }}#}
+    {% include 'job/snippets-actions/pager.html' %}
+
     {% for field in dataset_form %}
 
         <div class="container-fluid field
@@ -11,11 +12,7 @@
 
             <!-- Label -->
             <label class="col-md-4" for="{{ field.auto_id }}">
-                {% if field.name == 'dmodel_type' %}
-                    Type
-                {% else %}
-                    {{ field.label }}
-                {% endif %}
+                {{ field.label }}
             </label>
 
             <!-- Field -->
@@ -26,7 +23,8 @@
 
         </div>
     {% endfor %}
-    <input class="btn btn-primary" type="submit" value="Save and next" />
+
+    {% include 'job/snippets-actions/pager.html' %}
 </form>
 {% if uploaded_file_url %}
     <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>

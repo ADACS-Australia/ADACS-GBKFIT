@@ -14,21 +14,11 @@
 {% endblock info-bar %}
 
 {% block page_header %}
-    New Job
+    Edit Job Details
 {% endblock page_header %}
 
 {% block content %}
-    <ul class="nav nav-tabs">
-        <li id="li_start" {% if active_tab == 'start' %} class="active"{% endif %}><a data-toggle="tab" href="#start">Start</a></li>
-        <li id="li_data-set" {% if active_tab == 'data-set' %} class="active"{% endif %}><a data-toggle="tab" href="#data-set">Dataset Upload</a></li>
-        <li id="li_data-model" {% if active_tab == 'data-model' %} class="active"{% endif %}><a data-toggle="tab" href="#data-model">Data Model</a></li>
-        <li id="li_psf" {% if active_tab == 'psf' %} class="active"{% endif %}><a data-toggle="tab" href="#psf">PSF</a></li>
-        <li id="li_lsf" {% if active_tab == 'lsf' %} class="active"{% endif %}><a data-toggle="tab" href="#lsf">LSF</a></li>
-        <li id="li_galaxy-model" {% if active_tab == 'galaxy-model' %} class="active"{% endif %}><a data-toggle="tab" href="#galaxy-model">Galaxy Model</a></li>
-        <li id="li_fitter" {% if active_tab == 'fitter' %} class="active"{% endif %}><a data-toggle="tab" href="#fitter">Fitter</a></li>
-        <li id="li_params" {% if active_tab == 'params' %} class="active"{% endif %}><a data-toggle="tab" href="#params">Parameters</a></li>
-        <li id="li_launch" {% if active_tab == 'launch' %} class="active"{% endif %}><a data-toggle="tab" href="#launch">Launch</a></li>
-    </ul>
+    {% include 'job/snippets-actions/job-tabs.html' %}
 
     <div class="tab-content" id="job-tabs">
 

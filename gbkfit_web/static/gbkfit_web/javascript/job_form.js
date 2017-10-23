@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     // Job start hide/show job name field:
-
+    $('#id_name').addClass('form-control');
     $('body').on('change', '#id_job',
         function() {
             if ($('#id_job').find(":selected").text() != 'New')
@@ -57,59 +57,18 @@ $(document).ready(function() {
         });
 
     // Fitter hide/show fields on change.
+    $('.div-multinest').addClass('hidden');
+
     $('body').on('change', '#id_fitter_type',
         function() {
-            if ($('#id_lsf_type').find(":selected").text() == 'mpfit')
+            if ($('#id_fitter_type').find(":selected").text() == 'mpfit')
             {
-                $('.div-ftol').removeClass('hidden');
-                $('.div-xtol').removeClass('hidden');
-                $('.div-gtol').removeClass('hidden');
-                $('.div-epsfcn').removeClass('hidden');
-                $('.div-stepfactor').removeClass('hidden');
-                $('.div-covtol').removeClass('hidden');
-                $('.div-mpfit_maxiter').removeClass('hidden');
-                $('.div-maxfev').removeClass('hidden');
-                $('.div-nprint').removeClass('hidden');
-                $('.div-douserscale').removeClass('hidden');
-                $('.div-nofinitecheck').removeClass('hidden');
-
-                $('.div-_is').addClass('hidden');
-                $('.div-mmodal').addClass('hidden');
-                $('.div-nlive').addClass('hidden');
-                $('.div-tol').addClass('hidden');
-                $('.div-efr').addClass('hidden');
-                $('.div-ceff').addClass('hidden');
-                $('.div-ztol').addClass('hidden');
-                $('.div-logzero').addClass('hidden');
-                $('.div-multinest_maxiter').addClass('hidden');
-                $('.div-seed').addClass('hidden');
-                $('.div-outfile').addClass('hidden');
-
+                $('.div-mpfit').removeClass('hidden');
+                $('.div-multinest').addClass('hidden');
             }
             else{
-                $('.div-ftol').addClass('hidden');
-                $('.div-xtol').addClass('hidden');
-                $('.div-gtol').addClass('hidden');
-                $('.div-epsfcn').addClass('hidden');
-                $('.div-stepfactor').addClass('hidden');
-                $('.div-covtol').addClass('hidden');
-                $('.div-mpfit_maxiter').addClass('hidden');
-                $('.div-maxfev').addClass('hidden');
-                $('.div-nprint').addClass('hidden');
-                $('.div-douserscale').addClass('hidden');
-                $('.div-nofinitecheck').addClass('hidden');
-                
-                $('.div-_is').removeClass('hidden');
-                $('.div-mmodal').removeClass('hidden');
-                $('.div-nlive').removeClass('hidden');
-                $('.div-tol').removeClass('hidden');
-                $('.div-efr').removeClass('hidden');
-                $('.div-ceff').removeClass('hidden');
-                $('.div-ztol').removeClass('hidden');
-                $('.div-logzero').removeClass('hidden');
-                $('.div-multinest_maxiter').removeClass('hidden');
-                $('.div-seed').removeClass('hidden');
-                $('.div-outfile').removeClass('hidden');
+                $('.div-mpfit').addClass('hidden');
+                $('.div-multinest').removeClass('hidden');
             }
         });
 

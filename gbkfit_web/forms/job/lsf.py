@@ -1,5 +1,6 @@
 from django import forms
 from gbkfit_web.models import LSF, Job
+from django.utils.translation import ugettext_lazy as _
 
 FIELDS = ['lsf_type', 'fwhm', 'beta']
 
@@ -15,6 +16,13 @@ WIDGETS = {
     ),
 }
 
+LABELS = {
+    'lsf_type': _('Type'),
+    'fwhm': _('FWHM'),
+    'beta': _('Beta'),
+}
+
+
 class LSFForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -25,6 +33,7 @@ class LSFForm(forms.ModelForm):
         model = LSF
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS
 
     def save(self):
         self.full_clean()
@@ -47,7 +56,20 @@ class LSFForm(forms.ModelForm):
                 beta=data.get('beta'),
             )
 
-        self.request.session['lsf'] = LSF.objects.get(job_id=id).as_json()
+        self.request.session['lsf'] = self.as_json(data)
+
+    def as_json(self, data):
+        if data.get('lsf_type') in [LSF.MOFFAT]:
+            return dict(
+                type=data.get('lsf_type'),
+                fwhm=data.get('fwhm'),
+                beta=data.get('beta')
+            )
+        else:
+            return dict(
+                type=data.get('lsf_type'),
+                fwhm=data.get('fwhm')
+            )
 
 class EditLSFForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -57,3 +79,4 @@ class EditLSFForm(forms.ModelForm):
         model = LSF
         fields = FIELDS
         widgets = WIDGETS
+        labels = LABELS

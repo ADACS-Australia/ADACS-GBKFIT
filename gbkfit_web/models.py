@@ -106,7 +106,7 @@ class Job(models.Model):
 
     class Meta:
         unique_together = (
-            ('user', 'name'),
+            ('user', 'id'),
         )
 
     def __unicode__(self):
@@ -431,7 +431,7 @@ class GalaxyModel(models.Model):
         (THINDISK_OMP, THINDISK_OMP),
         (THINDISK_CUDA, THINDISK_CUDA),
     ]
-    gmodel_type = models.CharField(max_length=12, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
+    gmodel_type = models.CharField(max_length=13, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
 
     EXPONENTIAL = 'exponential'
     FLAT= 'flat'
@@ -1182,7 +1182,7 @@ class Fitter(models.Model):
     nofinitecheck = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
 
     # Multinest properties
-    _is = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
+    multinest_is = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
     mmodal = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
     nlive = models.PositiveIntegerField(blank=True, default=1, validators=[MinValueValidator(1)])
     tol = models.FloatField(blank=True, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT )])
@@ -1220,7 +1220,7 @@ class Fitter(models.Model):
         else:
             return dict(
                     type="gbkfit.fitter." + self.fitter_type,
-                    _is = self._is,
+                    _is = self.multinest_is,
                     mmodal = self.mmodal,
                     nlive = self.nlive,
                     tol = self.tol,

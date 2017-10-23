@@ -92,7 +92,7 @@ def profile(request):
         if form.is_valid():
             data = form.cleaned_data
             form.save()
-            messages.success(request, 'Info successfully updated')
+            messages.success(request, 'Informations successfully updated', 'alert alert-success')
             return render(
                 request,
                 "accounts/profile.html",
@@ -103,7 +103,7 @@ def profile(request):
                 },
             )
         else:
-            messages.error(request, 'Please correct the error(s) below.')
+            messages.error(request, 'Please correct the error(s) below.', 'alert alert-warning')
     else:
         form = EditProfileForm(instance=request.user)
 
