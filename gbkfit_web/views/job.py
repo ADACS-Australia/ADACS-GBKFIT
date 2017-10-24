@@ -235,11 +235,8 @@ def start(request):
     active_tab = START
     active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
 
-<<<<<<< HEAD
     print (disable_other_tabs)
 
-=======
->>>>>>> c3a1b366564e4e11be69dea794948eef4e644e93
     if active_tab == START:
         return render(
             request,
