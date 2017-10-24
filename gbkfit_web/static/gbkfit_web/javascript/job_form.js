@@ -200,6 +200,7 @@ $(document).ready(function() {
             });
         });
 
+
     // Delete a job
     $('body').on('click', '.delete_job',
         function() {

@@ -170,6 +170,7 @@ def act_on_request_method_create(request, active_tab):
 
     else:
         disable_other_tabs = False
+
         if request.method == 'POST' and request.FILES['datafile1']:
             form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request)
             active_tab = save_form(form, request, active_tab)
@@ -234,8 +235,11 @@ def start(request):
     active_tab = START
     active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
 
+<<<<<<< HEAD
     print (disable_other_tabs)
 
+=======
+>>>>>>> c3a1b366564e4e11be69dea794948eef4e644e93
     if active_tab == START:
         return render(
             request,
