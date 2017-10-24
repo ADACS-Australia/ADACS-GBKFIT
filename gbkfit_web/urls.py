@@ -12,15 +12,6 @@ urlpatterns = [
     url(r'^jobs/(?P<id>\d+)/delete', login_required(job_info.delete_job), name='job_delete'),
 
     url(r'^new_job/$', job.start, name='job_start'),
-    url(r'^new_job/dataset$', job.dataset, name='job_dataset'),
-    url(r'^new_job/data_model$', job.data_model, name='job_data_model'),
-    url(r'^new_job/psf$', job.psf, name='job_psf'),
-    url(r'^new_job/lsf$', job.lsf, name='job_lsf'),
-    url(r'^new_job/galaxy_model$', job.galaxy_model, name='job_galaxy_model'),
-    url(r'^new_job/fitter$', job.fitter, name='job_fitter'),
-    url(r'^new_job/params', job.params, name='job_params'),
-    url(r'^new_job/launch$', job.launch, name='job_launch'),
-
     url(r'^new_job/(?P<id>\d+)/$', job.edit_job_name, name='job_name_edit'),
     url(r'^new_job/(?P<id>\d+)/dataset$', job.edit_job_dataset, name='job_dataset_edit'),
     url(r'^new_job/(?P<id>\d+)/data_model$', job.edit_job_data_model, name='job_data_model_edit'),
@@ -29,7 +20,7 @@ urlpatterns = [
     url(r'^new_job/(?P<id>\d+)/galaxy_model$', job.edit_job_galaxy_model, name='job_galaxy_model_edit'),
     url(r'^new_job/(?P<id>\d+)/fitter$', job.edit_job_fitter, name='job_fitter_edit'),
     url(r'^new_job/(?P<id>\d+)/params$', job.edit_job_params, name='job_params_edit'),
-
+    url(r'^new_job/launch$', job.launch, name='job_launch'),
 
     url(r'^register/$', account.registration, name='register'),
     url(r'^verify/$', verify.verify, name='verify'),

@@ -153,74 +153,6 @@ def build_task_json(request):
     JOB CREATION SECTION
 
 """
-
-def act_on_request_method_create(request, active_tab):
-    tab_checker = active_tab
-    disable_other_tabs = True
-
-    if active_tab != DATASET:
-        if request.method == 'POST':
-            form = FORMS_NEW[active_tab](request.POST, request=request)
-            active_tab = save_form(form, request, active_tab)
-            disable_other_tabs = False
-        else:
-            form = FORMS_NEW[active_tab](request=request)
-            if active_tab != START:
-                disable_other_tabs = False
-
-    else:
-        disable_other_tabs = False
-
-        if request.method == 'POST' and request.FILES['datafile1']:
-            form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request)
-            active_tab = save_form(form, request, active_tab)
-        else:
-            form = FORMS_NEW[active_tab]()
-
-            # OTHER TABS
-    if tab_checker != START:
-        start_form = FORMS_NEW[START](request=request)
-    else:
-        start_form = form
-
-    if tab_checker != DATASET:
-        dataset_form = FORMS_NEW[DATASET]()
-    else:
-        dataset_form = form
-
-    if tab_checker != DMODEL:
-        data_model_form = FORMS_NEW[DMODEL]()
-    else:
-        data_model_form = form
-
-    if tab_checker != PSF:
-        psf_form = FORMS_NEW[PSF]()
-    else:
-        psf_form = form
-
-    if tab_checker != LSF:
-        lsf_form = FORMS_NEW[LSF]()
-    else:
-        lsf_form = form
-
-    if tab_checker != GMODEL:
-        galaxy_model_form = FORMS_NEW[GMODEL]()
-    else:
-        galaxy_model_form = form
-
-    if tab_checker != FITTER:
-        fitter_form = FORMS_NEW[FITTER]()
-    else:
-        fitter_form = form
-
-    if tab_checker != PARAMS:
-        params_form = FORMS_NEW[PARAMS]()
-    else:
-        params_form = form
-
-    return active_tab, [start_form, dataset_form, data_model_form, psf_form,
-                        lsf_form, galaxy_model_form, fitter_form, params_form], disable_other_tabs
-
 def save_form(form, request, active_tab):
     if form.is_valid():
         form.save()
@@ -233,9 +165,11 @@ def save_form(form, request, active_tab):
 @login_required
 def start(request):
     active_tab = START
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    print (disable_other_tabs)
+    if request.method == 'POST':
+        form = FORMS_NEW[active_tab](request.POST, request=request)
+        active_tab = save_form(form, request, active_tab)
+    else:
+        form = FORMS_NEW[active_tab](request=request)
 
     if active_tab == START:
         return render(
@@ -243,186 +177,12 @@ def start(request):
             "job/create.html",
             {
                 'active_tab': active_tab,
-                'disable_other_tabs': disable_other_tabs,
-                'start_form': forms[TABS_INDEXES[START]],
-                'dataset_form': forms[TABS_INDEXES[DATASET]],
-                'data_model_form': forms[TABS_INDEXES[DMODEL]],
-                'psf_form': forms[TABS_INDEXES[PSF]],
-                'lsf_form': forms[TABS_INDEXES[LSF]],
-                'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-                'fitter_form': forms[TABS_INDEXES[FITTER]],
-                'params_form': forms[TABS_INDEXES[PARAMS]],
+                'disable_other_tabs': True,
+                'start_form': form,
             }
         )
     else:
         return redirect('job_dataset_edit', id=request.session['draft_job']['id'])
-
-@login_required
-def dataset(request):
-    active_tab = DATASET
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': disable_other_tabs,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def data_model(request):
-    active_tab = DMODEL
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': disable_other_tabs,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def psf(request):
-    active_tab = PSF
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': disable_other_tabs,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def lsf(request):
-    active_tab = LSF
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': disable_other_tabs,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def galaxy_model(request):
-    active_tab = GMODEL
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': disable_other_tabs,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def fitter(request):
-    active_tab = FITTER
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': disable_other_tabs,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def params(request):
-    active_tab = PARAMS
-    active_tab, forms, disable_other_tabs = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': disable_other_tabs,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def launch(request):
-    task_json = build_task_json(request)
-
-    request.session['task'] = task_json
-
-    return HttpResponse(task_json, content_type='application/json')
-
-
-
-
-
 
 """
 
@@ -718,3 +478,11 @@ def edit_job_params(request, id):
             'params_form': forms[TABS_INDEXES[PARAMS]],
         }
     )
+
+@login_required
+def launch(request):
+    task_json = build_task_json(request)
+
+    request.session['task'] = task_json
+
+    return HttpResponse(task_json, content_type='application/json')
