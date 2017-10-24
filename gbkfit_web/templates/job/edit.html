@@ -27,14 +27,14 @@
             {% include 'job/snippets-edit/1_job_start_form.html' %}
         </div>
 
-        <!-- Data Set -->
-        <div id="data-set" class="tab-pane fade{% if active_tab == 'data-set' %} in active{% endif %}">
-            {% include 'job/snippets-edit/2_dataset_form.html' %}
-        </div>
-
         <!-- DModel -->
         <div id="data-model" class="tab-pane fade{% if active_tab == 'data-model' %} in active{% endif %}">
-            {% include 'job/snippets-edit/3_data_model_form.html' %}
+            {% include 'job/snippets-edit/2_data_model_form.html' %}
+        </div>
+
+        <!-- Data Set -->
+        <div id="data-set" class="tab-pane fade{% if active_tab == 'data-set' %} in active{% endif %}">
+            {% include 'job/snippets-edit/3_dataset_form.html' %}
         </div>
 
         <!-- PSF -->

@@ -41,8 +41,8 @@ PARAMS = 'params'
 LAUNCH = 'launch'
 
 TABS = [START,
-        DATASET,
         DMODEL,
+        DATASET,
         PSF,
         LSF,
         GMODEL,
@@ -51,8 +51,8 @@ TABS = [START,
         LAUNCH]
 
 TABS_INDEXES = {START: 0,
-                DATASET: 1,
-                DMODEL: 2,
+                DMODEL: 1,
+                DATASET: 2,
                 PSF: 3,
                 LSF: 4,
                 GMODEL: 5,
@@ -61,8 +61,8 @@ TABS_INDEXES = {START: 0,
                 LAUNCH: 8}
 
 FORMS_NEW = {START: JobInitialForm,
-             DATASET: DataSetForm,
              DMODEL: DataModelForm,
+             DATASET: DataSetForm,
              PSF: PSFForm,
              LSF: LSFForm,
              GMODEL: GalaxyModelForm,
@@ -70,8 +70,8 @@ FORMS_NEW = {START: JobInitialForm,
              PARAMS: ParamsForm}
 
 FORMS_EDIT = {START: EditJobForm,
-              DATASET: EditDataSetForm,
               DMODEL: EditDataModelForm,
+              DATASET: EditDataSetForm,
               PSF: EditPSFForm,
               LSF: EditLSFForm,
               GMODEL: EditGalaxyModelForm,
@@ -79,13 +79,29 @@ FORMS_EDIT = {START: EditJobForm,
               PARAMS: EditParamsForm}
 
 MODELS_EDIT = {START: Job,
-              DATASET: DataSet,
-              DMODEL: DataModel,
-              PSF: PSF_model,
-              LSF: LSF_model,
-              GMODEL: GalaxyModel,
-              FITTER: Fitter_model,
-              PARAMS: Params}
+               DMODEL: DataModel,
+               DATASET: DataSet,
+               PSF: PSF_model,
+               LSF: LSF_model,
+               GMODEL: GalaxyModel,
+               FITTER: Fitter_model,
+               PARAMS: Params}
+
+
+def set_list(l, i, v):
+    """
+    Set a value v at index i in list l.
+    :param l: list
+    :param i: index
+    :param v: value
+    :return: appended list
+    """
+    try:
+        l[i] = v
+    except IndexError:
+        for _ in range(i - len(l) + 1):
+            l.append(None)
+        l[i] = v
 
 def previous_tab(active_tab):
     return TABS[TABS_INDEXES[active_tab] - 1]
@@ -224,6 +240,8 @@ def act_on_request_method_edit(request, active_tab, id):
                 form = FORMS_NEW[active_tab](request=request, id=id)
 
     # OTHER TABS
+    forms = []
+
     if tab_checker != START:
         try:
             start_form = FORMS_EDIT[START](instance=Job.objects.get(id=id))
@@ -232,6 +250,7 @@ def act_on_request_method_edit(request, active_tab, id):
             return redirect('job_start')
     else:
         start_form = form
+    set_list(forms, TABS_INDEXES[START], start_form)
 
     if tab_checker != DATASET:
         try:
@@ -240,6 +259,7 @@ def act_on_request_method_edit(request, active_tab, id):
             dataset_form = FORMS_EDIT[DATASET]()
     else:
         dataset_form = form
+    set_list(forms, TABS_INDEXES[DATASET], dataset_form)
 
     if tab_checker != DMODEL:
         try:
@@ -248,6 +268,7 @@ def act_on_request_method_edit(request, active_tab, id):
             data_model_form = FORMS_EDIT[DMODEL]()
     else:
         data_model_form = form
+    set_list(forms, TABS_INDEXES[DMODEL], data_model_form)
 
     if tab_checker != PSF:
         try:
@@ -256,6 +277,7 @@ def act_on_request_method_edit(request, active_tab, id):
             psf_form = FORMS_EDIT[PSF]()
     else:
         psf_form = form
+    set_list(forms, TABS_INDEXES[PSF], psf_form)
 
     if tab_checker != LSF:
         try:
@@ -264,6 +286,7 @@ def act_on_request_method_edit(request, active_tab, id):
             lsf_form = FORMS_EDIT[LSF]()
     else:
         lsf_form = form
+    set_list(forms, TABS_INDEXES[LSF], lsf_form)
 
     if tab_checker != GMODEL:
         try:
@@ -272,6 +295,7 @@ def act_on_request_method_edit(request, active_tab, id):
             galaxy_model_form = FORMS_EDIT[GMODEL]()
     else:
         galaxy_model_form = form
+    set_list(forms, TABS_INDEXES[GMODEL], galaxy_model_form)
 
     if tab_checker != FITTER:
         try:
@@ -280,6 +304,7 @@ def act_on_request_method_edit(request, active_tab, id):
             fitter_form = FORMS_EDIT[FITTER]()
     else:
         fitter_form = form
+    set_list(forms, TABS_INDEXES[FITTER], fitter_form)
 
     if tab_checker != PARAMS:
         try:
@@ -288,9 +313,9 @@ def act_on_request_method_edit(request, active_tab, id):
             params_form = FORMS_EDIT[PARAMS]()
     else:
         params_form = form
+    set_list(forms, TABS_INDEXES[PARAMS], params_form)
 
-    return active_tab, [start_form, dataset_form, data_model_form, psf_form,
-                        lsf_form, galaxy_model_form, fitter_form, params_form]
+    return active_tab, forms
 
 @login_required
 def edit_job_name(request, id):
@@ -316,8 +341,8 @@ def edit_job_name(request, id):
     )
 
 @login_required
-def edit_job_dataset(request, id):
-    active_tab = DATASET
+def edit_job_data_model(request, id):
+    active_tab = DMODEL
     active_tab, forms = act_on_request_method_edit(request, active_tab, id)
 
     return render(
@@ -339,8 +364,8 @@ def edit_job_dataset(request, id):
     )
 
 @login_required
-def edit_job_data_model(request, id):
-    active_tab = DMODEL
+def edit_job_dataset(request, id):
+    active_tab = DATASET
     active_tab, forms = act_on_request_method_edit(request, active_tab, id)
 
     return render(
