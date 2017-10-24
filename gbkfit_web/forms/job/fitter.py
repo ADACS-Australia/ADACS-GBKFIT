@@ -111,6 +111,7 @@ class FitterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        self.id = kwargs.pop('id', None)
         super(FitterForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -123,12 +124,7 @@ class FitterForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        try:
-            id = self.request.session['draft_job']['id']
-        except:
-            id = self.request.user.id
-
-        job = Job.objects.get(id=id)
+        job = Job.objects.get(id=self.id)
 
         try:
             result = Fitter.objects.create(

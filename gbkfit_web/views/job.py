@@ -205,12 +205,12 @@ def act_on_request_method_edit(request, active_tab, id):
                 form = FORMS_EDIT[active_tab](request.POST, instance=MODELS_EDIT[active_tab].objects.get(job_id=id))
             except:
                 if active_tab != DATASET:
-                    form = FORMS_NEW[active_tab](request.POST, request=request)
+                    form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
                 else:
                     if request.FILES['datafile1']:
-                        form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request)
+                        form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
                     else:
-                        form = FORMS_NEW[active_tab]()
+                        form = FORMS_NEW[active_tab](request=request, id=id)
 
         active_tab = save_form(form, request, active_tab)
 
@@ -221,10 +221,7 @@ def act_on_request_method_edit(request, active_tab, id):
             try:
                 form = FORMS_EDIT[active_tab](instance=MODELS_EDIT[active_tab].objects.get(job_id=id))
             except:
-                if active_tab != DATASET:
-                    form = FORMS_NEW[active_tab](request=request)
-                else:
-                    form = FORMS_NEW[active_tab]()
+                form = FORMS_NEW[active_tab](request=request, id=id)
 
     # OTHER TABS
     if tab_checker != START:
