@@ -1,6 +1,9 @@
 <form action="{% url 'job_dataset_edit' id=job_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% include 'job/snippets-actions/pager.html' %}
+
+    {% include 'job/snippets/errors.html' %}
+
+    {% include 'job/snippets/pager.html' %}
 
     {% for field in dataset_form %}
 
@@ -24,7 +27,7 @@
         </div>
     {% endfor %}
 
-    {% include 'job/snippets-actions/pager.html' %}
+    {% include 'job/snippets/pager.html' %}
 </form>
 {% if uploaded_file_url %}
     <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>

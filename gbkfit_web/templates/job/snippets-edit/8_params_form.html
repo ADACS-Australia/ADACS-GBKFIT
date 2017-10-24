@@ -1,6 +1,9 @@
 <form action="{% url 'job_params_edit' id=job_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% include 'job/snippets-actions/pager.html' %}
+
+    {% include 'job/snippets/errors.html' %}
+
+    {% include 'job/snippets/pager.html' %}
 
     {% for field in params_form %}
         {% if not forloop.first and forloop.counter0|divisibleby:8 %}
@@ -14,7 +17,7 @@
         {% endif %}
             <div class="col-md-6
                     {% if field.name == 'outfile' %}hidden{% endif %}
-                    {% if field.errors %}error{% endif %}
+                    {% if field.errors %}alert-danger{% endif %}
                     div-{{ field.name }}
                     ">
                 <!-- Label -->
@@ -25,7 +28,6 @@
                 <!-- Field -->
                 <div>
                     {{ field }}
-                    {{ field.errors }}
                 </div>
             </div>
         {% if forloop.last %}
@@ -33,5 +35,5 @@
         {% endif %}
     {% endfor %}
 
-    {% include 'job/snippets-actions/pager.html' %}
+    {% include 'job/snippets/pager.html' %}
 </form>

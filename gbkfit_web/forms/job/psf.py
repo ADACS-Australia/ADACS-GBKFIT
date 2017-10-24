@@ -47,7 +47,11 @@ class PSFForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
+        try:
+            id = self.request.session['draft_job']['id']
+        except:
+            id = self.request.user.id
+
         job = Job.objects.get(id=id)
 
         try:

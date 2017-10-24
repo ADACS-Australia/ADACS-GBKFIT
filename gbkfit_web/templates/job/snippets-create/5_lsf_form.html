@@ -1,6 +1,9 @@
 <form action="{% url 'job_lsf' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% include 'job/snippets-actions/pager.html' %}
+
+    {% include 'job/snippets/errors.html' %}
+
+    {% include 'job/snippets/pager.html' %}
 
     {% for field in lsf_form %}
 
@@ -24,5 +27,5 @@
         </div>
     {% endfor %}
 
-    {% include 'job/snippets-actions/pager.html' %}
+    {% include 'job/snippets/pager.html' %}
 </form>

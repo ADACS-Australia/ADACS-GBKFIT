@@ -59,11 +59,15 @@ class DataModelForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
+        try:
+            id = self.request.session['draft_job']['id']
+        except:
+            id = self.request.user.id
+
         job = Job.objects.get(id=id)
 
         try:
-            result = DataModel.objects.create(
+            DataModel.objects.create(
                 job=job,
                 dmodel_type=data.get('dmodel_type'),
                 method=data.get('method'),
@@ -75,7 +79,7 @@ class DataModelForm(forms.ModelForm):
                 step_z=data.get('step_z'),
             )
         except:
-            result = DataModel.objects.filter(job_id=id).update(
+            DataModel.objects.filter(job_id=id).update(
                 dmodel_type=data.get('dmodel_type'),
                 method=data.get('method'),
                 scale_x=data.get('scale_x'),

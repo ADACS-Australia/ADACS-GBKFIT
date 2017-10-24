@@ -36,13 +36,13 @@ WIDGETS = {
     'maxfev': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'nprint': forms.TextInput(
+    'nprint': forms.Select(
         attrs={'class': 'form-control'},
     ),
-    'douserscale': forms.TextInput(
+    'douserscale': forms.Select(
         attrs={'class': 'form-control'},
     ),
-    'nofinitecheck': forms.TextInput(
+    'nofinitecheck': forms.Select(
         attrs={'class': 'form-control'},
     ),
     'efr': forms.TextInput(
@@ -57,13 +57,13 @@ WIDGETS = {
     'logzero': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'multinest_is': forms.TextInput(
+    'multinest_is': forms.Select(
         attrs={'class': 'form-control'},
     ),
-    'mmodal': forms.TextInput(
+    'mmodal': forms.Select(
         attrs={'class': 'form-control'},
     ),
-    'ceff': forms.TextInput(
+    'ceff': forms.Select(
         attrs={'class': 'form-control'},
     ),
     'nlive': forms.TextInput(
@@ -75,7 +75,7 @@ WIDGETS = {
     'seed': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'outfile': forms.TextInput(
+    'outfile': forms.Select(
         attrs={'class': 'form-control'},
     ),
 }
@@ -123,7 +123,11 @@ class FitterForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
+        try:
+            id = self.request.session['draft_job']['id']
+        except:
+            id = self.request.user.id
+
         job = Job.objects.get(id=id)
 
         try:

@@ -1,0 +1,95 @@
+{% if start_form.non_field_errors %}
+    {% for error in start_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if upload_form.non_field_errors %}
+    {% for error in upload_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if data_model_form.non_field_errors %}
+    {% for error in data_model_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if psf_form.non_field_errors %}
+    {% for error in psf_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if lsf_form.non_field_errors %}
+    {% for error in lsf_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if galaxy_model_form.non_field_errors %}
+    {% for error in galaxy_model_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if fitter_form.non_field_errors %}
+    {% for error in fitter_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if params_form.non_field_errors %}
+    {% for error in params_form.non_field_errors %}
+        <div class="container-fluid field">
+            <ul class="messages">
+                <div class="alert alert-danger">
+                    {{ error|escape }}
+                </div>
+            </ul>
+        </div>
+    {% endfor %}
+{% endif %}

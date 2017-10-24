@@ -1,7 +1,10 @@
 <form action="{% url 'job_galaxy_model' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% include 'job/snippets-actions/pager.html' %}
-{#    {{ galaxy_model_form.as_p }}#}
+
+    {% include 'job/snippets/errors.html' %}
+
+    {% include 'job/snippets/pager.html' %}
+
     {% for field in galaxy_model_form %}
 
         <div class="container-fluid field
@@ -26,5 +29,5 @@
         </div>
     {% endfor %}
 
-    {% include 'job/snippets-actions/pager.html' %}
+    {% include 'job/snippets/pager.html' %}
 </form>
