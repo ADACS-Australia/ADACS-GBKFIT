@@ -1,6 +1,9 @@
 <form action="{% url 'job_fitter' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% include 'job/snippets-actions/pager.html' %}
+
+    {% include 'job/snippets/errors.html' %}
+
+    {% include 'job/snippets/pager.html' %}
 
     <!-- 'type' -->
     <div class="container-fluid field
@@ -400,5 +403,6 @@
         </div>
     </div>
 
-    {% include 'job/snippets-actions/pager.html' %}
+
+    {% include 'job/snippets/pager.html' %}
 </form>

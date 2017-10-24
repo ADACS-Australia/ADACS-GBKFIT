@@ -468,6 +468,8 @@ LABELS = {
 
 
 class ParamsForm(forms.ModelForm):
+    prefixes = ['i0', 'r0', 'xo', 'yo', 'pa', 'incl', 'rt', 'vt', 'vsys', 'vsig']
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super(ParamsForm, self).__init__(*args, **kwargs)
@@ -478,12 +480,15 @@ class ParamsForm(forms.ModelForm):
         widgets = WIDGETS
         labels = LABELS
 
-
     def save(self):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
+        try:
+            id = self.request.session['draft_job']['id']
+        except:
+            id = self.request.user.id
+
         job = Job.objects.get(id=id)
 
         try:

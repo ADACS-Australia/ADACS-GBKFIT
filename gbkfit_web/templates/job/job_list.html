@@ -5,8 +5,8 @@
 {% endblock page_header %}
 
 {% block content %}
-
-    <table class="table">
+    {% csrf_token %}
+    <table class="table" id="table_jobs">
     <thead>
         <tr>
             <th>ID</th>
@@ -36,7 +36,8 @@
                 <td>{{ job.status }}</td>
                 <td>
                     {% if job.status == job.DRAFT %}
-                        <a href="{% url 'job_name_edit' id=job.id %}"><span class="glyphicon glyphicon-pencil"></span>Continue</a>
+                        <a href="{% url 'job_name_edit' id=job.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="" id="delete_job_{{ job.id }}" class="delete_job" job_name="{{ job.name }}" job_id="{{ job.id }}"><span class="glyphicon glyphicon-trash"></span></a>
                      {% endif %}
                 </td>
             </tr>
@@ -50,32 +51,6 @@
             </tr>
         {% endfor %}
     </tbody>
-  </table>
+    </table>
 
 {% endblock content %}
-
-{#<tr class="success">#}
-{#    <td>Success</td>#}
-{#    <td>Doe</td>#}
-{#    <td>john@example.com</td>#}
-{#</tr>#}
-{#<tr class="danger">#}
-{#    <td>Danger</td>#}
-{#    <td>Moe</td>#}
-{#    <td>mary@example.com</td>#}
-{#</tr>#}
-{#<tr class="info">#}
-{#    <td>Info</td>#}
-{#    <td>Dooley</td>#}
-{#    <td>july@example.com</td>#}
-{#</tr>#}
-{#<tr class="warning">#}
-{#    <td>Warning</td>#}
-{#    <td>Refs</td>#}
-{#    <td>bo@example.com</td>#}
-{#</tr>#}
-{#<tr class="active">#}
-{#    <td>Active</td>#}
-{#    <td>Activeson</td>#}
-{#    <td>act@example.com</td>#}
-{#</tr>#}
