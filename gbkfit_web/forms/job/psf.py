@@ -35,6 +35,7 @@ class PSFForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        self.id = kwargs.pop('id', None)
         super(PSFForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -47,26 +48,17 @@ class PSFForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
-        job = Job.objects.get(id=id)
+        job = Job.objects.get(id=self.id)
 
-        try:
-            result = PSF.objects.create(
-                job=job,
-                psf_type=data.get('psf_type'),
-                fwhm_x=data.get('fwhm_x'),
-                fwhm_y=data.get('fwhm_y'),
-                pa=data.get('pa'),
-                beta=data.get('beta'),
-            )
-        except:
-            result = PSF.objects.filter(job_id=id).update(
-                psf_type=data.get('psf_type'),
-                fwhm_x=data.get('fwhm_x'),
-                fwhm_y=data.get('fwhm_y'),
-                pa=data.get('pa'),
-                beta=data.get('beta'),
-            )
+        PSF.objects.create(
+            job=job,
+            psf_type=data.get('psf_type'),
+            fwhm_x=data.get('fwhm_x'),
+            fwhm_y=data.get('fwhm_y'),
+            pa=data.get('pa'),
+            beta=data.get('beta'),
+        )
+
         self.request.session['psf'] = self.as_json(data)
         
     def as_json(self, data):

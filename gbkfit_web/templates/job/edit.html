@@ -2,8 +2,8 @@
 
 {% block info-bar %}
 {#    <div class="page-header">Infobar</div>#}
-    {% if request.session.draft_job %}<p>Job: {{ request.session.draft_job }}</p>{% endif %}
-    {{ request.session.draft_job.id }}
+{#    {% if request.session.draft_job %}<p>Job: {{ request.session.draft_job }}</p>{% endif %}#}
+{#    {{ request.session.draft_job.id }}#}
 {#    {% if request.session.dataset %} <p>Dataset: {{ request.session.dataset }}</p>{% endif %}#}
 {#    {% if request.session.data_model %} <p>Data model: {{ request.session.data_model }}</p>{% endif %}#}
 {#    {% if request.session.psf %} <p>PSF: {{ request.session.psf }}</p>{% endif %}#}
@@ -14,11 +14,11 @@
 {% endblock info-bar %}
 
 {% block page_header %}
-    Edit Job Details
+    New Job
 {% endblock page_header %}
 
 {% block content %}
-    {% include 'job/snippets-actions/job-tabs.html' %}
+    {% include 'job/snippets/job-tabs.html' %}
 
     <div class="tab-content" id="job-tabs">
 
@@ -27,14 +27,14 @@
             {% include 'job/snippets-edit/1_job_start_form.html' %}
         </div>
 
-        <!-- Data Set -->
-        <div id="data-set" class="tab-pane fade{% if active_tab == 'data-set' %} in active{% endif %}">
-            {% include 'job/snippets-edit/2_dataset_form.html' %}
-        </div>
-
         <!-- DModel -->
         <div id="data-model" class="tab-pane fade{% if active_tab == 'data-model' %} in active{% endif %}">
-            {% include 'job/snippets-edit/3_data_model_form.html' %}
+            {% include 'job/snippets-edit/2_data_model_form.html' %}
+        </div>
+
+        <!-- Data Set -->
+        <div id="data-set" class="tab-pane fade{% if active_tab == 'data-set' %} in active{% endif %}">
+            {% include 'job/snippets-edit/3_dataset_form.html' %}
         </div>
 
         <!-- PSF -->
@@ -64,10 +64,7 @@
 
         <!-- Launch -->
         <div id="launch" class="tab-pane fade{% if active_tab == 'launch' %} in active{% endif %}">
-            <form action="{% url 'job_launch' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input class="btn btn-primary" type="submit" value="Launch job" />
-            </form>
+            {% include 'job/snippets-edit/9_launch_form.html' %}
         </div>
     </div>
 {% endblock content %}

@@ -47,6 +47,7 @@ class DataModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        self.id = kwargs.pop('id', None)
         super(DataModelForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -59,32 +60,19 @@ class DataModelForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
-        job = Job.objects.get(id=id)
+        job = Job.objects.get(id=self.id)
 
-        try:
-            result = DataModel.objects.create(
-                job=job,
-                dmodel_type=data.get('dmodel_type'),
-                method=data.get('method'),
-                scale_x=data.get('scale_x'),
-                scale_y=data.get('scale_y'),
-                scale_z=data.get('scale_z'),
-                step_x=data.get('step_x'),
-                step_y=data.get('step_y'),
-                step_z=data.get('step_z'),
-            )
-        except:
-            result = DataModel.objects.filter(job_id=id).update(
-                dmodel_type=data.get('dmodel_type'),
-                method=data.get('method'),
-                scale_x=data.get('scale_x'),
-                scale_y=data.get('scale_y'),
-                scale_z=data.get('scale_z'),
-                step_x=data.get('step_x'),
-                step_y=data.get('step_y'),
-                step_z=data.get('step_z'),
-            )
+        DataModel.objects.create(
+            job=job,
+            dmodel_type=data.get('dmodel_type'),
+            method=data.get('method'),
+            scale_x=data.get('scale_x'),
+            scale_y=data.get('scale_y'),
+            scale_z=data.get('scale_z'),
+            step_x=data.get('step_x'),
+            step_y=data.get('step_y'),
+            step_z=data.get('step_z'),
+        )
         self.request.session['data_model'] = self.as_json(data)
 
     def as_json(self, data):

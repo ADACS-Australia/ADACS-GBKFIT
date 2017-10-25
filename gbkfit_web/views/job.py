@@ -26,7 +26,7 @@ from gbkfit_web.models import (
 
 """
 
-    UTILITY SECTION
+    UTILITIES SECTION
 
 """
 
@@ -41,8 +41,8 @@ PARAMS = 'params'
 LAUNCH = 'launch'
 
 TABS = [START,
-        DATASET,
         DMODEL,
+        DATASET,
         PSF,
         LSF,
         GMODEL,
@@ -51,8 +51,8 @@ TABS = [START,
         LAUNCH]
 
 TABS_INDEXES = {START: 0,
-                DATASET: 1,
-                DMODEL: 2,
+                DMODEL: 1,
+                DATASET: 2,
                 PSF: 3,
                 LSF: 4,
                 GMODEL: 5,
@@ -61,8 +61,8 @@ TABS_INDEXES = {START: 0,
                 LAUNCH: 8}
 
 FORMS_NEW = {START: JobInitialForm,
-             DATASET: DataSetForm,
              DMODEL: DataModelForm,
+             DATASET: DataSetForm,
              PSF: PSFForm,
              LSF: LSFForm,
              GMODEL: GalaxyModelForm,
@@ -70,8 +70,8 @@ FORMS_NEW = {START: JobInitialForm,
              PARAMS: ParamsForm}
 
 FORMS_EDIT = {START: EditJobForm,
-              DATASET: EditDataSetForm,
               DMODEL: EditDataModelForm,
+              DATASET: EditDataSetForm,
               PSF: EditPSFForm,
               LSF: EditLSFForm,
               GMODEL: EditGalaxyModelForm,
@@ -79,13 +79,29 @@ FORMS_EDIT = {START: EditJobForm,
               PARAMS: EditParamsForm}
 
 MODELS_EDIT = {START: Job,
-              DATASET: DataSet,
-              DMODEL: DataModel,
-              PSF: PSF_model,
-              LSF: LSF_model,
-              GMODEL: GalaxyModel,
-              FITTER: Fitter_model,
-              PARAMS: Params}
+               DMODEL: DataModel,
+               DATASET: DataSet,
+               PSF: PSF_model,
+               LSF: LSF_model,
+               GMODEL: GalaxyModel,
+               FITTER: Fitter_model,
+               PARAMS: Params}
+
+
+def set_list(l, i, v):
+    """
+    Set a value v at index i in list l.
+    :param l: list
+    :param i: index
+    :param v: value
+    :return: appended list
+    """
+    try:
+        l[i] = v
+    except IndexError:
+        for _ in range(i - len(l) + 1):
+            l.append(None)
+        l[i] = v
 
 def previous_tab(active_tab):
     return TABS[TABS_INDEXES[active_tab] - 1]
@@ -116,7 +132,11 @@ def set_job_menu(request, id=None):
         )
 
 def build_task_json(request):
-    id = request.session['draft_job']['id']
+    try:
+        id = request.session['draft_job']['id']
+    except:
+        id = request.user.id
+
     job = Job.objects.get(id=id)
     dataset = DataSet.objects.get(job_id=id)
     dmodel = DataModel.objects.get(job_id=id)
@@ -146,70 +166,9 @@ def build_task_json(request):
 
 """
 
-    JOB CREATION SECTION
+    JOB CREATION/EDITING  SECTION
 
 """
-
-def act_on_request_method_create(request, active_tab):
-    tab_checker = active_tab
-
-    if active_tab != DATASET:
-        if request.method == 'POST':
-            form = FORMS_NEW[active_tab](request.POST, request=request)
-            active_tab = save_form(form, request, active_tab)
-        else:
-            form = FORMS_NEW[active_tab](request=request)
-    else:
-        if request.method == 'POST' and request.FILES['datafile1']:
-            form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request)
-            active_tab = save_form(form, request, active_tab)
-        else:
-            form = FORMS_NEW[active_tab]()
-
-            # OTHER TABS
-    if tab_checker != START:
-        start_form = FORMS_NEW[START](request=request)
-    else:
-        start_form = form
-
-    if tab_checker != DATASET:
-        dataset_form = FORMS_NEW[DATASET]()
-    else:
-        dataset_form = form
-
-    if tab_checker != DMODEL:
-        data_model_form = FORMS_NEW[DMODEL]()
-    else:
-        data_model_form = form
-
-    if tab_checker != PSF:
-        psf_form = FORMS_NEW[PSF]()
-    else:
-        psf_form = form
-
-    if tab_checker != LSF:
-        lsf_form = FORMS_NEW[LSF]()
-    else:
-        lsf_form = form
-
-    if tab_checker != GMODEL:
-        galaxy_model_form = FORMS_NEW[GMODEL]()
-    else:
-        galaxy_model_form = form
-
-    if tab_checker != FITTER:
-        fitter_form = FORMS_NEW[FITTER]()
-    else:
-        fitter_form = form
-
-    if tab_checker != PARAMS:
-        params_form = FORMS_NEW[PARAMS]()
-    else:
-        params_form = form
-
-    return active_tab, [start_form, dataset_form, data_model_form, psf_form,
-                        lsf_form, galaxy_model_form, fitter_form, params_form]
-
 def save_form(form, request, active_tab):
     if form.is_valid():
         form.save()
@@ -218,201 +177,6 @@ def save_form(form, request, active_tab):
         if 'previous' in request.POST:
             active_tab = previous_tab(active_tab)
     return active_tab
-
-@login_required
-def start(request):
-    active_tab = START
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': True,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def dataset(request):
-    active_tab = DATASET
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def data_model(request):
-    active_tab = DMODEL
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def psf(request):
-    active_tab = PSF
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def lsf(request):
-    active_tab = LSF
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def galaxy_model(request):
-    active_tab = GMODEL
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def fitter(request):
-    active_tab = FITTER
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def params(request):
-    active_tab = PARAMS
-    active_tab, forms = act_on_request_method_create(request, active_tab)
-
-    return render(
-        request,
-        "job/create.html",
-        {
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
-        }
-    )
-
-@login_required
-def launch(request):
-    task_json = build_task_json(request)
-
-    request.session['task'] = task_json
-
-    return HttpResponse(task_json, content_type='application/json')
-
-
-
-
-
-
-"""
-
-    JOB EDITING SECTION
-
-"""  
 
 def act_on_request_method_edit(request, active_tab, id):
     # JobInitialForm.base_fields['job'] = set_job_menu(request, id)
@@ -429,15 +193,12 @@ def act_on_request_method_edit(request, active_tab, id):
                 form = FORMS_EDIT[active_tab](request.POST, instance=MODELS_EDIT[active_tab].objects.get(job_id=id))
             except:
                 if active_tab != DATASET:
-                    if request.method == 'POST':
-                        form = FORMS_NEW[active_tab](request.POST, request=request)
-                    else:
-                        form = FORMS_NEW[active_tab](request=request)
+                    form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
                 else:
-                    if request.method == 'POST' and request.FILES['datafile1']:
-                        form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request)
+                    if request.FILES['datafile1']:
+                        form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
                     else:
-                        form = FORMS_NEW[active_tab]()
+                        form = FORMS_NEW[active_tab](request=request, id=id)
 
         active_tab = save_form(form, request, active_tab)
 
@@ -445,9 +206,14 @@ def act_on_request_method_edit(request, active_tab, id):
         if active_tab == START:
             form = FORMS_EDIT[active_tab](instance=MODELS_EDIT[active_tab].objects.get(id=id))
         else:
-            form = FORMS_EDIT[active_tab](instance=MODELS_EDIT[active_tab].objects.get(job_id=id))
+            try:
+                form = FORMS_EDIT[active_tab](instance=MODELS_EDIT[active_tab].objects.get(job_id=id))
+            except:
+                form = FORMS_NEW[active_tab](request=request, id=id)
 
     # OTHER TABS
+    forms = []
+
     if tab_checker != START:
         try:
             start_form = FORMS_EDIT[START](instance=Job.objects.get(id=id))
@@ -456,6 +222,7 @@ def act_on_request_method_edit(request, active_tab, id):
             return redirect('job_start')
     else:
         start_form = form
+    set_list(forms, TABS_INDEXES[START], start_form)
 
     if tab_checker != DATASET:
         try:
@@ -464,6 +231,7 @@ def act_on_request_method_edit(request, active_tab, id):
             dataset_form = FORMS_EDIT[DATASET]()
     else:
         dataset_form = form
+    set_list(forms, TABS_INDEXES[DATASET], dataset_form)
 
     if tab_checker != DMODEL:
         try:
@@ -472,6 +240,7 @@ def act_on_request_method_edit(request, active_tab, id):
             data_model_form = FORMS_EDIT[DMODEL]()
     else:
         data_model_form = form
+    set_list(forms, TABS_INDEXES[DMODEL], data_model_form)
 
     if tab_checker != PSF:
         try:
@@ -480,6 +249,7 @@ def act_on_request_method_edit(request, active_tab, id):
             psf_form = FORMS_EDIT[PSF]()
     else:
         psf_form = form
+    set_list(forms, TABS_INDEXES[PSF], psf_form)
 
     if tab_checker != LSF:
         try:
@@ -488,6 +258,7 @@ def act_on_request_method_edit(request, active_tab, id):
             lsf_form = FORMS_EDIT[LSF]()
     else:
         lsf_form = form
+    set_list(forms, TABS_INDEXES[LSF], lsf_form)
 
     if tab_checker != GMODEL:
         try:
@@ -496,6 +267,7 @@ def act_on_request_method_edit(request, active_tab, id):
             galaxy_model_form = FORMS_EDIT[GMODEL]()
     else:
         galaxy_model_form = form
+    set_list(forms, TABS_INDEXES[GMODEL], galaxy_model_form)
 
     if tab_checker != FITTER:
         try:
@@ -504,6 +276,7 @@ def act_on_request_method_edit(request, active_tab, id):
             fitter_form = FORMS_EDIT[FITTER]()
     else:
         fitter_form = form
+    set_list(forms, TABS_INDEXES[FITTER], fitter_form)
 
     if tab_checker != PARAMS:
         try:
@@ -512,9 +285,31 @@ def act_on_request_method_edit(request, active_tab, id):
             params_form = FORMS_EDIT[PARAMS]()
     else:
         params_form = form
+    set_list(forms, TABS_INDEXES[PARAMS], params_form)
 
-    return active_tab, [start_form, dataset_form, data_model_form, psf_form,
-                        lsf_form, galaxy_model_form, fitter_form, params_form]
+    return active_tab, forms
+
+@login_required
+def start(request):
+    active_tab = START
+    if request.method == 'POST':
+        form = FORMS_NEW[active_tab](request.POST, request=request)
+        active_tab = save_form(form, request, active_tab)
+    else:
+        form = FORMS_NEW[active_tab](request=request)
+
+    if active_tab == START:
+        return render(
+            request,
+            "job/create.html",
+            {
+                'active_tab': active_tab,
+                'disable_other_tabs': True,
+                'start_form': form,
+            }
+        )
+    else:
+        return redirect('job_dataset_edit', id=request.session['draft_job']['id'])
 
 @login_required
 def edit_job_name(request, id):
@@ -540,8 +335,8 @@ def edit_job_name(request, id):
     )
 
 @login_required
-def edit_job_dataset(request, id):
-    active_tab = DATASET
+def edit_job_data_model(request, id):
+    active_tab = DMODEL
     active_tab, forms = act_on_request_method_edit(request, active_tab, id)
 
     return render(
@@ -563,8 +358,8 @@ def edit_job_dataset(request, id):
     )
 
 @login_required
-def edit_job_data_model(request, id):
-    active_tab = DMODEL
+def edit_job_dataset(request, id):
+    active_tab = DATASET
     active_tab, forms = act_on_request_method_edit(request, active_tab, id)
 
     return render(
@@ -699,3 +494,11 @@ def edit_job_params(request, id):
             'params_form': forms[TABS_INDEXES[PARAMS]],
         }
     )
+
+@login_required
+def launch(request):
+    task_json = build_task_json(request)
+
+    request.session['task'] = task_json
+
+    return HttpResponse(task_json, content_type='application/json')

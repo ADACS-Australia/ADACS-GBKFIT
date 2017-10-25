@@ -27,6 +27,7 @@ class GalaxyModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        self.id = kwargs.pop('id', None)
         super(GalaxyModelForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -39,22 +40,14 @@ class GalaxyModelForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
-        job = Job.objects.get(id=id)
+        job = Job.objects.get(id=self.id)
 
-        try:
-            result = GalaxyModel.objects.create(
-                job=job,
-                gmodel_type=data.get('gmodel_type'),
-                flx_profile=data.get('flx_profile'),
-                vel_profile=data.get('vel_profile'),
-            )
-        except:
-            result = GalaxyModel.objects.filter(job_id=id).update(
-                gmodel_type=data.get('gmodel_type'),
-                flx_profile=data.get('flx_profile'),
-                vel_profile=data.get('vel_profile'),
-            )
+        GalaxyModel.objects.create(
+            job=job,
+            gmodel_type=data.get('gmodel_type'),
+            flx_profile=data.get('flx_profile'),
+            vel_profile=data.get('vel_profile'),
+        )
 
         self.request.session['fitter'] = self.as_json(data)
 

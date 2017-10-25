@@ -27,6 +27,7 @@ class LSFForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
+        self.id = kwargs.pop('id', None)
         super(LSFForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -39,22 +40,14 @@ class LSFForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        id = self.request.session['draft_job']['id']
-        job = Job.objects.get(id=id)
+        job = Job.objects.get(id=self.id)
 
-        try:
-            result = LSF.objects.create(
-                job=job,
-                lsf_type=data.get('lsf_type'),
-                fwhm=data.get('fwhm'),
-                beta=data.get('beta'),
-            )
-        except:
-            result = LSF.objects.filter(job_id=id).update(
-                lsf_type=data.get('lsf_type'),
-                fwhm=data.get('fwhm'),
-                beta=data.get('beta'),
-            )
+        LSF.objects.create(
+            job=job,
+            lsf_type=data.get('lsf_type'),
+            fwhm=data.get('fwhm'),
+            beta=data.get('beta'),
+        )
 
         self.request.session['lsf'] = self.as_json(data)
 

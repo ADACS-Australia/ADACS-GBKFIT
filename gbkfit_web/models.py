@@ -6,6 +6,8 @@ import django.contrib.auth.models as auth_models
 from django.db import models
 from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001 
 
@@ -277,6 +279,40 @@ class DataModel(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
+    def clean(self):
+        errors = []
+
+        if self.scale_x <= 0:
+            errors.append(ValidationError({'scale_x':
+                                               ['Scale X: Accepted values: unsigned non-zero integer value.']}))
+
+        if self.scale_y <= 0:
+            errors.append(ValidationError({'scale_y':
+                                               ['Scale Y: Accepted values: unsigned non-zero integer value.']}))
+
+        if self.scale_z <= 0:
+            errors.append(ValidationError({'scale_z':
+                                               ['Scale Z: Accepted values: unsigned non-zero integer value.']}))
+
+        if self.step_x <= 0:
+            errors.append(ValidationError({'step_x':
+                                               ['Step X: Accepted values: unsigned non-zero value.']}))
+
+        if self.step_y <= 0:
+            errors.append(ValidationError({'step_y':
+                                               ['Step Y: Accepted values: unsigned non-zero value.']}))
+
+        if self.step_z <= 0:
+            errors.append(ValidationError({'step_z':
+                                               ['Step: Accepted values: unsigned non-zero value.']}))
+
+        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        DataModel.full_clean(self)
+        super(DataModel, self).save(*args, **kwargs)
+
     def as_json(self):
         if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
             return dict(
@@ -319,13 +355,35 @@ class PSF(models.Model):
     ]
     psf_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
 
-    fwhm_x = models.FloatField(blank=False, default=1.)
-    fwhm_y = models.FloatField(blank=False, default=1.)
+    fwhm_x = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    fwhm_y = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     pa = models.IntegerField(blank=False, default=1)
     # If Moffat, need to figure out how to require the following field.
-    beta = models.FloatField(blank=False, default=1.)
+    beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
 
     creation_time = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        errors = []
+
+        if self.fwhm_x <= 0.:
+            errors.append(ValidationError({'fwhm_x':
+                                               ['FWHM X: Accepted values: positive non-zero value.']}))
+
+        if self.fwhm_y <= 0.:
+            errors.append(ValidationError({'fwhm_y':
+                                               ['FWHM Y: Accepted values: positive non-zero value.']}))
+
+        if self.beta <= 0.:
+            errors.append(ValidationError({'fwhm':
+                                               ['FWHM: Accepted values: positive non-zero value.']}))
+
+        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        PSF.full_clean(self)
+        super(PSF, self).save(*args, **kwargs)
 
     def as_json(self):
         if self.psf_type in [self.MOFFAT]:
@@ -371,11 +429,29 @@ class LSF(models.Model):
     ]
     lsf_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
 
-    fwhm = models.FloatField(blank=False, default=1.)
+    fwhm = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     # If Moffat, need to figure out how to require the following field.
-    beta = models.FloatField(blank=False, default=1.)
+    beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
 
     creation_time = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        errors = []
+
+        if self.fwhm <= 0.:
+            errors.append(ValidationError({'fwhm':
+                                               ['FWHM: Accepted values: positive non-zero value.']}))
+
+        if self.beta <= 0.:
+            errors.append(ValidationError({'fwhm':
+                                               ['FWHM: Accepted values: positive non-zero value.']}))
+
+        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        LSF.full_clean(self)
+        super(LSF, self).save(*args, **kwargs)
 
     def as_json(self):
         if self.lsf_type in [self.MOFFAT]:
@@ -581,6 +657,94 @@ class ParameterSet(models.Model):
     vsig_side = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(3)])
 
     creation_time = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        errors = []
+        # i0
+        if self.i0_fixed == 1:
+            if self.i0_min > self.i0_max:
+                errors.append(ValidationError({'i0_min': ['i0: Minimum must be a smaller value than the maximum.']}))
+            elif self.i0_value < self.i0_min or self.i0_value > self.i0_max:
+                errors.append(ValidationError({'i0_value': ['i0: Value must be within range set by minimum and maximum.']}))
+
+        # r0
+        if self.r0_fixed == 1:
+            if self.r0_min > self.r0_max:
+                errors.append(ValidationError({'r0_min': ['r0: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.r0_value < self.r0_min or self.r0_value > self.r0_max:
+                errors.append(ValidationError({'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
+
+        # xo
+        if self.xo_fixed == 1:
+            if self.xo_min > self.xo_max:
+                errors.append(ValidationError({'xo_min': ['xo: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.xo_value < self.xo_min or self.xo_value > self.xo_max:
+                errors.append(ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
+
+        # yo
+        if self.yo_fixed == 1:
+            if self.yo_min > self.yo_max:
+                errors.append(ValidationError({'yo_min': ['yo: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.yo_value < self.yo_min or self.yo_value > self.yo_max:
+                errors.append(ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
+
+        # pa
+        if self.pa_fixed == 1:
+            if self.pa_min > self.pa_max:
+                errors.append(ValidationError({'pa_min': ['pa: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.pa_value < self.pa_min or self.pa_value > self.pa_max:
+                errors.append(ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
+
+        # incl
+        if self.incl_fixed == 1:
+            if self.incl_min > self.incl_max:
+                errors.append(ValidationError({'incl_min': ['incl: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.incl_value < self.incl_min or self.incl_value > self.incl_max:
+                errors.append(ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
+
+        # rt
+        if self.rt_fixed == 1:
+            if self.rt_min > self.rt_max:
+                errors.append(ValidationError({'rt_min': ['rt: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.rt_value < self.rt_min or self.rt_value > self.rt_max:
+                errors.append(ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
+
+        # vt
+        if self.vt_fixed == 1:
+            if self.vt_min > self.vt_max:
+                errors.append(ValidationError({'vt_min': ['vt: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.vt_value < self.vt_min or self.vt_value > self.vt_max:
+                errors.append(ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
+
+        # vsys
+        if self.vsys_fixed == 1:
+            if self.vsys_min > self.vsys_max:
+                errors.append(ValidationError({'vsys_min': ['vsys: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.vsys_value < self.vsys_min or self.vsys_value > self.vsys_max:
+                errors.append(ValidationError({'vsys_value': ['vsys: Value must be within range set by minimum and maximum.']}))
+
+        # vsig
+        if self.vsig_fixed == 1:
+            if self.vsig_min > self.vsig_max:
+                errors.append(ValidationError({'vsig_min': ['vsig: Minimum must be a smaller value than the maximum.']}))
+
+            elif self.vsig_value < self.vsig_min or self.vsig_value > self.vsig_max:
+                errors.append(ValidationError({'vsig_value': ['vsig: Value must be within range set by minimum and maximum.']}))
+
+        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        ParameterSet.full_clean(self)
+        super(ParameterSet, self).save(*args, **kwargs)
 
     def as_array(self):
         return [ self.i0_dict(),
@@ -1155,9 +1319,7 @@ class Fitter(models.Model):
 
     Each type has a specific set of attributes.
     """
-    # job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_fitter')
     job = models.OneToOneField(Job, related_name='job_fitter')
-    # name = models.CharField(max_length=255, blank=False, null=False)
 
     MPFIT = 'mpfit'
     MULTINEST = 'multinest'
@@ -1168,6 +1330,11 @@ class Fitter(models.Model):
     ]
     fitter_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=MPFIT)
 
+    ZERO_ONE_CHOICES = [
+        (0, 0),
+        (1, 1),
+    ]
+
     # MPFIT properties
     ftol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
     xtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
@@ -1177,24 +1344,92 @@ class Fitter(models.Model):
     covtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
     mpfit_maxiter = models.PositiveIntegerField(blank=True, default=1)
     maxfev = models.PositiveIntegerField(blank=True, default=1)
-    nprint = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
-    douserscale = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
-    nofinitecheck = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
+    nprint = models.PositiveIntegerField(blank=False, choices=ZERO_ONE_CHOICES, default=0)
+    douserscale = models.PositiveIntegerField(blank=False, choices=ZERO_ONE_CHOICES, default=0)
+    nofinitecheck = models.PositiveIntegerField(blank=False, choices=ZERO_ONE_CHOICES, default=0)
 
     # Multinest properties
-    multinest_is = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
-    mmodal = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
+    multinest_is = models.PositiveIntegerField(blank=False, choices=ZERO_ONE_CHOICES, default=0)
+    mmodal = models.PositiveIntegerField(blank=False, choices=ZERO_ONE_CHOICES, default=0)
     nlive = models.PositiveIntegerField(blank=True, default=1, validators=[MinValueValidator(1)])
-    tol = models.FloatField(blank=True, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT )])
-    efr = models.FloatField(blank=True, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT )])
-    ceff = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
-    ztol = models.FloatField(blank=True, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT )])
-    logzero = models.FloatField(blank=True, default=1, validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT )])
-    multinest_maxiter = models.IntegerField(blank=True, default=-1)
-    seed = models.IntegerField(blank=True, default=1)
-    outfile = models.PositiveIntegerField(blank=True, default=0, validators=[MaxValueValidator(1)])
+    tol = models.FloatField(blank=True, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    efr = models.FloatField(blank=True, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    ceff = models.PositiveIntegerField(blank=False, choices=ZERO_ONE_CHOICES, default=0)
+    ztol = models.FloatField(blank=True, null=True, validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    logzero = models.FloatField(blank=True, null=True, validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    multinest_maxiter = models.IntegerField(blank=True, null=True, default=-1)
+    seed = models.IntegerField(blank=True, null=True, )
+    outfile = models.PositiveIntegerField(blank=False, choices=ZERO_ONE_CHOICES, default=1)
 
     creation_time = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        errors = []
+
+        if self.fitter_type == self.MPFIT:
+            if self.ftol < 0:
+                errors.append(ValidationError({'ftol':
+                                                   ['mpfit, ftol: Accepted values: any positive value.']}))
+
+            if self.xtol < 0:
+                errors.append(ValidationError({'xtol':
+                                                   ['mpfit, xtol: Accepted values: any positive value.']}))
+
+            if self.gtol < 0:
+                errors.append(ValidationError({'gtol':
+                                                   ['mpfit, gtol: Accepted values: any positive value.']}))
+
+            if self.epsfcn < 0:
+                errors.append(ValidationError({'epsfcn':
+                                                   ['mpfit, epsfcn: Accepted values: any positive value.']}))
+
+            if self.stepfactor < 0:
+                errors.append(ValidationError({'stepfactor':
+                                                   ['mpfit, stepfactor: Accepted values: any positive value.']}))
+
+            if self.covtol < 0:
+                errors.append(ValidationError({'covtol':
+                                                   ['mpfit, covtol: Accepted values: any positive value.']}))
+
+            if self.mpfit_maxiter < 0:
+                errors.append(ValidationError({'maxiter':
+                                                   ['mpfit, maxiter: Accepted values: any positive value.']}))
+
+            if self.maxfev < 0:
+                errors.append(ValidationError({'maxfev':
+                                                   ['mpfit, maxfev: Accepted values: any positive value.']}))
+
+        if self.fitter_type == self.MULTINEST:
+            if self.nlive < 0:
+                errors.append(ValidationError({'nlive':
+                                                   ['Multinest, nlive: Accepted values: any positive non-zero integer value.']}))
+
+            if self.tol < 0:
+                errors.append(ValidationError({'tol':
+                                                   ['Multinest, tol: Accepted values: any positive non-zero value.']}))
+
+            if self.efr < 0:
+                errors.append(ValidationError({'efr':
+                                                   ['Multinest, efr: Accepted values: any positive non-zero value.']}))
+
+            if self.ztol < 0:
+                errors.append(ValidationError({'ztol':
+                                                   ['Multinest, ztol: Accepted values: any positive non-zero value.']}))
+
+            if self.logzero < 0:
+                errors.append(ValidationError({'logzero':
+                                                   ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
+
+            if self.outfile < 0:
+                errors.append(ValidationError({'logzero':
+                                                   ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
+
+        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        Fitter.full_clean(self)
+        super(Fitter, self).save(*args, **kwargs)
 
     def as_json(self):
         """
