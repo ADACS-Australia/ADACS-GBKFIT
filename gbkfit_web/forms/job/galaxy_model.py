@@ -42,19 +42,12 @@ class GalaxyModelForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        try:
-            result = GalaxyModel.objects.create(
-                job=job,
-                gmodel_type=data.get('gmodel_type'),
-                flx_profile=data.get('flx_profile'),
-                vel_profile=data.get('vel_profile'),
-            )
-        except:
-            result = GalaxyModel.objects.filter(job_id=id).update(
-                gmodel_type=data.get('gmodel_type'),
-                flx_profile=data.get('flx_profile'),
-                vel_profile=data.get('vel_profile'),
-            )
+        GalaxyModel.objects.create(
+            job=job,
+            gmodel_type=data.get('gmodel_type'),
+            flx_profile=data.get('flx_profile'),
+            vel_profile=data.get('vel_profile'),
+        )
 
         self.request.session['fitter'] = self.as_json(data)
 

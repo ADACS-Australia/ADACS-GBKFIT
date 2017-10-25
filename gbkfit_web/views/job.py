@@ -26,7 +26,7 @@ from gbkfit_web.models import (
 
 """
 
-    UTILITY SECTION
+    UTILITIES SECTION
 
 """
 
@@ -166,7 +166,7 @@ def build_task_json(request):
 
 """
 
-    JOB CREATION SECTION
+    JOB CREATION/EDITING  SECTION
 
 """
 def save_form(form, request, active_tab):
@@ -177,34 +177,6 @@ def save_form(form, request, active_tab):
         if 'previous' in request.POST:
             active_tab = previous_tab(active_tab)
     return active_tab
-
-@login_required
-def start(request):
-    active_tab = START
-    if request.method == 'POST':
-        form = FORMS_NEW[active_tab](request.POST, request=request)
-        active_tab = save_form(form, request, active_tab)
-    else:
-        form = FORMS_NEW[active_tab](request=request)
-
-    if active_tab == START:
-        return render(
-            request,
-            "job/create.html",
-            {
-                'active_tab': active_tab,
-                'disable_other_tabs': True,
-                'start_form': form,
-            }
-        )
-    else:
-        return redirect('job_dataset_edit', id=request.session['draft_job']['id'])
-
-"""
-
-    JOB EDITING SECTION
-
-"""  
 
 def act_on_request_method_edit(request, active_tab, id):
     # JobInitialForm.base_fields['job'] = set_job_menu(request, id)
@@ -316,6 +288,28 @@ def act_on_request_method_edit(request, active_tab, id):
     set_list(forms, TABS_INDEXES[PARAMS], params_form)
 
     return active_tab, forms
+
+@login_required
+def start(request):
+    active_tab = START
+    if request.method == 'POST':
+        form = FORMS_NEW[active_tab](request.POST, request=request)
+        active_tab = save_form(form, request, active_tab)
+    else:
+        form = FORMS_NEW[active_tab](request=request)
+
+    if active_tab == START:
+        return render(
+            request,
+            "job/create.html",
+            {
+                'active_tab': active_tab,
+                'disable_other_tabs': True,
+                'start_form': form,
+            }
+        )
+    else:
+        return redirect('job_dataset_edit', id=request.session['draft_job']['id'])
 
 @login_required
 def edit_job_name(request, id):

@@ -42,19 +42,12 @@ class LSFForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        try:
-            result = LSF.objects.create(
-                job=job,
-                lsf_type=data.get('lsf_type'),
-                fwhm=data.get('fwhm'),
-                beta=data.get('beta'),
-            )
-        except:
-            result = LSF.objects.filter(job_id=id).update(
-                lsf_type=data.get('lsf_type'),
-                fwhm=data.get('fwhm'),
-                beta=data.get('beta'),
-            )
+        LSF.objects.create(
+            job=job,
+            lsf_type=data.get('lsf_type'),
+            fwhm=data.get('fwhm'),
+            beta=data.get('beta'),
+        )
 
         self.request.session['lsf'] = self.as_json(data)
 

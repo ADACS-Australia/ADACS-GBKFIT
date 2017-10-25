@@ -62,29 +62,17 @@ class DataModelForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        try:
-            DataModel.objects.create(
-                job=job,
-                dmodel_type=data.get('dmodel_type'),
-                method=data.get('method'),
-                scale_x=data.get('scale_x'),
-                scale_y=data.get('scale_y'),
-                scale_z=data.get('scale_z'),
-                step_x=data.get('step_x'),
-                step_y=data.get('step_y'),
-                step_z=data.get('step_z'),
-            )
-        except:
-            DataModel.objects.filter(job_id=id).update(
-                dmodel_type=data.get('dmodel_type'),
-                method=data.get('method'),
-                scale_x=data.get('scale_x'),
-                scale_y=data.get('scale_y'),
-                scale_z=data.get('scale_z'),
-                step_x=data.get('step_x'),
-                step_y=data.get('step_y'),
-                step_z=data.get('step_z'),
-            )
+        DataModel.objects.create(
+            job=job,
+            dmodel_type=data.get('dmodel_type'),
+            method=data.get('method'),
+            scale_x=data.get('scale_x'),
+            scale_y=data.get('scale_y'),
+            scale_z=data.get('scale_z'),
+            step_x=data.get('step_x'),
+            step_y=data.get('step_y'),
+            step_z=data.get('step_z'),
+        )
         self.request.session['data_model'] = self.as_json(data)
 
     def as_json(self, data):

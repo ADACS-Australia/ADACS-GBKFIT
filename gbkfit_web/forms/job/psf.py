@@ -50,23 +50,15 @@ class PSFForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        try:
-            result = PSF.objects.create(
-                job=job,
-                psf_type=data.get('psf_type'),
-                fwhm_x=data.get('fwhm_x'),
-                fwhm_y=data.get('fwhm_y'),
-                pa=data.get('pa'),
-                beta=data.get('beta'),
-            )
-        except:
-            result = PSF.objects.filter(job_id=id).update(
-                psf_type=data.get('psf_type'),
-                fwhm_x=data.get('fwhm_x'),
-                fwhm_y=data.get('fwhm_y'),
-                pa=data.get('pa'),
-                beta=data.get('beta'),
-            )
+        PSF.objects.create(
+            job=job,
+            psf_type=data.get('psf_type'),
+            fwhm_x=data.get('fwhm_x'),
+            fwhm_y=data.get('fwhm_y'),
+            pa=data.get('pa'),
+            beta=data.get('beta'),
+        )
+
         self.request.session['psf'] = self.as_json(data)
         
     def as_json(self, data):

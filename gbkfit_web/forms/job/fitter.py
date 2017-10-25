@@ -36,14 +36,14 @@ WIDGETS = {
     'maxfev': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'nprint': forms.Select(
-        attrs={'class': 'form-control'},
+    'nprint': forms.CheckboxInput(
+        # attrs={'class': 'form-control'},
     ),
-    'douserscale': forms.Select(
-        attrs={'class': 'form-control'},
+    'douserscale': forms.CheckboxInput(
+        # attrs={'class': 'form-control'},
     ),
-    'nofinitecheck': forms.Select(
-        attrs={'class': 'form-control'},
+    'nofinitecheck': forms.CheckboxInput(
+        # attrs={'class': 'form-control'},
     ),
     'efr': forms.TextInput(
         attrs={'class': 'form-control'},
@@ -57,14 +57,14 @@ WIDGETS = {
     'logzero': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'multinest_is': forms.Select(
-        attrs={'class': 'form-control'},
+    'multinest_is': forms.CheckboxInput(
+        # attrs={'class': 'form-control'},
     ),
-    'mmodal': forms.Select(
-        attrs={'class': 'form-control'},
+    'mmodal': forms.CheckboxInput(
+        # attrs={'class': 'form-control'},
     ),
-    'ceff': forms.Select(
-        attrs={'class': 'form-control'},
+    'ceff': forms.CheckboxInput(
+        # attrs={'class': 'form-control'},
     ),
     'nlive': forms.TextInput(
         attrs={'class': 'form-control'},
@@ -75,8 +75,8 @@ WIDGETS = {
     'seed': forms.TextInput(
         attrs={'class': 'form-control'},
     ),
-    'outfile': forms.Select(
-        attrs={'class': 'form-control'},
+    'outfile': forms.CheckboxInput(
+        # attrs={'class': 'form-control'},
     ),
 }
 
@@ -126,59 +126,33 @@ class FitterForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        try:
-            result = Fitter.objects.create(
-                job=job,
-                fitter_type=data.get('fitter_type'),
-                ftol=data.get('ftol'),
-                xtol=data.get('xtol'),
-                gtol=data.get('gtol'),
-                epsfcn=data.get('epsfcn'),
-                stepfactor=data.get('stepfactor'),
-                covtol=data.get('covtol'),
-                mpfit_maxiter=data.get('mpfit_maxiter'),
-                maxfev=data.get('maxfev'),
-                nprint=data.get('nprint'),
-                douserscale=data.get('douserscale'),
-                nofinitecheck=data.get('nofinitecheck'),
-                multinest_is=data.get('multinest_is'),
-                mmodal=data.get('mmodal'),
-                nlive=data.get('nlive'),
-                tol=data.get('tol'),
-                efr=data.get('efr'),
-                ceff=data.get('ceff'),
-                ztol=data.get('ztol'),
-                logzero=data.get('logzero'),
-                multinest_maxiter=data.get('multinest_maxiter'),
-                seed=data.get('seed'),
-                outfile=data.get('outfile'),
-            )
-        except:
-            result = Fitter.objects.filter(job_id=id).update(
-                fitter_type=data.get('fitter_type'),
-                ftol=data.get('ftol'),
-                xtol=data.get('xtol'),
-                gtol=data.get('gtol'),
-                epsfcn=data.get('epsfcn'),
-                stepfactor=data.get('stepfactor'),
-                covtol=data.get('covtol'),
-                mpfit_maxiter=data.get('mpfit_maxiter'),
-                maxfev=data.get('maxfev'),
-                nprint=data.get('nprint'),
-                douserscale=data.get('douserscale'),
-                nofinitecheck=data.get('nofinitecheck'),
-                multinest_is=data.get('multinest_is'),
-                mmodal=data.get('mmodal'),
-                nlive=data.get('nlive'),
-                tol=data.get('tol'),
-                efr=data.get('efr'),
-                ceff=data.get('ceff'),
-                ztol=data.get('ztol'),
-                logzero=data.get('logzero'),
-                multinest_maxiter=data.get('multinest_maxiter'),
-                seed=data.get('seed'),
-                outfile=data.get('outfile'),
-            )
+
+        Fitter.objects.create(
+            job=job,
+            fitter_type=data.get('fitter_type'),
+            ftol=data.get('ftol'),
+            xtol=data.get('xtol'),
+            gtol=data.get('gtol'),
+            epsfcn=data.get('epsfcn'),
+            stepfactor=data.get('stepfactor'),
+            covtol=data.get('covtol'),
+            mpfit_maxiter=data.get('mpfit_maxiter'),
+            maxfev=data.get('maxfev'),
+            nprint=data.get('nprint'),
+            douserscale=data.get('douserscale'),
+            nofinitecheck=data.get('nofinitecheck'),
+            multinest_is=data.get('multinest_is'),
+            mmodal=data.get('mmodal'),
+            nlive=data.get('nlive'),
+            tol=data.get('tol'),
+            efr=data.get('efr'),
+            ceff=data.get('ceff'),
+            ztol=data.get('ztol'),
+            logzero=data.get('logzero'),
+            multinest_maxiter=data.get('multinest_maxiter'),
+            seed=data.get('seed'),
+            outfile=data.get('outfile'),
+        )
 
         self.request.session['fitter'] = self.as_json(data)
 
