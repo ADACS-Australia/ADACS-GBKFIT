@@ -9,7 +9,7 @@
 
         <div class="container-fluid field
                     {% if '2' in field.name %}hidden{% endif %}
-                    {% if field.errors %}error{% endif %}
+                    {% if field.errors %}error alert alert-danger{% endif %}
                     div-{{ field.name }}
                     ">
 

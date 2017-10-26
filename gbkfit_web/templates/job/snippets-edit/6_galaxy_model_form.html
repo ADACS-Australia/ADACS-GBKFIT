@@ -11,7 +11,7 @@
                     {% if 'epinat' in field.name or 'arctan' in field.name %}hidden{% endif %}
                     {% if 'boissier' in field.name or 'flat' in field.name %}hidden{% endif %}
 
-                    {% if field.errors %}error{% endif %}
+                    {% if field.errors %}error alert alert-danger{% endif %}
                     div-{{ field.name }}
                     ">
 
