@@ -3,6 +3,55 @@ from gbkfit_web.models import User
 from django.contrib.auth import password_validation
 from django.utils.translation import ugettext_lazy as _
 
+FIELDS = ['title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student', 'country',
+          'scientific_interests', 'username', ]
+
+WIDGETS = {
+            'title': forms.Select(
+                attrs={'class': 'form-control', 'tabindex': '1'},
+            ),
+            'first_name': forms.TextInput(
+                attrs={'class': "form-control", 'tabindex': '2'},
+            ),
+            'last_name': forms.TextInput(
+                attrs={'class': "form-control", 'tabindex': '3'},
+            ),
+            'email': forms.TextInput(
+                attrs={'class': "form-control", 'tabindex': '4'},
+            ),
+            'gender': forms.Select(
+                attrs={'class': "form-control", 'tabindex': '5'},
+            ),
+            'institution': forms.TextInput(
+                attrs={'class': "form-control", 'tabindex': '6'},
+            ),
+            'is_student': forms.CheckboxInput(
+                attrs={'tabindex': '7'},
+            ),
+            'country': forms.Select(
+                attrs={'class': "form-control", 'tabindex': '8'},
+            ),
+            'scientific_interests': forms.Textarea(
+                attrs={'rows': 3, 'class': 'form-control', 'tabindex': '9'},
+            ),
+            'username': forms.TextInput(
+                attrs={'class': "form-control", 'tabindex': '10'},
+            ),
+        }
+
+LABELS = {
+    'title': _('Title'),
+    'first_name': _('First name'),
+    'last_name': _('Last name'),
+    'email': _('Email'),
+    'gender': _('Gender'),
+    'institution': _('Institution'),
+    'is_student': _('Is student?'),
+    'country': _('Country'),
+    'scientific_interests': _('Scientific interests'),
+    'username': _('Username'),
+}
+
 class EditProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
@@ -12,38 +61,9 @@ class EditProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student',
-                  'country', 'scientific_interests')
-
-        widgets = {
-            'title': forms.Select(
-                attrs={'class': 'form-control', 'tabindex': '2'},
-            ),
-            'first_name': forms.TextInput(
-                attrs={'class': "form-control", 'tabindex': '3'},
-            ),
-            'last_name': forms.TextInput(
-                attrs={'class': "form-control", 'tabindex': '4'},
-            ),
-            'email': forms.TextInput(
-                attrs={'class': "form-control", 'tabindex': '5'},
-            ),
-            'gender': forms.Select(
-                attrs={'class': "form-control", 'tabindex': '6'},
-            ),
-            'institution': forms.TextInput(
-                attrs={'class': "form-control", 'tabindex': '7'},
-            ),
-            'is_student': forms.CheckboxInput(
-                attrs={'tabindex': '8'},
-            ),
-            'country': forms.Select(
-                attrs={'class': "form-control", 'tabindex': '9'},
-            ),
-            'scientific_interests': forms.Textarea(
-                attrs={'rows': 3, 'class': 'form-control', 'tabindex': '10'},
-            ),
-        }
+        fields = FIELDS
+        labels = LABELS
+        widgets = WIDGETS
 
 class SetPasswordForm(forms.Form):
     """
