@@ -1,164 +1,33 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from gbkfit_web.models import ParameterSet, Job
+from gbkfit_web.models import ParameterSet, Job, GalaxyModel, Fitter
 
-FIELDS = [
-            #i0
-            'i0_fixed',
-            'i0_value',
-            'i0_min',
-            'i0_max',
-            'i0_wrap',
-            'i0_step',
-            'i0_relstep',
-            'i0_side',
+# For convenience
+XO_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side',]
+YO_FIELDS = ['yo_fixed', 'yo_value', 'yo_min', 'yo_max', 'yo_wrap', 'yo_step', 'yo_relstep', 'yo_side',]
+PA_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side',]
+INCL_FIELDS = ['incl_fixed', 'incl_value', 'incl_min', 'incl_max', 'incl_wrap', 'incl_step', 'incl_relstep', 'incl_side',]
+VSYS_FIELDS = ['vsys_fixed', 'vsys_value', 'vsys_min', 'vsys_max', 'vsys_wrap', 'vsys_step', 'vsys_relstep', 'vsys_side',]
+VSIG_FIELDS = ['vsig_fixed', 'vsig_value', 'vsig_min', 'vsig_max', 'vsig_wrap', 'vsig_step', 'vsig_relstep', 'vsig_side',]
+I0_FIELDS = ['i0_fixed', 'i0_value', 'i0_min', 'i0_max', 'i0_wrap', 'i0_step', 'i0_relstep', 'i0_side',]
+R0_FIELDS = ['r0_fixed', 'r0_value', 'r0_min', 'r0_max', 'r0_wrap', 'r0_step', 'r0_relstep', 'r0_side',]
+RT_FIELDS = ['rt_fixed', 'rt_value', 'rt_min', 'rt_max', 'rt_wrap', 'rt_step', 'rt_relstep', 'rt_side',]
+VT_FIELDS = ['vt_fixed', 'vt_value', 'vt_min', 'vt_max', 'vt_wrap', 'vt_step', 'vt_relstep', 'vt_side',]
+A_FIELDS = ['a_fixed', 'a_value', 'a_min', 'a_max', 'a_wrap', 'a_step', 'a_relstep', 'a_side',]
+B_FIELDS = ['b_fixed', 'b_value', 'b_min', 'b_max', 'b_wrap', 'b_step', 'b_relstep', 'b_side',]
 
-            #r0
-            'r0_fixed',
-            'r0_value',
-            'r0_min',
-            'r0_max',
-            'r0_wrap',
-            'r0_step',
-            'r0_relstep',
-            'r0_side',
+FIELDS_LISTS = [XO_FIELDS, YO_FIELDS, PA_FIELDS, INCL_FIELDS, VSYS_FIELDS, VSIG_FIELDS,
+               I0_FIELDS, R0_FIELDS, RT_FIELDS, VT_FIELDS, A_FIELDS, B_FIELDS]
 
-            #xo
-            'xo_fixed',
-            'xo_value',
-            'xo_min',
-            'xo_max',
-            'xo_wrap',
-            'xo_step',
-            'xo_relstep',
-            'xo_side',
-
-            #yo
-            'yo_fixed',
-            'yo_value',
-            'yo_min',
-            'yo_max',
-            'yo_wrap',
-            'yo_step',
-            'yo_relstep',
-            'yo_side',
-
-            #pa
-            'pa_fixed',
-            'pa_value',
-            'pa_min',
-            'pa_max',
-            'pa_wrap',
-            'pa_step',
-            'pa_relstep',
-            'pa_side',
-
-            #incl
-            'incl_fixed',
-            'incl_value',
-            'incl_min',
-            'incl_max',
-            'incl_wrap',
-            'incl_step',
-            'incl_relstep',
-            'incl_side',
-
-            #rt
-            'rt_fixed',
-            'rt_value',
-            'rt_min',
-            'rt_max',
-            'rt_wrap',
-            'rt_step',
-            'rt_relstep',
-            'rt_side',
-
-            #vt
-            'vt_fixed',
-            'vt_value',
-            'vt_min',
-            'vt_max',
-            'vt_wrap',
-            'vt_step',
-            'vt_relstep',
-            'vt_side',
-
-            #vsys
-            'vsys_fixed',
-            'vsys_value',
-            'vsys_min',
-            'vsys_max',
-            'vsys_wrap',
-            'vsys_step',
-            'vsys_relstep',
-            'vsys_side',
-
-            #vsig
-            'vsig_fixed',
-            'vsig_value',
-            'vsig_min',
-            'vsig_max',
-            'vsig_wrap',
-            'vsig_step',
-            'vsig_relstep',
-            'vsig_side',
-        ]
+FIELDS = []
+for fields_list in FIELDS_LISTS:
+    for field in fields_list:
+        FIELDS.append(field)
 
 WIDGETS= {
-            'i0_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'i0_value': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'i0_min': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'i0_max': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'i0_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'i0_step': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'i0_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'i0_side': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-
-            # r0
-            'r0_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'r0_value': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'r0_min': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'r0_max': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'r0_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'r0_step': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'r0_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'r0_side': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-
             # xo
-            'xo_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
+            'xo_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
             ),
             'xo_value': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -183,8 +52,8 @@ WIDGETS= {
             ),
 
             # yo
-            'yo_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
+            'yo_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
             ),
             'yo_value': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -209,8 +78,8 @@ WIDGETS= {
             ),
 
             # pa
-            'pa_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
+            'pa_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
             ),
             'pa_value': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -235,8 +104,8 @@ WIDGETS= {
             ),
 
             # incl
-            'incl_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
+            'incl_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
             ),
             'incl_value': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -260,61 +129,9 @@ WIDGETS= {
                 attrs={'class': 'form-control'},
             ),
 
-            # rt
-            'rt_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'rt_value': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'rt_min': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'rt_max': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'rt_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'rt_step': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'rt_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'rt_side': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-
-            # vt
-            'vt_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'vt_value': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'vt_min': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'vt_max': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'vt_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'vt_step': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'vt_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-            'vt_side': forms.TextInput(
-                attrs={'class': 'form-control'},
-            ),
-
             # vsys
-            'vsys_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
+            'vsys_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
             ),
             'vsys_value': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -339,8 +156,8 @@ WIDGETS= {
             ),
 
             # vsig
-            'vsig_fixed': forms.TextInput(
-                attrs={'class': 'form-control'},
+            'vsig_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
             ),
             'vsig_value': forms.TextInput(
                 attrs={'class': 'form-control'},
@@ -363,28 +180,164 @@ WIDGETS= {
             'vsig_side': forms.TextInput(
                 attrs={'class': 'form-control'},
             ),
+
+            'i0_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
+            ),
+            'i0_value': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'i0_min': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'i0_max': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'i0_wrap': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'i0_step': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'i0_relstep': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'i0_side': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+
+            # r0
+            'r0_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
+            ),
+            'r0_value': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'r0_min': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'r0_max': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'r0_wrap': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'r0_step': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'r0_relstep': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'r0_side': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+
+            # rt
+            'rt_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
+            ),
+            'rt_value': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'rt_min': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'rt_max': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'rt_wrap': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'rt_step': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'rt_relstep': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'rt_side': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+
+            # vt
+            'vt_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
+            ),
+            'vt_value': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'vt_min': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'vt_max': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'vt_wrap': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'vt_step': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'vt_relstep': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'vt_side': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+    
+            # a
+            'a_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
+            ),
+            'a_value': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'a_min': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'a_max': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'a_wrap': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'a_step': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'a_relstep': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'a_side': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+
+            # b
+            'b_fixed': forms.CheckboxInput(
+              #  attrs={'class': 'form-control'},
+            ),
+            'b_value': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'b_min': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'b_max': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'b_wrap': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'b_step': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'b_relstep': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
+            'b_side': forms.TextInput(
+                attrs={'class': 'form-control'},
+            ),
         }
 
 LABELS = {
-    'i0_fixed': _('Fixed'),
-    'i0_value': _('Value'),
-    'i0_min': _('Minimum'),
-    'i0_max': _('Maximum'),
-    'i0_wrap': _('Wrap'),
-    'i0_step': _('Step'),
-    'i0_relstep': _('Relstep'),
-    'i0_side': _('Side'),
-
-    #r0
-    'r0_fixed': _('Fixed'),
-    'r0_value': _('Value'),
-    'r0_min': _('Minimum'),
-    'r0_max': _('Maximum'),
-    'r0_wrap': _('Wrap'),
-    'r0_step': _('Step'),
-    'r0_relstep': _('Relstep'),
-    'r0_side': _('Side'),
-
     #xo
     'xo_fixed': _('Fixed'),
     'xo_value': _('Value'),
@@ -424,6 +377,45 @@ LABELS = {
     'incl_step': _('Step'),
     'incl_relstep': _('Relstep'),
     'incl_side': _('Side'),
+    
+    #vsys
+    'vsys_fixed': _('Fixed'),
+    'vsys_value': _('Value'),
+    'vsys_min': _('Minimum'),
+    'vsys_max': _('Maximum'),
+    'vsys_wrap': _('Wrap'),
+    'vsys_step': _('Step'),
+    'vsys_relstep': _('Relstep'),
+    'vsys_side': _('Side'),
+
+    #vsig
+    'vsig_fixed': _('Fixed'),
+    'vsig_value': _('Value'),
+    'vsig_min': _('Minimum'),
+    'vsig_max': _('Maximum'),
+    'vsig_wrap': _('Wrap'),
+    'vsig_step': _('Step'),
+    'vsig_relstep': _('Relstep'),
+    'vsig_side': _('Side'),
+
+    'i0_fixed': _('Fixed'),
+    'i0_value': _('Value'),
+    'i0_min': _('Minimum'),
+    'i0_max': _('Maximum'),
+    'i0_wrap': _('Wrap'),
+    'i0_step': _('Step'),
+    'i0_relstep': _('Relstep'),
+    'i0_side': _('Side'),
+
+    #r0
+    'r0_fixed': _('Fixed'),
+    'r0_value': _('Value'),
+    'r0_min': _('Minimum'),
+    'r0_max': _('Maximum'),
+    'r0_wrap': _('Wrap'),
+    'r0_step': _('Step'),
+    'r0_relstep': _('Relstep'),
+    'r0_side': _('Side'),
 
     #rt
     'rt_fixed': _('Fixed'),
@@ -444,26 +436,26 @@ LABELS = {
     'vt_step': _('Step'),
     'vt_relstep': _('Relstep'),
     'vt_side': _('Side'),
+    
+    #a
+    'a_fixed': _('Fixed'),
+    'a_value': _('Value'),
+    'a_min': _('Minimum'),
+    'a_max': _('Maximum'),
+    'a_wrap': _('Wrap'),
+    'a_step': _('Step'),
+    'a_relstep': _('Relstep'),
+    'a_side': _('Side'),
 
-    #vsys
-    'vsys_fixed': _('Fixed'),
-    'vsys_value': _('Value'),
-    'vsys_min': _('Minimum'),
-    'vsys_max': _('Maximum'),
-    'vsys_wrap': _('Wrap'),
-    'vsys_step': _('Step'),
-    'vsys_relstep': _('Relstep'),
-    'vsys_side': _('Side'),
-
-    #vsig
-    'vsig_fixed': _('Fixed'),
-    'vsig_value': _('Value'),
-    'vsig_min': _('Minimum'),
-    'vsig_max': _('Maximum'),
-    'vsig_wrap': _('Wrap'),
-    'vsig_step': _('Step'),
-    'vsig_relstep': _('Relstep'),
-    'vsig_side': _('Side'),
+    #b
+    'b_fixed': _('Fixed'),
+    'b_value': _('Value'),
+    'b_min': _('Minimum'),
+    'b_max': _('Maximum'),
+    'b_wrap': _('Wrap'),
+    'b_step': _('Step'),
+    'b_relstep': _('Relstep'),
+    'b_side': _('Side'),
 }
 
 
@@ -1147,11 +1139,74 @@ class ParamsForm(forms.ModelForm):
 
 class EditParamsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.job_id = kwargs.pop('job_id', None)
+        vel_profile = None
+        fitter_type = None
+
+        if self.job_id:
+            try:
+                vel_profile = GalaxyModel.objects.get(job_id=self.job_id).vel_profile
+            except:
+                pass
+
+            try:
+                fitter_type = Fitter.objects.get(job_id=self.job_id).fitter_type
+            except:
+                pass
+
         super(EditParamsForm, self).__init__(*args, **kwargs)
+
+        if vel_profile != None:
+            if vel_profile != GalaxyModel.EPINAT:
+                ab_fields = ['a_fixed', 'a_value', 'a_min', 'a_max', 'a_wrap', 'a_step', 'a_relstep', 'a_side',
+                             'b_fixed', 'b_value', 'b_min', 'b_max', 'b_wrap', 'b_step', 'b_relstep', 'b_side']
+                for field in A_FIELDS:
+                    if field in self.fields: del self.fields[field]
+                for field in B_FIELDS:
+                    if field in self.fields: del self.fields[field]
+
+        if fitter_type != None:
+            if fitter_type == Fitter.MPFIT:
+                """
+                Uses:
+                    - fixed 
+                    - value 
+                    - min 
+                    - max 
+                    - step 
+                    - relstep 
+                    - side
+                
+                Doesn't use:
+                    - wrap
+                """
+                for fields_list in FIELDS_LISTS:
+                    for field in fields_list:
+                        if 'wrap' in field:
+                            if field in self.fields: del self.fields[field]
+
+            if fitter_type == Fitter.MULTINEST:
+                """
+                Uses:
+                    - fixed
+                    - min
+                    - max
+                    - wrap
+                    - value
+                Doesn't use:
+                    - step 
+                    - relstep 
+                    - side
+                """
+                for fields_list in FIELDS_LISTS:
+                    for field in fields_list:
+                        if 'step' in field or 'relstep' in field or 'side' in field:
+                            if field in self.fields: del self.fields[field]
 
     class Meta:
         model = ParameterSet
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
+
 

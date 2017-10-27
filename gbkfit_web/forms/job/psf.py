@@ -26,8 +26,8 @@ LABELS = {
     'psf_type': _('Type'),
     'fwhm_x': _('FWHM X'),
     'fwhm_y': _('FWHM Y'),
-    'pa': _('pa'),
-    'beta': _('beta'),
+    'pa': _('PA'),
+    'beta': _('Beta'),
 }
 
 

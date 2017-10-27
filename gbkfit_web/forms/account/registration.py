@@ -1,32 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 
 from gbkfit_web.models import User
 
 
-class RegistrationForm(UserCreationForm):
+FIELDS = ['title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student', 'country',
+          'scientific_interests', 'username', ]
 
-    def __init__(self, *args, **kwargs):
-        super(RegistrationForm, self).__init__(*args, **kwargs)
-        self.fields['country'].initial = 'AU'
-        self.fields['username'].help_text = None
-        self.fields['username'].widget.attrs.update({'autofocus': False})
-        self.fields['password1'].widget.attrs.update({'class': 'form-control', 'tabindex': '11'})
-        self.fields['password2'].widget.attrs.update({'class': 'form-control', 'tabindex': '12'})
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-        self.fields['email'].required = True
-        self.fields['scientific_interests'].help_text = 'e.g. your area of expertise, how you hope to use the data, ' \
-                                                        'team memberships and collaborations'
-
-    class Meta:
-        model = get_user_model()
-
-        fields = ['title', 'first_name', 'last_name', 'email', 'gender', 'institution', 'is_student', 'country',
-                  'scientific_interests', 'username', ]
-
-        widgets = {
+WIDGETS = {
             'title': forms.Select(
                 attrs={'class': 'form-control', 'tabindex': '1'},
             ),
@@ -58,6 +41,40 @@ class RegistrationForm(UserCreationForm):
                 attrs={'class': "form-control", 'tabindex': '10'},
             ),
         }
+
+LABELS = {
+    'title': _('Title'),
+    'first_name': _('First name'),
+    'last_name': _('Last name'),
+    'email': _('Email'),
+    'gender': _('Gender'),
+    'institution': _('Institution'),
+    'is_student': _('Is student?'),
+    'country': _('Country'),
+    'scientific_interests': _('Scientific interests'),
+    'username': _('Username'),
+}
+
+class RegistrationForm(UserCreationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['country'].initial = 'AU'
+        self.fields['username'].help_text = None
+        self.fields['username'].widget.attrs.update({'autofocus': False})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control', 'tabindex': '11'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control', 'tabindex': '12'})
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['email'].required = True
+        self.fields['scientific_interests'].help_text = 'e.g. your area of expertise, how you hope to use the data, ' \
+                                                        'team memberships and collaborations'
+
+    class Meta:
+        model = get_user_model()
+        fields = FIELDS
+        labels = LABELS
+        widgets = WIDGETS
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

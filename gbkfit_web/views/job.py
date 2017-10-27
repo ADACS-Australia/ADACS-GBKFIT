@@ -280,11 +280,13 @@ def act_on_request_method_edit(request, active_tab, id):
 
     if tab_checker != PARAMS:
         try:
-            params_form = FORMS_EDIT[PARAMS](instance=Params.objects.get(job_id=id))
+            params_form = FORMS_EDIT[PARAMS](instance=Params.objects.get(job_id=id), job_id=id)
         except:
-            params_form = FORMS_EDIT[PARAMS]()
+            params_form = FORMS_EDIT[PARAMS](job_id=id)
     else:
         params_form = form
+
+    # Let's see if I can set fieldsets here...
     set_list(forms, TABS_INDEXES[PARAMS], params_form)
 
     return active_tab, forms
@@ -309,7 +311,7 @@ def start(request):
             }
         )
     else:
-        return redirect('job_dataset_edit', id=request.session['draft_job']['id'])
+        return redirect('job_data_model_edit', id=request.session['draft_job']['id'])
 
 @login_required
 def edit_job_name(request, id):
