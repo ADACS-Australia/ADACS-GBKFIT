@@ -76,6 +76,7 @@ Welcome page
 
 .jumbotron {
     background-image: url("../images/background.jpg");
+    background-size:cover;
     /*background-blend-mode: screen;*/
     /*background-repeat: no-repeat;*/
     margin-bottom: 0px;

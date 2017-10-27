@@ -1,0 +1,34 @@
+<form action="{% url 'job_dataset_edit' id=job_id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% include 'job/snippets/errors.html' %}
+
+    {% include 'job/snippets/pager.html' %}
+
+    {% for field in dataset_form %}
+
+        <div class="container-fluid field
+                    {% if '2' in field.name %}hidden{% endif %}
+                    {% if field.errors %}error alert alert-danger{% endif %}
+                    div-{{ field.name }}
+                    ">
+
+            <!-- Label -->
+            <label class="col-md-4" for="{{ field.auto_id }}">
+                {{ field.label }}
+            </label>
+
+            <!-- Field -->
+            <div class="col-md-12">
+                {{ field }}
+                {{ field.errors }}
+            </div>
+
+        </div>
+    {% endfor %}
+
+    {% include 'job/snippets/pager.html' %}
+</form>
+{% if uploaded_file_url %}
+    <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+{% endif %}

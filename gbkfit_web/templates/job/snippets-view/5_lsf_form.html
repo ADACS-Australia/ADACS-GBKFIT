@@ -1,0 +1,32 @@
+<form action="{% url 'job_lsf_edit' id=job_id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% include 'job/snippets/errors.html' %}
+
+    {% include 'job/snippets/pager.html' %}
+
+    {% for field in lsf_form %}
+
+        <div class="container-fluid field
+                    {% if field.name == 'beta' %}hidden{% endif %}
+                    {% if field.errors %}error alert alert-danger{% endif %}
+                    div-{{ field.name }}
+                    ">
+
+            <!-- Label -->
+            <label class="col-md-4" for="{{ field.auto_id }}">
+                {{ field.label }}
+            </label>
+
+            <!-- Field -->
+            <div class="col-md-12">
+                {{ field }}
+                {{ field.errors }}
+            </div>
+
+        </div>
+    {% endfor %}
+
+{#    <input class="btn btn-primary" type="submit" value="Save and next" />#}
+    {% include 'job/snippets/pager.html' %}
+</form>

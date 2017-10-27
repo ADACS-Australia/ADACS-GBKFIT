@@ -1,0 +1,6 @@
+<form action="{% url 'job_launch' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include 'job/snippets/pager-previous-launch.html' %}
+    {% include 'job/snippets/job-overview.html' %}
+    {% include 'job/snippets/pager-previous-launch.html' %}
+</form>
