@@ -189,11 +189,15 @@ def get_meta(model, views, object):
 }
 
     if model == PARAMS:
-        fields = filter_params_fields(get_ParamsFields(),
-                                      object,
-                                      views[TABS_INDEXES[GMODEL]],
-                                      views[TABS_INDEXES[FITTER]]
-                                      )
+        try:
+            fields = filter_params_fields(get_ParamsFields(),
+                                          object,
+                                          views[TABS_INDEXES[GMODEL]],
+                                          views[TABS_INDEXES[FITTER]]
+                                          )
+        except:
+            fields = get_ParamsFields()
+
         labels = {
     #xo
     'xo_fixed': _('Fixed'),
@@ -393,7 +397,8 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
                 if 'step' in field or 'relstep' in field or 'side' in field:
                     if field in fields: fields.remove(field)
 
-    object = add_fields_to_object(object, fields)
+    object.fields = dict((field.name, field.value_to_string(object))
+                         for field in object._meta.fields if field.name in fields)
 
     for fields_list in ParamsFields.FIELDS_LISTS:
         for field in fields_list:

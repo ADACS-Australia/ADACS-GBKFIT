@@ -27,313 +27,313 @@ for fields_list in FIELDS_LISTS:
 WIDGETS= {
             # xo
             'xo_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+               attrs={'class': 'has-popover'},
             ),
             'xo_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'xo_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'xo_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'xo_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'xo_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'xo_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'xo_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # yo
             'yo_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'yo_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'yo_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'yo_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'yo_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'yo_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'yo_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'yo_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # pa
             'pa_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'pa_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'pa_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'pa_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'pa_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'pa_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'pa_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'pa_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # incl
             'incl_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'incl_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'incl_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'incl_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'incl_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'incl_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'incl_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'incl_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # vsys
             'vsys_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'vsys_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsys_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsys_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsys_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsys_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsys_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsys_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # vsig
             'vsig_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'vsig_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsig_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsig_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsig_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsig_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsig_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vsig_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             'i0_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'i0_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'i0_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'i0_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'i0_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'i0_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'i0_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'i0_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # r0
             'r0_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'r0_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'r0_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'r0_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'r0_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'r0_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'r0_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'r0_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # rt
             'rt_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'rt_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'rt_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'rt_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'rt_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'rt_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'rt_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'rt_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # vt
             'vt_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'vt_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vt_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vt_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vt_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vt_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vt_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'vt_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
     
             # a
             'a_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'a_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'a_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'a_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'a_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'a_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'a_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'a_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
 
             # b
             'b_fixed': forms.CheckboxInput(
-              #  attrs={'class': 'form-control'},
+              attrs={'class': 'has-popover'},
             ),
             'b_value': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'b_min': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'b_max': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'b_wrap': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'b_step': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'b_relstep': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
             'b_side': forms.TextInput(
-                attrs={'class': 'form-control'},
+                attrs={'class': 'form-control has-popover'},
             ),
         }
 
@@ -458,6 +458,126 @@ LABELS = {
     'b_side':_('Derivative sidedness'),
 }
 
+HELP_TEXTS = {
+    # xo
+    'xo_fixed': _(''),
+    'xo_value': _(''),
+    'xo_min': _(''),
+    'xo_max': _(''),
+    'xo_wrap': _('Is wraparound parameter?'),
+    'xo_step': _(''),
+    'xo_relstep': _('Relative step size for finite difference.'),
+    'xo_side': _('Sidedness of finite difference derivative.'),
+
+    # yo
+    'yo_fixed': _(''),
+    'yo_value': _(''),
+    'yo_min': _(''),
+    'yo_max': _(''),
+    'yo_wrap': _('Is wraparound parameter?'),
+    'yo_step': _(''),
+    'yo_relstep': _('Relative step size for finite difference.'),
+    'yo_side': _('Sidedness of finite difference derivative.'),
+
+    # pa
+    'pa_fixed': _(''),
+    'pa_value': _(''),
+    'pa_min': _(''),
+    'pa_max': _(''),
+    'pa_wrap': _('Is wraparound parameter?'),
+    'pa_step': _(''),
+    'pa_relstep': _('Relative step size for finite difference.'),
+    'pa_side': _('Sidedness of finite difference derivative.'),
+
+    # incl
+    'incl_fixed': _(''),
+    'incl_value': _(''),
+    'incl_min': _(''),
+    'incl_max': _(''),
+    'incl_wrap': _('Is wraparound parameter?'),
+    'incl_step': _(''),
+    'incl_relstep': _('Relative step size for finite difference.'),
+    'incl_side': _('Sidedness of finite difference derivative.'),
+
+    # vsys
+    'vsys_fixed': _(''),
+    'vsys_value': _(''),
+    'vsys_min': _(''),
+    'vsys_max': _(''),
+    'vsys_wrap': _('Is wraparound parameter?'),
+    'vsys_step': _(''),
+    'vsys_relstep': _('Relative step size for finite difference.'),
+    'vsys_side': _('Sidedness of finite difference derivative.'),
+
+    # vsig
+    'vsig_fixed': _(''),
+    'vsig_value': _(''),
+    'vsig_min': _(''),
+    'vsig_max': _(''),
+    'vsig_wrap': _('Is wraparound parameter?'),
+    'vsig_step': _(''),
+    'vsig_relstep': _('Relative step size for finite difference.'),
+    'vsig_side': _('Sidedness of finite difference derivative.'),
+
+    'i0_fixed': _(''),
+    'i0_value': _(''),
+    'i0_min': _(''),
+    'i0_max': _(''),
+    'i0_wrap': _('Is wraparound parameter?'),
+    'i0_step': _(''),
+    'i0_relstep': _('Relative step size for finite difference.'),
+    'i0_side': _('Sidedness of finite difference derivative.'),
+
+    # r0
+    'r0_fixed': _(''),
+    'r0_value': _(''),
+    'r0_min': _(''),
+    'r0_max': _(''),
+    'r0_wrap': _('Is wraparound parameter?'),
+    'r0_step': _(''),
+    'r0_relstep': _('Relative step size for finite difference.'),
+    'r0_side': _('Sidedness of finite difference derivative.'),
+
+    # rt
+    'rt_fixed': _(''),
+    'rt_value': _(''),
+    'rt_min': _(''),
+    'rt_max': _(''),
+    'rt_wrap': _('Is wraparound parameter?'),
+    'rt_step': _(''),
+    'rt_relstep': _('Relative step size for finite difference.'),
+    'rt_side': _('Sidedness of finite difference derivative.'),
+
+    # vt
+    'vt_fixed': _(''),
+    'vt_value': _(''),
+    'vt_min': _(''),
+    'vt_max': _(''),
+    'vt_wrap': _('Is wraparound parameter?'),
+    'vt_step': _(''),
+    'vt_relstep': _('Relative step size for finite difference.'),
+    'vt_side': _('Sidedness of finite difference derivative.'),
+
+    # a
+    'a_fixed': _(''),
+    'a_value': _(''),
+    'a_min': _(''),
+    'a_max': _(''),
+    'a_wrap': _('Is wraparound parameter?'),
+    'a_step': _(''),
+    'a_relstep': _('Relative step size for finite difference.'),
+    'a_side': _('Sidedness of finite difference derivative.'),
+
+    # b
+    'b_fixed': _(''),
+    'b_value': _(''),
+    'b_min': _(''),
+    'b_max': _(''),
+    'b_wrap': _('Is wraparound parameter?'),
+    'b_step': _(''),
+    'b_relstep': _('Relative step size for finite difference.'),
+    'b_side': _('Sidedness of finite difference derivative.'),
+}
 
 class ParamsForm(forms.ModelForm):
     prefixes = ['i0', 'r0', 'xo', 'yo', 'pa', 'incl', 'rt', 'vt', 'vsys', 'vsig']
@@ -467,11 +587,20 @@ class ParamsForm(forms.ModelForm):
         self.id = kwargs.pop('id', None)
         super(ParamsForm, self).__init__(*args, **kwargs)
 
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {'data-content': help_text, 'data-placement': 'top',
+                     'data-container': 'body'})
+
     class Meta:
         model = ParameterSet
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
+        help_texts = HELP_TEXTS
 
     def save(self):
         self.full_clean()
@@ -1162,6 +1291,15 @@ class EditParamsForm(forms.ModelForm):
 
         super(EditParamsForm, self).__init__(*args, **kwargs)
 
+        # Add help_text to html/css
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {'data-content': help_text, 'data-placement': 'top',
+                     'data-container': 'body'})
+
         if vel_profile != None:
             if vel_profile != GalaxyModel.EPINAT:
                 for field in A_FIELDS:
@@ -1212,5 +1350,6 @@ class EditParamsForm(forms.ModelForm):
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
+        help_texts = HELP_TEXTS
 
 

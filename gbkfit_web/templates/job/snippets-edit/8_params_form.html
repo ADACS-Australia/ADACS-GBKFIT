@@ -13,8 +13,8 @@
         {% for field in xo_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -37,8 +37,8 @@
         {% for field in yo_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -61,8 +61,8 @@
         {% for field in pa_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -85,8 +85,8 @@
         {% for field in incl_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -109,8 +109,8 @@
         {% for field in vsys_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -133,8 +133,8 @@
         {% for field in vsig_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -157,8 +157,8 @@
         {% for field in i0_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -182,8 +182,8 @@
         {% for field in r0_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -206,8 +206,8 @@
         {% for field in rt_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -230,8 +230,8 @@
         {% for field in vt_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -254,8 +254,8 @@
         {% for field in a_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -278,8 +278,8 @@
         {% for field in b_fields %}
             <div class="col-md-6
                 {% if field.errors %}error alert alert-danger{% endif %}
-                div-{{ field.name }}
-                ">
+                div-{{ field.name }}"
+                >
                 <!-- Label -->
                 <label for="{{ field.auto_id }}">
                     {{ field.label }}
@@ -296,45 +296,3 @@
     </fieldset>
 
 </form>
-
-
-{#<form action="{% url 'job_params_edit' id=job_id %}" method="post" enctype="multipart/form-data">#}
-{#    {% csrf_token %}#}
-{##}
-{#    {% include 'job/snippets/errors.html' %}#}
-{##}
-{#    {% include 'job/snippets/pager.html' %}#}
-{##}
-{#    {% for field in params_form %}#}
-{#        {% if not forloop.first and forloop.counter0|divisibleby:8 %}#}
-{#            </div>#}
-{#            <br />#}
-{#        {% endif %}#}
-{##}
-{#        {% if forloop.counter0|divisibleby:8 %}#}
-{#            <div class="container-fluid field">#}
-{#                <legend>{{ field.name|cut:"_fixed" }}</legend>#}
-{#        {% endif %}#}
-{#            <div class="col-md-6#}
-{#                    {% if field.name == 'outfile' %}hidden{% endif %}#}
-{#                    {% if field.errors %}error alert alert-danger{% endif %}#}
-{#                    div-{{ field.name }}#}
-{#                    ">#}
-{#                <!-- Label -->#}
-{#                <label for="{{ field.auto_id }}">#}
-{#                    {{ field.label }}#}
-{#                </label>#}
-{##}
-{#                <!-- Field -->#}
-{#                <div>#}
-{#                    {{ field }}#}
-{#                    {{ field.errors }}#}
-{#                </div>#}
-{#            </div>#}
-{#        {% if forloop.last %}#}
-{#            </div>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{##}
-{#    {% include 'job/snippets/pager.html' %}#}
-{#</form>#}

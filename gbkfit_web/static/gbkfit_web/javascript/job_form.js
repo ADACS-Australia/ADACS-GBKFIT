@@ -1,12 +1,6 @@
 $(document).ready(function() {
 
-    var tooltips = $( "[title]" ).tooltip({
-      position: {
-        my: "left top",
-        at: "right+5 top-5",
-        collision: "none"
-      }
-    });
+    $('.has-popover').popover({'trigger':'hover'});
 
     // Job start hide/show job name field:
     $('#id_name').addClass('form-control');

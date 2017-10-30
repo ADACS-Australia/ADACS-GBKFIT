@@ -65,8 +65,10 @@ class FieldSetNode(template.Node):
     def render(self, context):
         form = template.Variable(self.form_variable).resolve(context)
         new_form = copy.copy(form)
-        new_form.fields = OrderedDict(((key, value) for key, value in form.fields.items() if key in self.fields))
-
-        context[self.variable_name] = new_form
+        try:
+            new_form.fields = OrderedDict(((key, value) for key, value in form.fields.items() if key in self.fields))
+            context[self.variable_name] = new_form
+        except:
+            pass
 
         return u''

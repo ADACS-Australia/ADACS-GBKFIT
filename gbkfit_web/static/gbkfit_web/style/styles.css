@@ -447,17 +447,17 @@ Welcome page
 }
 
 
-/********************************************/
-/*                                          */
-/*               ui-tooltip                 */
-/*                                          */
-/********************************************/
-field .help {
-    display: inline-block;
-}
+/*!********************************************!*/
+/*!*                                          *!*/
+/*!*               ui-tooltip                 *!*/
+/*!*                                          *!*/
+/*!********************************************!*/
+/*field .help {*/
+    /*display: inline-block;*/
+/*}*/
 
-.ui-tooltip {
-    width: 210px;
-    padding: 10px 20px;
-    font: bold 14px "Helvetica Neue", Sans-Serif;
-}
+/*.ui-tooltip {*/
+    /*width: 210px;*/
+    /*padding: 10px 20px;*/
+    /*font: bold 14px "Helvetica Neue", Sans-Serif;*/
+/*}*/

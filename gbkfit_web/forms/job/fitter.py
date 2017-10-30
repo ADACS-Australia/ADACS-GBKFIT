@@ -10,73 +10,73 @@ FIELDS = ['fitter_type',
 
 WIDGETS = {
     'fitter_type': forms.Select(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'ftol': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'xtol': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'gtol': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'epsfcn': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'stepfactor': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'covtol': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'mpfit_maxiter': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'maxfev': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'nprint': forms.CheckboxInput(
-        # attrs={'class': 'form-control'},
+        attrs={'class': 'has-popover'},
     ),
     'douserscale': forms.CheckboxInput(
-        # attrs={'class': 'form-control'},
+        attrs={'class': 'has-popover'},
     ),
     'nofinitecheck': forms.CheckboxInput(
-        # attrs={'class': 'form-control'},
+        attrs={'class': 'has-popover'},
     ),
     'efr': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'tol': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'ztol': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'logzero': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'multinest_is': forms.CheckboxInput(
-        # attrs={'class': 'form-control'},
+        attrs={'class': 'has-popover'},
     ),
     'mmodal': forms.CheckboxInput(
-        # attrs={'class': 'form-control'},
+        attrs={'class': 'has-popover'},
     ),
     'ceff': forms.CheckboxInput(
-        # attrs={'class': 'form-control'},
+        attrs={'class': 'has-popover'},
     ),
     'nlive': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'multinest_maxiter': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'seed': forms.TextInput(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'outfile': forms.CheckboxInput(
-        # attrs={'class': 'form-control'},
+        attrs={'class': 'has-popover'},
     ),
 }
 
@@ -231,6 +231,14 @@ class EditFitterForm(forms.ModelForm):
             except:
                 pass
         super(EditFitterForm, self).__init__(*args, **kwargs)
+
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {'data-content': help_text, 'data-placement': 'top',
+                     'data-container': 'body'})
 
     class Meta:
         model = Fitter
