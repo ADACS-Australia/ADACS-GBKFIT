@@ -82,28 +82,56 @@ WIDGETS = {
 
 LABELS = {
     'fitter_type': _('Type'),
-    'ftol': _('ftol'),
-    'xtol': _('xtol'),
-    'gtol': _('gtol'),
-    'epsfcn': _('epsfcn'),
-    'stepfactor': _('stepfactor'),
-    'covtol': _('covtol'),
-    'mpfit_maxiter': _('maxiter'),
-    'maxfev': _('maxfev'),
-    'nprint': _('nprint'),
-    'douserscale': _('douserscale'),
-    'nofinitecheck': _('nofinitecheck'),
-    'efr': _('efr'),
-    'tol': _('tol'),
-    'ztol': _('ztol'),
-    'logzero': _('logzero'),
-    'multinest_is': _('is'),
-    'mmodal': _('mmodal'),
-    'ceff': _('ceff'),
-    'nlive': _('nlive'),
-    'multinest_maxiter': _('maxiter'),
-    'seed': _('seed'),
-    'outfile': _('outfile'),
+    'ftol': _('Chi-square criterium'),
+    'xtol': _('Parameter criterium'),
+    'gtol': _('Orthogonality criterium'),
+    'epsfcn': _('Derivative step size'),
+    'stepfactor': _('Initial step bound'),
+    'covtol': _('Covariance tolerance'),
+    'mpfit_maxiter': _('Maximum iterations'),
+    'maxfev': _('Maximum function evaluations'),
+    'nprint': _('Print information to stdout'),
+    'douserscale': _('Scale variables'),
+    'nofinitecheck': _('Check for infinite quantities'),
+
+    'efr': _('Sampling efficiency'),
+    'tol': _('Evidence tolerance'),
+    'ztol': _('Null log-evidence'),
+    'logzero': _('Log-zero'),
+    'multinest_is': _('Importance Nested Sampling'),
+    'mmodal': _('Mode separation'),
+    'ceff': _('Constant efficiency'),
+    'nlive': _('Live points'),
+    'multinest_maxiter': _('Maximum iterations'),
+    'seed': _('Seed'),
+    'outfile': _('Output to file'),
+}
+
+HELP_TEXTS = {
+    'fitter_type': _('Type'),
+    'ftol': _('Relative chi-square convergence criterium.'),
+    'xtol': _('Relative parameter convergence criterium.'),
+    'gtol': _('Orthogonality convergence criterium.'),
+    'epsfcn': _('Finite derivative step size.'),
+    'stepfactor': _('Initial step bound.'),
+    'covtol': _('Range tolerance for covariance calculation.'),
+    'mpfit_maxiter': _('Maximum number of iterations.'),
+    'maxfev': _('Maximum number of function evaluations, or 0 for no limit.'),
+    'nprint': _('Print information to stdout.'),
+    'douserscale': _('Scale variables by user values.'),
+    'nofinitecheck': _('Check for infinite quantities.'),
+
+    'efr': _('Sampling efficiency.'),
+    'tol': _('Evidence tolerance factor.'),
+    'ztol': _('Null log-evidence.'),
+    'logzero': _('Points with log-likelihood < logzero will be ignored by MultiNest.'),
+    'multinest_is': _('Enable Importance Nested Sampling. If enabled, mode separation is not possible.'),
+    'mmodal': _('Enable mode separation. If enabled, Importance Nested sampling is not possible.'),
+    'ceff': _('Enable constant efficiency mode.'),
+    'nlive': _('Number of live points'),
+    'multinest_maxiter': _('Maximum number of iterations. A non-positive value means infinity.'),
+    'seed': _('Random number generator seed.'),
+    'outfile': _('Output results to file.'),
 }
 
 
@@ -195,6 +223,13 @@ class FitterForm(forms.ModelForm):
 
 class EditFitterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['fitter'] = Fitter.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
         super(EditFitterForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -202,3 +237,4 @@ class EditFitterForm(forms.ModelForm):
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
+        help_texts = HELP_TEXTS

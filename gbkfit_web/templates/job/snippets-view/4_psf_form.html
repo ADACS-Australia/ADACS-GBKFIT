@@ -1,32 +1,18 @@
-<form action="{% url 'job_psf_edit' id=job_id %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+{% for field,value in psf_view.fields.items %}
+    <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
 
-    {% include 'job/snippets/errors.html' %}
+        <!-- Label -->
+        <label>
+            {{ field }}
+        </label>
 
-    {% include 'job/snippets/pager.html' %}
-
-    {% for field in psf_form %}
-
-        <div class="container-fluid field
-                    {% if field.name == 'beta' %}hidden{% endif %}
-                    {% if field.errors %}error alert alert-danger{% endif %}
-                    div-{{ field.name }}
-                    ">
-
-            <!-- Label -->
-            <label class="col-md-4" for="{{ field.auto_id }}">
-                {{ field.label }}
-            </label>
-
-            <!-- Field -->
-            <div class="col-md-12">
-                {{ field }}
-                {{ field.errors }}
-            </div>
-
+        <!-- Field -->
+        <div>
+            {{ value }}
         </div>
-    {% endfor %}
 
-{#    <input class="btn btn-primary" type="submit" value="Save and next" />#}
-    {% include 'job/snippets/pager.html' %}
-</form>
+    </div>
+{% endfor %}
+

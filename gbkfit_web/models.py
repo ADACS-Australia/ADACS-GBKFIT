@@ -186,29 +186,29 @@ class DataSet(models.Model):
         # 1st batch of files
         file1_dict = {}
         file1_dict['type'] = self.dataset1_type
-        file1_dict['data'] = self.datafile1.path
+        file1_dict['data'] = self.datafile1.url
         try:
-            file1_dict['error'] = self.errorfile1.path
+            file1_dict['error'] = self.errorfile1.url
         except:
             pass
         try:
-            file1_dict['mask'] = self.maskfile1.path
+            file1_dict['mask'] = self.maskfile1.url
         except:
             pass
 
         # 2nd batch of files
         file2_dict = {}
         try:
-            file2_dict['data'] = self.datafile2.path
+            file2_dict['data'] = self.datafile2.url
             file2_dict['type'] = self.dataset1_type
         except:
             pass
         try:
-            file2_dict['error'] = self.errorfile2.path
+            file2_dict['error'] = self.errorfile2.url
         except:
             pass
         try:
-            file2_dict['mask'] = self.maskfile2.path
+            file2_dict['mask'] = self.maskfile2.url
         except:
             pass
 
@@ -672,6 +672,15 @@ class Fitter(models.Model):
 
         :return: json dict
         """
+
+        nprint = 1 if self.nprint else 0
+        douserscale = 1 if self.douserscale else 0
+        nofinitecheck = 1 if self.nofinitecheck else 0
+        multinest_is = 1 if self.multinest_is else 0
+        mmodal = 1 if self.mmodal else 0
+        efr = 1 if self.efr else 0
+        outfile = 1 if self.outfile else 0
+
         if self.fitter_type == self.MPFIT:
             return dict(
                     type="gbkfit.fitter." + self.fitter_type,
@@ -683,24 +692,24 @@ class Fitter(models.Model):
                     covtol = self.covtol,
                     maxiter = self.mpfit_maxiter,
                     maxfev = self.maxfev,
-                    nprint = self.nprint,
-                    douserscale = self.douserscale,
-                    nofinitecheck = self.nofinitecheck
+                    nprint = nprint,
+                    douserscale = douserscale,
+                    nofinitecheck = nofinitecheck
                 )
         else:
             return dict(
                     type="gbkfit.fitter." + self.fitter_type,
-                    _is = self.multinest_is,
-                    mmodal = self.mmodal,
+                    _is = multinest_is,
+                    mmodal = mmodal,
                     nlive = self.nlive,
                     tol = self.tol,
-                    efr = self.efr,
+                    efr = efr,
                     ceff = self.ceff,
                     ztol = self.ztol,
                     logzero = self.logzero,
                     maxiter = self.multinest_maxiter,
                     seed = self.seed,
-                    outfile = self.outfile
+                    outfile = outfile
                 )
 
 class ParameterSet(models.Model):
@@ -981,7 +990,8 @@ class ParameterSet(models.Model):
             'name': 'xo'
         }
         try:
-            xo_dict['fixed'] = self.xo_fixed
+            xo_fixed = 1 if self.xo_fixed else 0
+            xo_dict['fixed'] = xo_fixed
         except:
             pass
 
@@ -1036,7 +1046,8 @@ class ParameterSet(models.Model):
             'name': 'yo'
         }
         try:
-            yo_dict['fixed'] = self.yo_fixed
+            yo_fixed = 1 if self.yo_fixed else 0
+            yo_dict['fixed'] = yo_fixed
         except:
             pass
 
@@ -1091,7 +1102,8 @@ class ParameterSet(models.Model):
             'name': 'pa'
         }
         try:
-            pa_dict['fixed'] = self.pa_fixed
+            pa_fixed = 1 if self.pa_fixed else 0
+            pa_dict['fixed'] = pa_fixed
         except:
             pass
 
@@ -1146,7 +1158,8 @@ class ParameterSet(models.Model):
             'name': 'incl'
         }
         try:
-            incl_dict['fixed'] = self.incl_fixed
+            incl_fixed = 1 if self.incl_fixed else 0
+            incl_dict['fixed'] = incl_fixed
         except:
             pass
 
@@ -1201,7 +1214,8 @@ class ParameterSet(models.Model):
             'name': 'vsys'
         }
         try:
-            vsys_dict['fixed'] = self.vsys_fixed
+            vsys_fixed = 1 if self.vsys_fixed else 0
+            vsys_dict['fixed'] = vsys_fixed
         except:
             pass
 
@@ -1256,7 +1270,8 @@ class ParameterSet(models.Model):
             'name': 'vsig'
         }
         try:
-            vsig_dict['fixed'] = self.vsig_fixed
+            vsig_fixed = 1 if self.vsig_fixed else 0
+            vsig_dict['fixed'] = vsig_fixed
         except:
             pass
 
@@ -1311,7 +1326,8 @@ class ParameterSet(models.Model):
             'name': 'i0'
         }
         try:
-            i0_dict['fixed'] = self.i0_fixed
+            i0_fixed = 1 if self.i0_fixed else 0
+            i0_dict['fixed'] = i0_fixed
         except:
             pass
 
@@ -1366,7 +1382,8 @@ class ParameterSet(models.Model):
             'name': 'r0'
         }
         try:
-            r0_dict['fixed'] = self.r0_fixed
+            r0_fixed = 1 if self.r0_fixed else 0
+            r0_dict['fixed'] = r0_fixed
         except:
             pass
 
@@ -1421,7 +1438,8 @@ class ParameterSet(models.Model):
             'name': 'rt'
         }
         try:
-            rt_dict['fixed'] = self.rt_fixed
+            rt_fixed = 1 if self.rt_fixed else 0
+            rt_dict['fixed'] = rt_fixed
         except:
             pass
 
@@ -1476,7 +1494,8 @@ class ParameterSet(models.Model):
             'name': 'vt'
         }
         try:
-            vt_dict['fixed'] = self.vt_fixed
+            vt_fixed = 1 if self.vt_fixed else 0
+            vt_dict['fixed'] = vt_fixed
         except:
             pass
 
@@ -1531,7 +1550,8 @@ class ParameterSet(models.Model):
             'name': 'a'
         }
         try:
-            a_dict['fixed'] = self.a_fixed
+            a_fixed = 1 if self.a_fixed else 0
+            a_dict['fixed'] = a_fixed
         except:
             pass
 
@@ -1586,7 +1606,8 @@ class ParameterSet(models.Model):
             'name': 'b'
         }
         try:
-            b_dict['fixed'] = self.b_fixed
+            b_fixed = 1 if self.b_fixed else 0
+            b_dict['fixed'] = b_fixed
         except:
             pass
 

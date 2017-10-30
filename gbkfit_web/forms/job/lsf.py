@@ -66,6 +66,13 @@ class LSFForm(forms.ModelForm):
 
 class EditLSFForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['lsf'] = LSF.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
         super(EditLSFForm, self).__init__(*args, **kwargs)
 
     class Meta:

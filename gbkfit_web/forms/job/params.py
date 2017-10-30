@@ -343,119 +343,119 @@ LABELS = {
     'xo_value': _('Value'),
     'xo_min': _('Minimum'),
     'xo_max': _('Maximum'),
-    'xo_wrap': _('Wrap'),
+    'xo_wrap': _('Wraparound'),
     'xo_step': _('Step'),
-    'xo_relstep': _('Relstep'),
-    'xo_side': _('Side'),
+    'xo_relstep':_('Relative step'),
+    'xo_side':_('Derivative sidedness'),
 
     #yo
     'yo_fixed': _('Fixed'),
     'yo_value': _('Value'),
     'yo_min': _('Minimum'),
     'yo_max': _('Maximum'),
-    'yo_wrap': _('Wrap'),
+    'yo_wrap': _('Wraparound'),
     'yo_step': _('Step'),
-    'yo_relstep': _('Relstep'),
-    'yo_side': _('Side'),
+    'yo_relstep':_('Relative step'),
+    'yo_side':_('Derivative sidedness'),
 
     #pa
     'pa_fixed': _('Fixed'),
     'pa_value': _('Value'),
     'pa_min': _('Minimum'),
     'pa_max': _('Maximum'),
-    'pa_wrap': _('Wrap'),
+    'pa_wrap': _('Wraparound'),
     'pa_step': _('Step'),
-    'pa_relstep': _('Relstep'),
-    'pa_side': _('Side'),
+    'pa_relstep':_('Relative step'),
+    'pa_side':_('Derivative sidedness'),
 
     #incl
     'incl_fixed': _('Fixed'),
     'incl_value': _('Value'),
     'incl_min': _('Minimum'),
     'incl_max': _('Maximum'),
-    'incl_wrap': _('Wrap'),
+    'incl_wrap': _('Wraparound'),
     'incl_step': _('Step'),
-    'incl_relstep': _('Relstep'),
-    'incl_side': _('Side'),
+    'incl_relstep':_('Relative step'),
+    'incl_side':_('Derivative sidedness'),
     
     #vsys
     'vsys_fixed': _('Fixed'),
     'vsys_value': _('Value'),
     'vsys_min': _('Minimum'),
     'vsys_max': _('Maximum'),
-    'vsys_wrap': _('Wrap'),
+    'vsys_wrap': _('Wraparound'),
     'vsys_step': _('Step'),
-    'vsys_relstep': _('Relstep'),
-    'vsys_side': _('Side'),
+    'vsys_relstep':_('Relative step'),
+    'vsys_side':_('Derivative sidedness'),
 
     #vsig
     'vsig_fixed': _('Fixed'),
     'vsig_value': _('Value'),
     'vsig_min': _('Minimum'),
     'vsig_max': _('Maximum'),
-    'vsig_wrap': _('Wrap'),
+    'vsig_wrap': _('Wraparound'),
     'vsig_step': _('Step'),
-    'vsig_relstep': _('Relstep'),
-    'vsig_side': _('Side'),
+    'vsig_relstep':_('Relative step'),
+    'vsig_side':_('Derivative sidedness'),
 
     'i0_fixed': _('Fixed'),
     'i0_value': _('Value'),
     'i0_min': _('Minimum'),
     'i0_max': _('Maximum'),
-    'i0_wrap': _('Wrap'),
+    'i0_wrap': _('Wraparound'),
     'i0_step': _('Step'),
-    'i0_relstep': _('Relstep'),
-    'i0_side': _('Side'),
+    'i0_relstep':_('Relative step'),
+    'i0_side':_('Derivative sidedness'),
 
     #r0
     'r0_fixed': _('Fixed'),
     'r0_value': _('Value'),
     'r0_min': _('Minimum'),
     'r0_max': _('Maximum'),
-    'r0_wrap': _('Wrap'),
+    'r0_wrap': _('Wraparound'),
     'r0_step': _('Step'),
-    'r0_relstep': _('Relstep'),
-    'r0_side': _('Side'),
+    'r0_relstep':_('Relative step'),
+    'r0_side':_('Derivative sidedness'),
 
     #rt
     'rt_fixed': _('Fixed'),
     'rt_value': _('Value'),
     'rt_min': _('Minimum'),
     'rt_max': _('Maximum'),
-    'rt_wrap': _('Wrap'),
+    'rt_wrap': _('Wraparound'),
     'rt_step': _('Step'),
-    'rt_relstep': _('Relstep'),
-    'rt_side': _('Side'),
+    'rt_relstep':_('Relative step'),
+    'rt_side':_('Derivative sidedness'),
 
     #vt
     'vt_fixed': _('Fixed'),
     'vt_value': _('Value'),
     'vt_min': _('Minimum'),
     'vt_max': _('Maximum'),
-    'vt_wrap': _('Wrap'),
+    'vt_wrap': _('Wraparound'),
     'vt_step': _('Step'),
-    'vt_relstep': _('Relstep'),
-    'vt_side': _('Side'),
+    'vt_relstep':_('Relative step'),
+    'vt_side':_('Derivative sidedness'),
     
     #a
     'a_fixed': _('Fixed'),
     'a_value': _('Value'),
     'a_min': _('Minimum'),
     'a_max': _('Maximum'),
-    'a_wrap': _('Wrap'),
+    'a_wrap': _('Wraparound'),
     'a_step': _('Step'),
-    'a_relstep': _('Relstep'),
-    'a_side': _('Side'),
+    'a_relstep':_('Relative step'),
+    'a_side':_('Derivative sidedness'),
 
     #b
     'b_fixed': _('Fixed'),
     'b_value': _('Value'),
     'b_min': _('Minimum'),
     'b_max': _('Maximum'),
-    'b_wrap': _('Wrap'),
+    'b_wrap': _('Wraparound'),
     'b_step': _('Step'),
-    'b_relstep': _('Relstep'),
-    'b_side': _('Side'),
+    'b_relstep':_('Relative step'),
+    'b_side':_('Derivative sidedness'),
 }
 
 
@@ -1139,11 +1139,17 @@ class ParamsForm(forms.ModelForm):
 
 class EditParamsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
         self.job_id = kwargs.pop('job_id', None)
         vel_profile = None
         fitter_type = None
 
         if self.job_id:
+            try:
+                self.request.session['params'] = ParameterSet.objects.get(job_id=self.job_id).as_array()
+            except:
+                pass
+
             try:
                 vel_profile = GalaxyModel.objects.get(job_id=self.job_id).vel_profile
             except:
@@ -1158,8 +1164,6 @@ class EditParamsForm(forms.ModelForm):
 
         if vel_profile != None:
             if vel_profile != GalaxyModel.EPINAT:
-                ab_fields = ['a_fixed', 'a_value', 'a_min', 'a_max', 'a_wrap', 'a_step', 'a_relstep', 'a_side',
-                             'b_fixed', 'b_value', 'b_min', 'b_max', 'b_wrap', 'b_step', 'b_relstep', 'b_side']
                 for field in A_FIELDS:
                     if field in self.fields: del self.fields[field]
                 for field in B_FIELDS:

@@ -1,6 +1,8 @@
 """
 Source: https://www.djangosnippets.org/snippets/1019/
 
+Adapted by DV.
+
 Syntax: {% get_fieldset list,of,fields as new_form_object from original_form %}
 
 note: list,of,fields doesn't allow spaces before/after comma.

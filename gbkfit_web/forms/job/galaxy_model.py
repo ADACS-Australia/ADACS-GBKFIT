@@ -60,6 +60,13 @@ class GalaxyModelForm(forms.ModelForm):
             
 class EditGalaxyModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['galaxy_model'] = GalaxyModel.objects.get(job_id=self.job_id).as_json()
+            except:
+                pass
         super(EditGalaxyModelForm, self).__init__(*args, **kwargs)
 
     class Meta:

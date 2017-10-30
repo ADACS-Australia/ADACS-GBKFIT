@@ -117,6 +117,13 @@ class DataSetForm(forms.ModelForm):
 
 class EditDataSetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.job_id = kwargs.pop('job_id', None)
+        if self.job_id:
+            try:
+                self.request.session['dataset'] = DataSet.objects.get(job_id=self.job_id).as_array()
+            except:
+                pass
         super(EditDataSetForm, self).__init__(*args, **kwargs)
 
     class Meta:
