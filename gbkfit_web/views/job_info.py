@@ -99,12 +99,15 @@ def model_instance_to_iterable(object, model=START, views=[]):
     fields, labels = get_meta(model, views, object)
 
     try:
-        object.fields = OrderedDict((field.name, field.value_to_string(object))
+        object.fields = OrderedDict(((field.name, [labels[field.name], field.value_to_string(object)])
+                             if 'file' not in field.name else (field.name, [labels[field.name],
+                                                                            basename(field.value_to_string(object))]))
                              for field in object._meta.fields if field.name in fields)
 
-        object.labels = OrderedDict(((labels[field.name], field.value_to_string(object))
-                             if 'file' not in field.name else (labels[field.name], basename(field.value_to_string(object))))
-                             for field in object._meta.fields if field.name in fields)
+        # object.labels = OrderedDict(((field.name, [labels[field.name], field.value_to_string(object)])
+        #                      if 'file' not in field.name else (field.name, [labels[field.name],
+        #                                                                     basename(field.value_to_string(object))]))
+        #                      for field in object._meta.fields if field.name in fields)
 
         return object
     except:
@@ -186,9 +189,7 @@ def get_meta(model, views, object):
           'nofinitecheck',
           'efr', 'tol', 'ztol', 'logzero', 'multinest_is', 'mmodal', 'ceff', 'nlive', 'multinest_maxiter', 'seed', 'outfile',
           ]
-        print(fields)
         fields = filter_fitter_fields(fields, object)
-        print (fields)
 
         labels = {
     'fitter_type': _('Type'),
@@ -218,135 +219,12 @@ def get_meta(model, views, object):
 }
 
     if model == PARAMS:
-        try:
-            fields = filter_params_fields(get_ParamsFields(),
-                                          object,
-                                          views[TABS_INDEXES[GMODEL]],
-                                          views[TABS_INDEXES[FITTER]]
-                                          )
-        except:
-            fields = get_ParamsFields()
+        fields = filter_params_fields(get_ParamsFields(),
+                                      object,
+                                      views[TABS_INDEXES[GMODEL]],
+                                      views[TABS_INDEXES[FITTER]])
 
-        labels = {
-    #xo
-    'xo_fixed': _('Fixed'),
-    'xo_value': _('Value'),
-    'xo_min': _('Minimum'),
-    'xo_max': _('Maximum'),
-    'xo_wrap': _('Wrap'),
-    'xo_step': _('Step'),
-    'xo_relstep': _('Relstep'),
-    'xo_side': _('Side'),
-
-    #yo
-    'yo_fixed': _('Fixed'),
-    'yo_value': _('Value'),
-    'yo_min': _('Minimum'),
-    'yo_max': _('Maximum'),
-    'yo_wrap': _('Wrap'),
-    'yo_step': _('Step'),
-    'yo_relstep': _('Relstep'),
-    'yo_side': _('Side'),
-
-    #pa
-    'pa_fixed': _('Fixed'),
-    'pa_value': _('Value'),
-    'pa_min': _('Minimum'),
-    'pa_max': _('Maximum'),
-    'pa_wrap': _('Wrap'),
-    'pa_step': _('Step'),
-    'pa_relstep': _('Relstep'),
-    'pa_side': _('Side'),
-
-    #incl
-    'incl_fixed': _('Fixed'),
-    'incl_value': _('Value'),
-    'incl_min': _('Minimum'),
-    'incl_max': _('Maximum'),
-    'incl_wrap': _('Wrap'),
-    'incl_step': _('Step'),
-    'incl_relstep': _('Relstep'),
-    'incl_side': _('Side'),
-
-    #vsys
-    'vsys_fixed': _('Fixed'),
-    'vsys_value': _('Value'),
-    'vsys_min': _('Minimum'),
-    'vsys_max': _('Maximum'),
-    'vsys_wrap': _('Wrap'),
-    'vsys_step': _('Step'),
-    'vsys_relstep': _('Relstep'),
-    'vsys_side': _('Side'),
-
-    #vsig
-    'vsig_fixed': _('Fixed'),
-    'vsig_value': _('Value'),
-    'vsig_min': _('Minimum'),
-    'vsig_max': _('Maximum'),
-    'vsig_wrap': _('Wrap'),
-    'vsig_step': _('Step'),
-    'vsig_relstep': _('Relstep'),
-    'vsig_side': _('Side'),
-
-    'i0_fixed': _('Fixed'),
-    'i0_value': _('Value'),
-    'i0_min': _('Minimum'),
-    'i0_max': _('Maximum'),
-    'i0_wrap': _('Wrap'),
-    'i0_step': _('Step'),
-    'i0_relstep': _('Relstep'),
-    'i0_side': _('Side'),
-
-    #r0
-    'r0_fixed': _('Fixed'),
-    'r0_value': _('Value'),
-    'r0_min': _('Minimum'),
-    'r0_max': _('Maximum'),
-    'r0_wrap': _('Wrap'),
-    'r0_step': _('Step'),
-    'r0_relstep': _('Relstep'),
-    'r0_side': _('Side'),
-
-    #rt
-    'rt_fixed': _('Fixed'),
-    'rt_value': _('Value'),
-    'rt_min': _('Minimum'),
-    'rt_max': _('Maximum'),
-    'rt_wrap': _('Wrap'),
-    'rt_step': _('Step'),
-    'rt_relstep': _('Relstep'),
-    'rt_side': _('Side'),
-
-    #vt
-    'vt_fixed': _('Fixed'),
-    'vt_value': _('Value'),
-    'vt_min': _('Minimum'),
-    'vt_max': _('Maximum'),
-    'vt_wrap': _('Wrap'),
-    'vt_step': _('Step'),
-    'vt_relstep': _('Relstep'),
-    'vt_side': _('Side'),
-
-    #a
-    'a_fixed': _('Fixed'),
-    'a_value': _('Value'),
-    'a_min': _('Minimum'),
-    'a_max': _('Maximum'),
-    'a_wrap': _('Wrap'),
-    'a_step': _('Step'),
-    'a_relstep': _('Relstep'),
-    'a_side': _('Side'),
-
-    #b
-    'b_fixed': _('Fixed'),
-    'b_value': _('Value'),
-    'b_min': _('Minimum'),
-    'b_max': _('Maximum'),
-    'b_wrap': _('Wrap'),
-    'b_step': _('Step'),
-    'b_relstep': _('Relstep'),
-    'b_side': _('Side'),
-}
+        labels = ParamsMeta.LABELS
 
     return fields, labels
 
@@ -413,70 +291,58 @@ def filter_fitter_fields(fields, object):
             if field in multinest_fields:
                 fields.remove(field)
 
-    print (fields)
-
     return fields
 
 def filter_params_fields(fields, object, galaxy_model, fitter):
-    if galaxy_model.fields['vel_profile'] != GalaxyModel.EPINAT:
-        for field in ParamsFields.A_FIELDS:
-            if field in fields: del fields[field]
-        for field in ParamsFields.B_FIELDS:
-            if field in fields: del fields[field]
+    object = add_fields_to_object(object, fields)
 
     if fitter.fields['fitter_type'] == Fitter_model.MPFIT:
         """
-        Uses:
-            - fixed 
-            - value 
-            - min 
-            - max 
-            - step 
-            - relstep 
-            - side
-
         Doesn't use:
             - wrap
         """
-        for fields_list in ParamsFields.FIELDS_LISTS:
+        for fields_list in ParamsMeta.FIELDS_LISTS:
             for field in fields_list:
                 if 'wrap' in field:
                     if field in fields: fields.remove(field)
 
     if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
         """
-        Uses:
-            - fixed
-            - min
-            - max
-            - wrap
-            - value
         Doesn't use:
             - step 
             - relstep 
             - side
         """
-        for fields_list in ParamsFields.FIELDS_LISTS:
+        for fields_list in ParamsMeta.FIELDS_LISTS:
             for field in fields_list:
-                if 'step' in field or 'relstep' in field or 'side' in field:
-                    if field in fields: fields.remove(field)
+                if field in ['step', 'relstep', 'side']:
+                    if field in fields:
+                        fields.remove(field)
 
-    object = add_fields_to_object(object, fields)
-
-    for fields_list in ParamsFields.FIELDS_LISTS:
+    for fields_list in ParamsMeta.FIELDS_LISTS:
         for field in fields_list:
             prefix = field.split('_')[0]
             if object.fields[prefix + '_fixed'] == 'True':
                 if 'value' not in field:
-                    if field in fields: fields.remove(field)
+                    if field in fields:
+                        fields.remove(field)
             else:
                 if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
                     if 'value' in field:
-                        if field in fields: fields.remove(field)
+                        if field in fields:
+                            fields.remove(field)
+
+    if galaxy_model.fields['vel_profile'] != GalaxyModel.EPINAT:
+        for field in ParamsMeta.A_FIELDS:
+            if field in fields:
+                fields.remove(field)
+        for field in ParamsMeta.B_FIELDS:
+            if field in fields:
+                fields.remove(field)
 
     return fields
 
-class ParamsFields:
+class ParamsMeta:
     XO_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side', ]
     YO_FIELDS = ['yo_fixed', 'yo_value', 'yo_min', 'yo_max', 'yo_wrap', 'yo_step', 'yo_relstep', 'yo_side', ]
     PA_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side', ]
@@ -496,9 +362,130 @@ class ParamsFields:
     FIELDS_LISTS = [XO_FIELDS, YO_FIELDS, PA_FIELDS, INCL_FIELDS, VSYS_FIELDS, VSIG_FIELDS,
                     I0_FIELDS, R0_FIELDS, RT_FIELDS, VT_FIELDS, A_FIELDS, B_FIELDS]
 
+    LABELS = {
+        #xo
+        'xo_fixed': _('Fixed'),
+        'xo_value': _('Value'),
+        'xo_min': _('Minimum'),
+        'xo_max': _('Maximum'),
+        'xo_wrap': _('Wrap'),
+        'xo_step': _('Step'),
+        'xo_relstep': _('Relstep'),
+        'xo_side': _('Side'),
+
+        #yo
+        'yo_fixed': _('Fixed'),
+        'yo_value': _('Value'),
+        'yo_min': _('Minimum'),
+        'yo_max': _('Maximum'),
+        'yo_wrap': _('Wrap'),
+        'yo_step': _('Step'),
+        'yo_relstep': _('Relstep'),
+        'yo_side': _('Side'),
+
+        #pa
+        'pa_fixed': _('Fixed'),
+        'pa_value': _('Value'),
+        'pa_min': _('Minimum'),
+        'pa_max': _('Maximum'),
+        'pa_wrap': _('Wrap'),
+        'pa_step': _('Step'),
+        'pa_relstep': _('Relstep'),
+        'pa_side': _('Side'),
+
+        #incl
+        'incl_fixed': _('Fixed'),
+        'incl_value': _('Value'),
+        'incl_min': _('Minimum'),
+        'incl_max': _('Maximum'),
+        'incl_wrap': _('Wrap'),
+        'incl_step': _('Step'),
+        'incl_relstep': _('Relstep'),
+        'incl_side': _('Side'),
+
+        #vsys
+        'vsys_fixed': _('Fixed'),
+        'vsys_value': _('Value'),
+        'vsys_min': _('Minimum'),
+        'vsys_max': _('Maximum'),
+        'vsys_wrap': _('Wrap'),
+        'vsys_step': _('Step'),
+        'vsys_relstep': _('Relstep'),
+        'vsys_side': _('Side'),
+
+        #vsig
+        'vsig_fixed': _('Fixed'),
+        'vsig_value': _('Value'),
+        'vsig_min': _('Minimum'),
+        'vsig_max': _('Maximum'),
+        'vsig_wrap': _('Wrap'),
+        'vsig_step': _('Step'),
+        'vsig_relstep': _('Relstep'),
+        'vsig_side': _('Side'),
+
+        'i0_fixed': _('Fixed'),
+        'i0_value': _('Value'),
+        'i0_min': _('Minimum'),
+        'i0_max': _('Maximum'),
+        'i0_wrap': _('Wrap'),
+        'i0_step': _('Step'),
+        'i0_relstep': _('Relstep'),
+        'i0_side': _('Side'),
+
+        #r0
+        'r0_fixed': _('Fixed'),
+        'r0_value': _('Value'),
+        'r0_min': _('Minimum'),
+        'r0_max': _('Maximum'),
+        'r0_wrap': _('Wrap'),
+        'r0_step': _('Step'),
+        'r0_relstep': _('Relstep'),
+        'r0_side': _('Side'),
+
+        #rt
+        'rt_fixed': _('Fixed'),
+        'rt_value': _('Value'),
+        'rt_min': _('Minimum'),
+        'rt_max': _('Maximum'),
+        'rt_wrap': _('Wrap'),
+        'rt_step': _('Step'),
+        'rt_relstep': _('Relstep'),
+        'rt_side': _('Side'),
+
+        #vt
+        'vt_fixed': _('Fixed'),
+        'vt_value': _('Value'),
+        'vt_min': _('Minimum'),
+        'vt_max': _('Maximum'),
+        'vt_wrap': _('Wrap'),
+        'vt_step': _('Step'),
+        'vt_relstep': _('Relstep'),
+        'vt_side': _('Side'),
+
+        #a
+        'a_fixed': _('Fixed'),
+        'a_value': _('Value'),
+        'a_min': _('Minimum'),
+        'a_max': _('Maximum'),
+        'a_wrap': _('Wrap'),
+        'a_step': _('Step'),
+        'a_relstep': _('Relstep'),
+        'a_side': _('Side'),
+
+        #b
+        'b_fixed': _('Fixed'),
+        'b_value': _('Value'),
+        'b_min': _('Minimum'),
+        'b_max': _('Maximum'),
+        'b_wrap': _('Wrap'),
+        'b_step': _('Step'),
+        'b_relstep': _('Relstep'),
+        'b_side': _('Side'),
+    }
+
 def get_ParamsFields():
     fields = []
-    for fields_list in ParamsFields.FIELDS_LISTS:
+    for fields_list in ParamsMeta.FIELDS_LISTS:
         for field in fields_list:
             fields.append(field)
 
