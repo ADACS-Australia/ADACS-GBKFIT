@@ -162,13 +162,13 @@ def build_task_json(request):
     #     )
     # )
 
-    dmodel = request.session['data_model'] if request.session.get('data_model', None) else None
-    dataset = request.session['dataset'] if request.session.get('dataset', None) else None
-    psf = request.session['psf'] if request.session.get('psf', None) else None
-    lsf = request.session['lsf'] if request.session.get('lsf', None) else None
-    gmodel = request.session['galaxy_model'] if request.session.get('galaxy_model', None) else None
-    fitter = request.session['fitter'] if request.session.get('fitter', None) else None
-    params = request.session['params'] if request.session.get('params', None) else None
+    dmodel = request.session.get('data_model', None)
+    dataset = request.session.get('dataset', None)
+    psf = request.session.get('psf', None)
+    lsf = request.session.get('lsf', None)
+    gmodel = request.session.get('galaxy_model', None)
+    fitter = request.session.get('fitter', None)
+    params = request.session.get('params', None)
 
     task_json = dict(
         mode='fit',
