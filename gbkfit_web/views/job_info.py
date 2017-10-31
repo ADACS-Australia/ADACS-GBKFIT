@@ -49,7 +49,6 @@ class JobDetailView(DetailView):
         context['now'] = timezone.now()
         return context
 
-
 class JobListView(ListView):
 
     model = Job
@@ -65,7 +64,6 @@ def delete_job(request, id):
 
     if request.method == 'POST' and request.is_ajax():
         return HttpResponse(json.dumps({'message': 'Job {} deleted'.format(id)}), content_type="application/json")
-
 
 class JobDetailView(DetailView):
     model = Job
@@ -85,12 +83,22 @@ class JobDetailView(DetailView):
 
         return context
 
-
 def model_instance_to_iterable(object, model=START, views=[]):
+    """
+    Converts the object returned from a Model query into an iterable object to be used by a template
+
+    :param object: object returned from a Model query
+    :param model: Model to be considered (using the tabs convention used in job.py)
+    :param views: list of views currently active
+    :return: the newly iterable object, or None.
+    """
     fields, labels = get_meta(model, views, object)
 
     try:
         object.fields = dict((field.name, field.value_to_string(object))
+                             for field in object._meta.fields if field.name in fields)
+
+        object.labels = dict((labels[field.name], field.value_to_string(object))
                              for field in object._meta.fields if field.name in fields)
 
         return object
@@ -98,9 +106,16 @@ def model_instance_to_iterable(object, model=START, views=[]):
         return None
 
 def get_meta(model, views, object):
+    """
+    Get metadata about a model (e.g. fields and labels to be displayed by a template.)
+    :param model: Model to be considered (using the tabs convention used in job.py)
+    :param views: list of views currently active
+    :param object: object returned from a Model query
+    :return: fields, labels
+    """
     if model == START:
-        fields = ['name', 'status', 'creation_time', 'submission_time']
-        labels = ['Job name', 'Status', 'Creation time', 'Submission time']
+        fields = ['name']
+        labels = {'name': _('Job name')}
 
     if model == DMODEL:
         fields = ['dmodel_type', 'method', 'scale_x', 'scale_y', 'scale_z', 'step_x', 'step_y', 'step_z']

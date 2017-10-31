@@ -1,16 +1,16 @@
-    {% for field,value in start_view.fields.items %}
+    {% for field,value in start_view.labels.items %}
         <div class="container-fluid field
-                    div-{{ field }}-{{ value }}
-                    ">
+            div-{{ field }}-{{ value }}
+            col-md-6
+            ">
 
             <!-- Label -->
-
             <label class="col-md-4">
                 {{ field }}
             </label>
 
             <!-- Field -->
-            <div class="col-md-12">
+            <div class="bg-info col-md-4">
                 {{ value }}
             </div>
 

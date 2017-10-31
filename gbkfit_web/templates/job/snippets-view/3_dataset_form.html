@@ -1,16 +1,17 @@
-    {% for field,value in dataset_view.fields.items %}
+    {% for field,value in dataset_view.labels.items %}
 
-        <div class="container-fluid field col-md-4
-                    div-{{ field }}-{{ value }}
-                    ">
+        <div class="container-fluid field
+            div-{{ field }}-{{ value }}
+            col-md-6
+            ">
 
             <!-- Label -->
-            <label>
+            <label class="col-md-4">
                 {{ field }}
             </label>
 
             <!-- Field -->
-            <div>
+            <div class="bg-info col-md-4">
                 {{ value }}
             </div>
 

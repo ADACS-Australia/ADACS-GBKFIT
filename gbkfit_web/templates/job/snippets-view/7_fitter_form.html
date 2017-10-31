@@ -1,15 +1,16 @@
-{% for field,value in fitter_view.fields.items %}
-    <div class="container-fluid field col-md-4
-            div-{{ field }}-{{ value }}
-            ">
+{% for field,value in fitter_view.labels.items %}
+    <div class="container-fluid field
+        div-{{ field }}-{{ value }}
+        col-md-6
+        ">
 
         <!-- Label -->
-        <label>
+        <label class="col-md-4">
             {{ field }}
         </label>
 
-        <!-- Field value -->
-        <div>
+        <!-- Field -->
+        <div class="bg-info col-md-4">
             {{ value }}
         </div>
 
