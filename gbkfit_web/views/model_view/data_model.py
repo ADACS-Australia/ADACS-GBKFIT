@@ -1,4 +1,6 @@
 from django import forms
+from django import views
+
 from gbkfit_web.models import DataModel, Job
 from django.utils.translation import ugettext_lazy as _
 
@@ -43,12 +45,12 @@ LABELS = {
 }
 
 
-class DataModelForm(forms.ModelForm):
+class DataModelView(views.View):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id = kwargs.pop('id', None)
-        super(DataModelForm, self).__init__(*args, **kwargs)
+        super(DataModelView, self).__init__(*args, **kwargs)
 
     class Meta:
         model = DataModel
@@ -90,7 +92,7 @@ class DataModelForm(forms.ModelForm):
                 scale=[data.get('scale_x'), data.get('scale_y')],
             )
 
-class EditDataModelForm(forms.ModelForm):
+class EditDataModelView(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.job_id = kwargs.pop('job_id', None)
@@ -99,7 +101,7 @@ class EditDataModelForm(forms.ModelForm):
                 self.request.session['data_model'] = DataModel.objects.get(job_id=self.job_id).as_json()
             except:
                 pass
-        super(EditDataModelForm, self).__init__(*args, **kwargs)
+        super(EditDataModelView, self).__init__(*args, **kwargs)
 
     class Meta:
         model = DataModel

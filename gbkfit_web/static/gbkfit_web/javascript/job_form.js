@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    $('.has-popover').popover({'trigger':'hover'});
+
     // Job start hide/show job name field:
     $('#id_name').addClass('form-control');
     $('body').on('change', '#id_job',

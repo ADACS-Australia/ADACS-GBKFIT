@@ -76,6 +76,7 @@ Welcome page
 
 .jumbotron {
     background-image: url("../images/background.jpg");
+    background-size:cover;
     /*background-blend-mode: screen;*/
     /*background-repeat: no-repeat;*/
     margin-bottom: 0px;
@@ -444,3 +445,19 @@ Welcome page
     display: none;
   }
 }
+
+
+/*!********************************************!*/
+/*!*                                          *!*/
+/*!*               ui-tooltip                 *!*/
+/*!*                                          *!*/
+/*!********************************************!*/
+/*field .help {*/
+    /*display: inline-block;*/
+/*}*/
+
+/*.ui-tooltip {*/
+    /*width: 210px;*/
+    /*padding: 10px 20px;*/
+    /*font: bold 14px "Helvetica Neue", Sans-Serif;*/
+/*}*/

@@ -1,0 +1,20 @@
+    {% for field,value in galaxy_model_view.fields.items %}
+
+        <div class="container-fluid field class="col-md-4"
+                    {% if 'epinat' in field or 'arctan' in field %}hidden{% endif %}
+                    {% if 'boissier' in field or 'flat' in field %}hidden{% endif %}
+                    div-{{ field.name }}
+                    ">
+
+            <!-- Label -->
+            <label>
+                {{ field }}
+            </label>
+
+            <!-- Field value -->
+            <div>
+                {{ value }}
+            </div>
+
+        </div>
+    {% endfor %}

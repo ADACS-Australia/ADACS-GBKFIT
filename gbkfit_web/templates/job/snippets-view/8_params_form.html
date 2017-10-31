@@ -1,0 +1,290 @@
+{% load fieldset %}
+    <fieldset id="xo_fieldset">
+        {% get_fieldset xo_fixed,xo_value,xo_min,xo_max,xo_wrap,xo_step,xo_relstep,xo_side as xo_fields from params_view %}
+        <legend>{{ xo_fields.xo_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field,value in xo_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="yo_fieldset">
+        {% get_fieldset yo_fixed,yo_value,yo_min,yo_max,yo_wrap,yo_step,yo_relstep,yo_side as yo_fields from params_view %}
+        <legend>{{ yo_fields.yo_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in yo_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="pa_fieldset">
+        {% get_fieldset pa_fixed,pa_value,pa_min,pa_max,pa_wrap,pa_step,pa_relstep,pa_side as pa_fields from params_view %}
+        <legend>{{ pa_fields.pa_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in pa_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="incl_fieldset">
+        {% get_fieldset incl_fixed,incl_value,incl_min,incl_max,incl_wrap,incl_step,incl_relstep,incl_side as incl_fields from params_view %}
+        <legend>{{ incl_fields.incl_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in incl_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="vsys_fieldset">
+        {% get_fieldset vsys_fixed,vsys_value,vsys_min,vsys_max,vsys_wrap,vsys_step,vsys_relstep,vsys_side as vsys_fields from params_view %}
+        <legend>{{ vsys_fields.vsys_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in vsys_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="vsig_fieldset">
+        {% get_fieldset vsig_fixed,vsig_value,vsig_min,vsig_max,vsig_wrap,vsig_step,vsig_relstep,vsig_side as vsig_fields from params_view %}
+        <legend>{{ vsig_fields.vsig_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in vsig_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="i0_fieldset">
+        {% get_fieldset i0_fixed,i0_value,i0_min,i0_max,i0_wrap,i0_step,i0_relstep,i0_side as i0_fields from params_view %}
+        <legend>{{ i0_fields.i0_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in i0_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+
+    <fieldset id="r0_fieldset">
+        {% get_fieldset r0_fixed,r0_value,r0_min,r0_max,r0_wrap,r0_step,r0_relstep,r0_side as r0_fields from params_view %}
+        <legend>{{ r0_fields.r0_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in r0_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="rt_fieldset">
+        {% get_fieldset rt_fixed,rt_value,rt_min,rt_max,rt_wrap,rt_step,rt_relstep,rt_side as rt_fields from params_view %}
+        <legend>{{ rt_fields.rt_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in rt_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="vt_fieldset">
+        {% get_fieldset vt_fixed,vt_value,vt_min,vt_max,vt_wrap,vt_step,vt_relstep,vt_side as vt_fields from params_view %}
+        <legend>{{ vt_fields.vt_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in vt_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="a_fieldset">
+        {% get_fieldset a_fixed,a_value,a_min,a_max,a_wrap,a_step,a_relstep,a_side as a_fields from params_view %}
+        <legend>{{ a_fields.a_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in a_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+
+    <fieldset id="b_fieldset">
+        {% get_fieldset b_fixed,b_value,b_min,b_max,b_wrap,b_step,b_relstep,b_side as b_fields from params_view %}
+        <legend>{{ b_fields.b_fixed.name|cut:"_fixed" }}</legend>
+        <div class="container-fluid field">
+        {% for field in b_fields.fields.items %}
+            <div class="container-fluid field col-md-4
+                div-{{ field }}-{{ value }}
+                ">
+
+                <!-- Label -->
+                <label>
+                    {{ field }}
+                </label>
+
+                <!-- Field -->
+                <div>
+                    {{ value }}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </fieldset>
+

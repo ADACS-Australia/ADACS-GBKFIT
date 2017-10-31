@@ -1,5 +1,5 @@
 from django import forms
-from gbkfit_web.models import DataSet, DataModel, Job
+from gbkfit_web.models import DataSet, Job
 from django.utils.translation import ugettext_lazy as _
 
 FIELDS = ['dataset1_type', 'datafile1', 'errorfile1', 'maskfile1',
@@ -119,23 +119,12 @@ class EditDataSetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.job_id = kwargs.pop('job_id', None)
-        dmodel_type = None
-
         if self.job_id:
             try:
                 self.request.session['dataset'] = DataSet.objects.get(job_id=self.job_id).as_array()
             except:
                 pass
-
-            try:
-                dmodel_type = DataModel.objects.get(job_id=self.job_id).dmodel_type
-            except:
-                pass
         super(EditDataSetForm, self).__init__(*args, **kwargs)
-
-        if dmodel_type != None:
-            if dmodel_type == DataModel.MMAPS_CUDA or dmodel_type == DataModel.MMAPS_OMP:
-                self.fields['dataset1_type'].choices = DataSet.TYPE_CHOICES[:-1]
 
     class Meta:
         model = DataSet

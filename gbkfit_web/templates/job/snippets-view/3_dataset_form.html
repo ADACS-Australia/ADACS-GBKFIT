@@ -1,0 +1,18 @@
+    {% for field,value in dataset_view.fields.items %}
+
+        <div class="container-fluid field col-md-4
+                    div-{{ field }}-{{ value }}
+                    ">
+
+            <!-- Label -->
+            <label>
+                {{ field }}
+            </label>
+
+            <!-- Field -->
+            <div>
+                {{ value }}
+            </div>
+
+        </div>
+    {% endfor %}

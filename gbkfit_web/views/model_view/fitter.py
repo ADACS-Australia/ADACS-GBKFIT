@@ -10,128 +10,100 @@ FIELDS = ['fitter_type',
 
 WIDGETS = {
     'fitter_type': forms.Select(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'ftol': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'xtol': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'gtol': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'epsfcn': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'stepfactor': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'covtol': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'mpfit_maxiter': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'maxfev': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'nprint': forms.CheckboxInput(
-        attrs={'class': 'has-popover'},
+        # attrs={'class': 'form-control'},
     ),
     'douserscale': forms.CheckboxInput(
-        attrs={'class': 'has-popover'},
+        # attrs={'class': 'form-control'},
     ),
     'nofinitecheck': forms.CheckboxInput(
-        attrs={'class': 'has-popover'},
+        # attrs={'class': 'form-control'},
     ),
     'efr': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'tol': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'ztol': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'logzero': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'multinest_is': forms.CheckboxInput(
-        attrs={'class': 'has-popover'},
+        # attrs={'class': 'form-control'},
     ),
     'mmodal': forms.CheckboxInput(
-        attrs={'class': 'has-popover'},
+        # attrs={'class': 'form-control'},
     ),
     'ceff': forms.CheckboxInput(
-        attrs={'class': 'has-popover'},
+        # attrs={'class': 'form-control'},
     ),
     'nlive': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'multinest_maxiter': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'seed': forms.TextInput(
-        attrs={'class': 'form-control has-popover'},
+        attrs={'class': 'form-control'},
     ),
     'outfile': forms.CheckboxInput(
-        attrs={'class': 'has-popover'},
+        # attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
     'fitter_type': _('Type'),
-    'ftol': _('Chi-square criterium'),
-    'xtol': _('Parameter criterium'),
-    'gtol': _('Orthogonality criterium'),
-    'epsfcn': _('Derivative step size'),
-    'stepfactor': _('Initial step bound'),
-    'covtol': _('Covariance tolerance'),
-    'mpfit_maxiter': _('Maximum iterations'),
-    'maxfev': _('Maximum function evaluations'),
-    'nprint': _('Print information to stdout'),
-    'douserscale': _('Scale variables'),
-    'nofinitecheck': _('Check for infinite quantities'),
-
-    'efr': _('Sampling efficiency'),
-    'tol': _('Evidence tolerance'),
-    'ztol': _('Null log-evidence'),
-    'logzero': _('Log-zero'),
-    'multinest_is': _('Importance Nested Sampling'),
-    'mmodal': _('Mode separation'),
-    'ceff': _('Constant efficiency'),
-    'nlive': _('Live points'),
-    'multinest_maxiter': _('Maximum iterations'),
-    'seed': _('Seed'),
-    'outfile': _('Output to file'),
-}
-
-HELP_TEXTS = {
-    'fitter_type': _('Type'),
-    'ftol': _('Relative chi-square convergence criterium.'),
-    'xtol': _('Relative parameter convergence criterium.'),
-    'gtol': _('Orthogonality convergence criterium.'),
-    'epsfcn': _('Finite derivative step size.'),
-    'stepfactor': _('Initial step bound.'),
-    'covtol': _('Range tolerance for covariance calculation.'),
-    'mpfit_maxiter': _('Maximum number of iterations.'),
-    'maxfev': _('Maximum number of function evaluations, or 0 for no limit.'),
-    'nprint': _('Print information to stdout.'),
-    'douserscale': _('Scale variables by user values.'),
-    'nofinitecheck': _('Check for infinite quantities.'),
-
-    'efr': _('Sampling efficiency.'),
-    'tol': _('Evidence tolerance factor.'),
-    'ztol': _('Null log-evidence.'),
-    'logzero': _('Points with log-likelihood < logzero will be ignored by MultiNest.'),
-    'multinest_is': _('Enable Importance Nested Sampling. If enabled, mode separation is not possible.'),
-    'mmodal': _('Enable mode separation. If enabled, Importance Nested sampling is not possible.'),
-    'ceff': _('Enable constant efficiency mode.'),
-    'nlive': _('Number of live points'),
-    'multinest_maxiter': _('Maximum number of iterations. A non-positive value means infinity.'),
-    'seed': _('Random number generator seed.'),
-    'outfile': _('Output results to file.'),
+    'ftol': _('ftol'),
+    'xtol': _('xtol'),
+    'gtol': _('gtol'),
+    'epsfcn': _('epsfcn'),
+    'stepfactor': _('stepfactor'),
+    'covtol': _('covtol'),
+    'mpfit_maxiter': _('maxiter'),
+    'maxfev': _('maxfev'),
+    'nprint': _('nprint'),
+    'douserscale': _('douserscale'),
+    'nofinitecheck': _('nofinitecheck'),
+    'efr': _('efr'),
+    'tol': _('tol'),
+    'ztol': _('ztol'),
+    'logzero': _('logzero'),
+    'multinest_is': _('is'),
+    'mmodal': _('mmodal'),
+    'ceff': _('ceff'),
+    'nlive': _('nlive'),
+    'multinest_maxiter': _('maxiter'),
+    'seed': _('seed'),
+    'outfile': _('outfile'),
 }
 
 
@@ -232,17 +204,8 @@ class EditFitterForm(forms.ModelForm):
                 pass
         super(EditFitterForm, self).__init__(*args, **kwargs)
 
-        for field in self.fields:
-            help_text = self.fields[field].help_text
-            self.fields[field].help_text = None
-            if help_text != '':
-                self.fields[field].widget.attrs.update(
-                    {'data-content': help_text, 'data-placement': 'top',
-                     'data-container': 'body'})
-
     class Meta:
         model = Fitter
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
-        help_texts = HELP_TEXTS
