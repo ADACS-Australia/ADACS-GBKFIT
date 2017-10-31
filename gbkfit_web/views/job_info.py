@@ -104,11 +104,6 @@ def model_instance_to_iterable(object, model=START, views=[]):
                                                                             basename(field.value_to_string(object))]))
                              for field in object._meta.fields if field.name in fields)
 
-        # object.labels = OrderedDict(((field.name, [labels[field.name], field.value_to_string(object)])
-        #                      if 'file' not in field.name else (field.name, [labels[field.name],
-        #                                                                     basename(field.value_to_string(object))]))
-        #                      for field in object._meta.fields if field.name in fields)
-
         return object
     except:
         return None

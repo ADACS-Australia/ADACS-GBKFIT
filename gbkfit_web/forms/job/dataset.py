@@ -63,18 +63,47 @@ class DataSetForm(forms.ModelForm):
 
         job = Job.objects.get(id=self.id)
 
-        DataSet.objects.create(
-            job=job,
-            dataset1_type=data.get('dataset1_type'),
-            datafile1=data.get('datafile1'),
-            errorfile1=data.get('errorfile1'),
-            maskfile1=data.get('maskfile1'),
-            dataset2_type=data.get('dataset2_type'),
-            datafile2=data.get('datafile2'),
-            errorfile2=data.get('errorfile2'),
-            maskfile2=data.get('maskfile2'),
-        )
+        try:
+            result = DataSet.objects.create(
+                job=job,
+                dataset1_type=data.get('dataset1_type'),
+                datafile1=data.get('datafile1'),
+                errorfile1=data.get('errorfile1'),
+                maskfile1=data.get('maskfile1'),
+                dataset2_type=data.get('dataset2_type'),
+                datafile2=data.get('datafile2'),
+                errorfile2=data.get('errorfile2'),
+                maskfile2=data.get('maskfile2'),
+            )
+        except:
+            result = DataSet.objects.filter(job_id=self.id).update(
+                dataset1_type=data.get('dataset1_type'),
+                datafile1=data.get('datafile1'),
+                errorfile1=data.get('errorfile1'),
+                maskfile1=data.get('maskfile1'),
+                dataset2_type=data.get('dataset2_type'),
+                datafile2=data.get('datafile2'),
+                errorfile2=data.get('errorfile2'),
+                maskfile2=data.get('maskfile2'),
+            )
+
+        # DataSet.objects.create(
+        #     job=job,
+        #     dataset1_type=data.get('dataset1_type'),
+        #     datafile1=data.get('datafile1'),
+        #     errorfile1=data.get('errorfile1'),
+        #     maskfile1=data.get('maskfile1'),
+        #     dataset2_type=data.get('dataset2_type'),
+        #     datafile2=data.get('datafile2'),
+        #     errorfile2=data.get('errorfile2'),
+        #     maskfile2=data.get('maskfile2'),
+        # )
         self.request.session['dataset'] = self.as_array(data)
+
+
+
+
+
 
     def as_array(self, data):
         # 1st batch of files

@@ -212,21 +212,22 @@ def act_on_request_method_edit(request, active_tab, id):
                                           request=request,
                                           job_id=id)
         else:
-            try:
-                # Update
-                instance = MODELS_EDIT[active_tab].objects.get(job_id=id)
-                form = FORMS_EDIT[active_tab](request.POST,
-                                              instance=instance,
-                                              request=request,
-                                              job_id=id)
-            except:
-                if active_tab != DATASET:
-                    form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
+            if active_tab == DATASET:
+                if request.FILES['datafile1']:
+                    form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
                 else:
-                    if request.FILES['datafile1']:
-                        form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
-                    else:
-                        form = FORMS_NEW[active_tab](request=request, id=id)
+                    form = FORMS_NEW[active_tab](request=request, id=id)
+            else:
+                try:
+                    # Update
+                    instance = MODELS_EDIT[active_tab].objects.get(job_id=id)
+                    form = FORMS_EDIT[active_tab](request.POST,
+                                                  instance=instance,
+                                                  request=request,
+                                                  job_id=id)
+                except:
+                    form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
+
 
         active_tab = save_form(form, request, active_tab)
 
@@ -282,7 +283,8 @@ def act_on_request_method_edit(request, active_tab, id):
                                                                      model=DMODEL,
                                                                      views=views) if data_model else None)
 
-    if tab_checker != DATASET:
+    if tab_checker != DATASET or tab_checker == DATASET:
+        #Always get in here.
         try:
             dataset = DataSet.objects.get(job_id=id)
             dataset_form = FORMS_EDIT[DATASET](instance=dataset, request=request, job_id=id)
