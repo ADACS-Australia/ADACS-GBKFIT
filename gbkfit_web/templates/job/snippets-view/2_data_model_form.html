@@ -1,3 +1,4 @@
+{% if data_model_view.labels.items|length > 0 %}
     {% for field,value in data_model_view.labels.items %}
 
         <div class="container-fluid field
@@ -11,9 +12,16 @@
             </label>
 
             <!-- Field -->
-            <div class="bg-info col-md-4">
+            <div class="bg-info col-md-8">
                 {{ value }}
             </div>
 
         </div>
     {% endfor %}
+{% else %}
+    <div class="container-fluid col-md-6 not-saved-yet">
+        <label class="col-md-4">
+            Not saved yet.
+        </label>
+    </div>
+{% endif %}

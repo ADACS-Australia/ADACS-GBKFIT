@@ -1,18 +1,25 @@
-{% for field,value in fitter_view.labels.items %}
-    <div class="container-fluid field
-        div-{{ field }}-{{ value }}
-        col-md-6
-        ">
+{% if fitter_view.labels.items|length > 0 %}
+    {% for field,value in fitter_view.labels.items %}
+        <div class="container-fluid field
+            div-{{ field }}-{{ value }}
+            col-md-6
+            ">
 
-        <!-- Label -->
-        <label class="col-md-4">
-            {{ field }}
-        </label>
+            <!-- Label -->
+            <label class="col-md-8">
+                {{ field }}
+            </label>
 
-        <!-- Field -->
-        <div class="bg-info col-md-4">
-            {{ value }}
+            <!-- Field -->
+            <div class="bg-info col-md-4">
+                {{ value }}
+            </div>
         </div>
-
+    {% endfor %}
+{% else %}
+    <div class="container-fluid col-md-6 not-saved-yet">
+        <label class="col-md-4">
+            Not saved yet.
+        </label>
     </div>
-{% endfor %}
+{% endif %}

@@ -1,4 +1,5 @@
 {% load fieldset %}
+{% if params_view.labels.items|length > 0 %}
     <fieldset id="xo_fieldset">
         {% get_fieldset xo_fixed,xo_value,xo_min,xo_max,xo_wrap,xo_step,xo_relstep,xo_side as xo_fields from params_view %}
         <h4>xo</h4>
@@ -15,7 +16,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -40,7 +41,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -65,7 +66,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -90,7 +91,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -115,7 +116,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -140,7 +141,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -165,7 +166,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -191,7 +192,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -216,7 +217,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -241,7 +242,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -266,7 +267,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -291,7 +292,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-4">
+                <div class="bg-info col-md-8">
                     {{ value }}
                 </div>
 
@@ -299,4 +300,10 @@
         {% endfor %}
         </div>
     </fieldset>
-
+{% else %}
+    <div class="container-fluid col-md-6 not-saved-yet">
+        <label class="col-md-4">
+            Not saved yet.
+        </label>
+    </div>
+{% endif %}

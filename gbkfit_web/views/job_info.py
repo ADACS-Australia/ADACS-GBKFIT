@@ -6,6 +6,10 @@ from gbkfit_web.models import Job
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from collections import OrderedDict
+
+from os.path import basename
+
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params
@@ -95,10 +99,11 @@ def model_instance_to_iterable(object, model=START, views=[]):
     fields, labels = get_meta(model, views, object)
 
     try:
-        object.fields = dict((field.name, field.value_to_string(object))
+        object.fields = OrderedDict((field.name, field.value_to_string(object))
                              for field in object._meta.fields if field.name in fields)
 
-        object.labels = dict((labels[field.name], field.value_to_string(object))
+        object.labels = OrderedDict(((labels[field.name], field.value_to_string(object))
+                             if 'file' not in field.name else (labels[field.name], basename(field.value_to_string(object))))
                              for field in object._meta.fields if field.name in fields)
 
         return object
@@ -119,6 +124,8 @@ def get_meta(model, views, object):
 
     if model == DMODEL:
         fields = ['dmodel_type', 'method', 'scale_x', 'scale_y', 'scale_z', 'step_x', 'step_y', 'step_z']
+        fields = filter_data_model_fields(fields, object)
+
         labels = {
             'dmodel_type': _('Type'),
             'method': _('Method'),
@@ -131,8 +138,7 @@ def get_meta(model, views, object):
         }
 
     if model == DATASET:
-        fields = ['dataset1_type', 'datafile1', 'errorfile1', 'maskfile1',
-                  'dataset2_type', 'datafile2', 'errorfile2', 'maskfile2',]
+        fields = ['dataset1_type', 'datafile1', 'errorfile1', 'maskfile1']
         labels = {
             'dataset1_type': _('Type'),
             'datafile1': _('Data file'),
@@ -146,6 +152,8 @@ def get_meta(model, views, object):
 
     if model == PSF:
         fields = ['psf_type', 'fwhm_x', 'fwhm_y', 'pa', 'beta']
+        fields = filter_psf_fields(fields, object)
+
         labels = {
             'psf_type': _('Type'),
             'fwhm_x': _('FWHM X'),
@@ -156,6 +164,8 @@ def get_meta(model, views, object):
 
     if model == LSF:
         fields = ['lsf_type', 'fwhm', 'beta']
+        fields = filter_lsf_fields(fields, object)
+
         labels = {
             'lsf_type': _('Type'),
             'fwhm': _('FWHM'),
@@ -176,31 +186,35 @@ def get_meta(model, views, object):
           'nofinitecheck',
           'efr', 'tol', 'ztol', 'logzero', 'multinest_is', 'mmodal', 'ceff', 'nlive', 'multinest_maxiter', 'seed', 'outfile',
           ]
-        # fields = filter_fitter_fields(fields, object)
+        print(fields)
+        fields = filter_fitter_fields(fields, object)
+        print (fields)
+
         labels = {
     'fitter_type': _('Type'),
-    'ftol': _('ftol'),
-    'xtol': _('xtol'),
-    'gtol': _('gtol'),
-    'epsfcn': _('epsfcn'),
-    'stepfactor': _('stepfactor'),
-    'covtol': _('covtol'),
-    'mpfit_maxiter': _('maxiter'),
-    'maxfev': _('maxfev'),
-    'nprint': _('nprint'),
-    'douserscale': _('douserscale'),
-    'nofinitecheck': _('nofinitecheck'),
-    'efr': _('efr'),
-    'tol': _('tol'),
-    'ztol': _('ztol'),
-    'logzero': _('logzero'),
-    'multinest_is': _('is'),
-    'mmodal': _('mmodal'),
-    'ceff': _('ceff'),
-    'nlive': _('nlive'),
-    'multinest_maxiter': _('maxiter'),
-    'seed': _('seed'),
-    'outfile': _('outfile'),
+    'ftol': _('Chi-square criterium'),
+    'xtol': _('Parameter criterium'),
+    'gtol': _('Orthogonality criterium'),
+    'epsfcn': _('Derivative step size'),
+    'stepfactor': _('Initial step bound'),
+    'covtol': _('Covariance tolerance'),
+    'mpfit_maxiter': _('Maximum iterations'),
+    'maxfev': _('Maximum function evaluations'),
+    'nprint': _('Print information to stdout'),
+    'douserscale': _('Scale variables'),
+    'nofinitecheck': _('Check for infinite quantities'),
+
+    'efr': _('Sampling efficiency'),
+    'tol': _('Evidence tolerance'),
+    'ztol': _('Null log-evidence'),
+    'logzero': _('Log-zero'),
+    'multinest_is': _('Importance Nested Sampling'),
+    'mmodal': _('Mode separation'),
+    'ceff': _('Constant efficiency'),
+    'nlive': _('Live points'),
+    'multinest_maxiter': _('Maximum iterations'),
+    'seed': _('Seed'),
+    'outfile': _('Output to file'),
 }
 
     if model == PARAMS:
@@ -337,36 +351,71 @@ def get_meta(model, views, object):
     return fields, labels
 
 def add_fields_to_object(object, fields):
-    object.fields = dict((field.name, field.value_to_string(object))
+    object.fields = OrderedDict((field.name, field.value_to_string(object))
                          for field in object._meta.fields if field.name in fields)
     return object
 
 def filter_data_model_fields(fields, object):
-    pass
+    object = add_fields_to_object(object, fields)
+
+    fields_loop = fields.copy()
+    for field in fields_loop:
+        if 'mmaps' in object.fields['dmodel_type']:
+            if 'z' in field:
+                if field in fields: fields.remove(field)
+
+    return fields
 
 def filter_dataset_fields(fields, object):
     pass
 
 def filter_psf_fields(fields, object):
-    pass
+    object = add_fields_to_object(object, fields)
+
+    fields_loop = fields.copy()
+    for field in fields_loop:
+        if object.fields['psf_type'] != PSF_model.MOFFAT:
+            if 'beta' in field:
+                fields.remove(field)
+
+    return fields
 
 def filter_lsf_fields(fields, object):
-    pass
+    object = add_fields_to_object(object, fields)
+
+    fields_loop = fields.copy()
+    for field in fields_loop:
+        if object.fields['lsf_type'] != PSF_model.MOFFAT:
+            if 'beta' in field:
+                fields.remove(field)
+
+    return fields
 
 def filter_galaxy_model_fields(fields, object):
     pass
 
 def filter_fitter_fields(fields, object):
     object = add_fields_to_object(object, fields)
-    for field in fields:
-        prefix = field.split('_')[0]
-        if object.fields[prefix + '_fixed'] == 'True':
-            if 'value' not in field:
-                if field in fields: fields.remove(field)
-        else:
-            if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
-                if 'value' in field:
-                    if field in fields: fields.remove(field)
+
+    mpfit_fields = ['ftol', 'xtol', 'gtol', 'epsfcn', 'stepfactor', 'covtol', 'mpfit_maxiter',
+                        'maxfev', 'nprint', 'douserscale', 'nofinitecheck']
+
+
+    multinest_fields = ['efr', 'tol', 'ztol', 'logzero', 'multinest_is', 'mmodal', 'ceff', 'nlive',
+                    'multinest_maxiter', 'seed', 'outfile']
+
+    fields_loop = fields.copy()
+    for field in fields_loop:
+        if object.fields['fitter_type'] == Fitter_model.MULTINEST:
+            if field in mpfit_fields:
+                fields.remove(field)
+        if object.fields['fitter_type'] == Fitter_model.MPFIT:
+            if field in multinest_fields:
+                fields.remove(field)
+
+    print (fields)
+
+    return fields
 
 def filter_params_fields(fields, object, galaxy_model, fitter):
     if galaxy_model.fields['vel_profile'] != GalaxyModel.EPINAT:
@@ -412,8 +461,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
                 if 'step' in field or 'relstep' in field or 'side' in field:
                     if field in fields: fields.remove(field)
 
-    object.fields = dict((field.name, field.value_to_string(object))
-                         for field in object._meta.fields if field.name in fields)
+    object = add_fields_to_object(object, fields)
 
     for fields_list in ParamsFields.FIELDS_LISTS:
         for field in fields_list:
