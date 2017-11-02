@@ -28,6 +28,12 @@
     text-align: center;
 }
 
+.page-header .header-center .big {
+    text-align: center;
+    font-size: x-large;
+}
+
+
 /*!********************************************!*/
 /*!*                                          *!*/
 /*!*                  Navbar                  *!*/
@@ -61,6 +67,21 @@
     left: 50%;
     transform: translatex(-50%);
   }
+
+
+.summary-center {
+    /*background-color: #555;*/
+    /*color: white;*/
+    position: absolute;
+    padding-left: 4em;
+    padding-right: 4em;
+    left: 50%;
+    transform: translate(-50%, -132%);
+  }
+
+.not-saved-yet {
+    color: red;
+}
 
 /*
 
