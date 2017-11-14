@@ -10,7 +10,5 @@ test_output
 gbkfit/settings/local.py
 log/*
 env/*
-
-meetings/*
 media/*
 lib/*
