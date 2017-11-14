@@ -1,11 +1,14 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 
 from gbkfit_web.views import account, index, job, verify, job_info
+from rest_framework import routers, serializers, viewsets
+
 
 urlpatterns = [
     url(r'^$', index.index, name='index'),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     url(r'^jobs/(?P<pk>\d+)/$', login_required(job_info.JobDetailView.as_view(template_name='job/job_detail.html')), name='job_detail'),
     url(r'^jobs/$', login_required(job_info.JobListView.as_view(template_name='job/job_list.html')), name='job_list'),
@@ -20,7 +23,7 @@ urlpatterns = [
     url(r'^new_job/(?P<id>\d+)/galaxy_model$', job.edit_job_galaxy_model, name='job_galaxy_model_edit'),
     url(r'^new_job/(?P<id>\d+)/fitter$', job.edit_job_fitter, name='job_fitter_edit'),
     url(r'^new_job/(?P<id>\d+)/params$', job.edit_job_params, name='job_params_edit'),
-    url(r'^new_job/launch$', job.launch, name='job_launch'),
+    url(r'^new_job/(?P<id>\d+)/launch$', job.launch, name='job_launch'),
 
     url(r'^register/$', account.registration, name='register'),
     url(r'^verify/$', verify.verify, name='verify'),
@@ -38,3 +41,11 @@ urlpatterns = [
         account.password_reset_confirm, name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
 ]
+
+###############
+# REST API
+###############
+
+# Routers provide an easy way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+# router.register(r'users', UserViewSet)

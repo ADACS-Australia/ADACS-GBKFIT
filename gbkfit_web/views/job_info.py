@@ -117,8 +117,8 @@ def get_meta(model, views, object):
     :return: fields, labels
     """
     if model == START:
-        fields = ['name']
-        labels = {'name': _('Job name')}
+        fields = ['name', 'description']
+        labels = {'name': _('Job name'), 'description': _('Job description')}
 
     if model == DMODEL:
         fields = ['dmodel_type', 'method', 'scale_x', 'scale_y', 'scale_z', 'step_x', 'step_y', 'step_z']

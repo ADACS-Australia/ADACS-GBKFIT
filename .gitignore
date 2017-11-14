@@ -9,3 +9,6 @@ db.sqlite3
 test_output
 gbkfit/settings/local.py
 log/*
+env/*
+media/*
+lib/*

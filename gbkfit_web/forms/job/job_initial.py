@@ -2,16 +2,20 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from gbkfit_web.models import Job
 
-FIELDS = ['name']
+FIELDS = ['name', 'description']
 
 WIDGETS = {
     'name': forms.TextInput(
+        attrs={'class': 'form-control'},
+    ),
+    'description': forms.Textarea(
         attrs={'class': 'form-control'},
     ),
 }
 
 LABELS = {
     'name': _('Job name'),
+    'description': _('Job description'),
 }
 
 
