@@ -4,6 +4,8 @@ $(document).ready(function() {
 
     // Job start hide/show job name field:
     $('#id_name').addClass('form-control');
+    $('#id_description').addClass('form-control');
+
     $('body').on('change', '#id_job',
         function() {
             if ($('#id_job').find(":selected").text() != 'New')

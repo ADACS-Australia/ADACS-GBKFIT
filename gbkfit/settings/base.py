@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'django_extensions',
     'gbkfit_web.apps.GbkfitWebConfig',
     'gbkfit_web.templatetags.fieldset',
     'django.contrib.admin',

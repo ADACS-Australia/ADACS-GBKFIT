@@ -7,6 +7,7 @@ from django.utils import timezone
 from six.moves.urllib.parse import quote_plus, unquote_plus, parse_qsl
 
 from gbkfit_web.models import Verification
+from os import path, makedirs
 
 logger = logging.getLogger(__name__)
 
@@ -71,3 +72,17 @@ def get_information(token):
     except Exception as e:
         logger.exception(e)  # should notify admins via email
         raise
+
+def check_path(my_path):
+    """
+    Check if path ends with a slash ('/'). Else, it adds it.
+    :param path: path
+    :return: functional path
+    """
+    if len(my_path) > 0 and my_path[-1] != '/':
+        my_path = my_path + '/'
+
+    if not path.exists(path):
+        makedirs(path)
+
+    return path

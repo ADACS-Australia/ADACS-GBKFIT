@@ -81,6 +81,7 @@ class User(auth_models.AbstractUser):
 class Job(models.Model):
     user = models.ForeignKey(User, related_name='user_job')
     name = models.CharField(max_length=255, blank=False, null=False)
+    description = models.TextField(blank=True, null=True)
 
     DRAFT = 'Draft'
     SUBMITTED = 'Submitted'
@@ -500,20 +501,24 @@ class GalaxyModel(models.Model):
     job = models.OneToOneField(Job, related_name='job_gmodel')
     # name = models.CharField(max_length=255, blank=False, null=False)
 
-    THINDISK_OMP = 'thindisk_omp'
-    THINDISK_CUDA = 'thindisk_cuda'
+    # THINDISK_OMP = 'thindisk_omp'
+    # THINDISK_CUDA = 'thindisk_cuda'
+    GMODEL_OMP = 'gmodel1_omp'
+    GMODEL_CUDA = 'gmodel1_cuda'
 
     TYPE_CHOICES = [
-        (THINDISK_OMP, THINDISK_OMP),
-        (THINDISK_CUDA, THINDISK_CUDA),
+        (GMODEL_OMP, GMODEL_OMP),
+        (GMODEL_CUDA, GMODEL_CUDA),
     ]
-    gmodel_type = models.CharField(max_length=13, choices=TYPE_CHOICES, blank=False, default=THINDISK_OMP)
+    gmodel_type = models.CharField(max_length=13, choices=TYPE_CHOICES, blank=False, default=GMODEL_OMP)
 
     EXPONENTIAL = 'exponential'
     FLAT= 'flat'
     BOISSIER = 'boissier'
     ARCTAN = 'arctan'
     EPINAT = 'epinat'
+    LRAMP = 'lramp'
+
     # RINGS = 'rings'
 
     flx_profile_TYPE_CHOICES = [
@@ -523,20 +528,21 @@ class GalaxyModel(models.Model):
     flx_profile = models.CharField(max_length=11, choices=flx_profile_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
 
     vel_profile_TYPE_CHOICES = [
-        (EXPONENTIAL, EXPONENTIAL),
-        (FLAT, FLAT),
-        (BOISSIER, BOISSIER),
+        # (EXPONENTIAL, EXPONENTIAL),
         (ARCTAN, ARCTAN),
+        (BOISSIER, BOISSIER),
+        (LRAMP, LRAMP),
+        # (FLAT, FLAT),
         (EPINAT, EPINAT),
         # (RINGS, RINGS),
     ]
-    vel_profile = models.CharField(max_length=11, choices=vel_profile_TYPE_CHOICES, blank=False, default=EXPONENTIAL)
+    vel_profile = models.CharField(max_length=11, choices=vel_profile_TYPE_CHOICES, blank=False, default=ARCTAN)
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
     def as_json(self):
         return dict(
-            type=self.gmodel_type,
+            type="gbkfit.gmodel." + self.gmodel_type,
             flx_profile=self.flx_profile,
             vel_profile=self.vel_profile,
         )
@@ -1656,6 +1662,135 @@ class ParameterSet(models.Model):
 
         return b_dict
 
+class Result(models.Model):
+    """
+            Result class
+
+            DESCRIPTION:
+
+        """
+    job = models.OneToOneField(Job, related_name='job_result')
+
+    dof = models.IntegerField(blank=False)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        errors = []
+
+        if self.scale_x <= 0:
+            errors.append(ValidationError({'scale_x':
+                                               ['Scale X: Accepted values: unsigned non-zero integer value.']}))
+
+        if len(errors) > 0:  # Check if dict is empty. If not, raise error.
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        Result.full_clean(self)
+        super(Result, self).save(*args, **kwargs)
+
+    def as_json(self):
+        pass
+        # if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
+        #     return dict(
+        #         type="gbkfit.dmodel." + self.dmodel_type,
+        #         step=[self.step_x, self.step_y, self.step_z],
+        #         scale=[self.scale_x, self.scale_y, self.scale_z]
+        #     )
+        # else:
+        #     return dict(
+        #         type="gbkfit.dmodel." + self.dmodel_type,
+        #         method=self.method,
+        #         step=[self.step_x, self.step_y],
+        #         scale=[self.scale_x, self.scale_y],
+        #     )
+
+class Mode(models.Model):
+    """
+            Mode class
+
+            DESCRIPTION:
+
+        """
+    result = models.ForeignKey(Result, related_name='result_mode', on_delete=models.CASCADE)
+    chisqr = models.FloatField(blank=False)
+    rchisqr = models.FloatField(blank=False)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
+    # def clean(self):
+    #     errors = []
+        #
+        # if self.scale_x <= 0:
+        #     errors.append(ValidationError({'scale_x':
+        #                                        ['Scale X: Accepted values: unsigned non-zero integer value.']}))
+        #
+        # if len(errors) > 0:  # Check if dict is empty. If not, raise error.
+        #     raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        Mode.full_clean(self)
+        super(Mode, self).save(*args, **kwargs)
+
+    def as_json(self):
+        pass
+        # if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
+        #     return dict(
+        #         type="gbkfit.dmodel." + self.dmodel_type,
+        #         step=[self.step_x, self.step_y, self.step_z],
+        #         scale=[self.scale_x, self.scale_y, self.scale_z]
+        #     )
+        # else:
+        #     return dict(
+        #         type="gbkfit.dmodel." + self.dmodel_type,
+        #         method=self.method,
+        #         step=[self.step_x, self.step_y],
+        #         scale=[self.scale_x, self.scale_y],
+        #     )
+
+class ModeParameters(models.Model):
+    """
+            Mode class
+
+            DESCRIPTION:
+
+        """
+    mode = models.ForeignKey(Mode, related_name='mode_mode_parameters', on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=255, blank=False, null=False)
+    value = models.FloatField(blank=False)
+    error = models.FloatField(blank=False)
+
+    # def clean(self):
+    #     errors = []
+        #
+        # if self.scale_x <= 0:
+        #     errors.append(ValidationError({'scale_x':
+        #                                        ['Scale X: Accepted values: unsigned non-zero integer value.']}))
+        #
+        # if len(errors) > 0:  # Check if dict is empty. If not, raise error.
+        #     raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        ModeParameters.full_clean(self)
+        super(Mode, self).save(*args, **kwargs)
+
+    def as_json(self):
+        pass
+        # if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
+        #     return dict(
+        #         type="gbkfit.dmodel." + self.dmodel_type,
+        #         step=[self.step_x, self.step_y, self.step_z],
+        #         scale=[self.scale_x, self.scale_y, self.scale_z]
+        #     )
+        # else:
+        #     return dict(
+        #         type="gbkfit.dmodel." + self.dmodel_type,
+        #         method=self.method,
+        #         step=[self.step_x, self.step_y],
+        #         scale=[self.scale_x, self.scale_y],
+        #     )
+
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     information = models.CharField(max_length=1024)
@@ -1667,4 +1802,5 @@ class Verification(models.Model):
 
     def __str__(self):
         return u'%s' % self.information
+
 

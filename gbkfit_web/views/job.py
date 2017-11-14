@@ -173,13 +173,16 @@ def build_task_json(request):
     task_json = dict(
         mode='fit',
         dmodel=dmodel,
-        dataset=dataset,
+        datasets=dataset,
         psf=psf,
         lsf=lsf,
         gmodel=gmodel,
         fitter=fitter,
         params=params,
     )
+
+    # with open('test.json', 'w+') as outfile:
+    #     json.dump(task_json, outfile)
 
     return json.dumps(task_json)
 
@@ -204,43 +207,44 @@ def act_on_request_method_edit(request, active_tab, id):
     instance = None
 
     # ACTIVE TAB
-    if request.method == 'POST':
-        if active_tab == START:
-            instance = MODELS_EDIT[active_tab].objects.get(id=id)
-            form = FORMS_EDIT[active_tab](request.POST,
-                                          instance=instance,
-                                          request=request,
-                                          job_id=id)
-        else:
-            if active_tab == DATASET:
-                if request.FILES['datafile1']:
-                    form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
+    if active_tab != LAUNCH:
+        if request.method == 'POST':
+            if active_tab == START:
+                instance = MODELS_EDIT[active_tab].objects.get(id=id)
+                form = FORMS_EDIT[active_tab](request.POST,
+                                              instance=instance,
+                                              request=request,
+                                              job_id=id)
+            else:
+                if active_tab == DATASET:
+                    if request.FILES['datafile1']:
+                        form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
+                    else:
+                        form = FORMS_NEW[active_tab](request=request, id=id)
                 else:
-                    form = FORMS_NEW[active_tab](request=request, id=id)
+                    try:
+                        # Update
+                        instance = MODELS_EDIT[active_tab].objects.get(job_id=id)
+                        form = FORMS_EDIT[active_tab](request.POST,
+                                                      instance=instance,
+                                                      request=request,
+                                                      job_id=id)
+                    except:
+                        form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
+
+
+            active_tab = save_form(form, request, active_tab)
+
+        else:
+            if active_tab == START:
+                instance = MODELS_EDIT[active_tab].objects.get(id=id)
+                form = FORMS_EDIT[active_tab](instance=instance, request=request, job_id=id)
             else:
                 try:
-                    # Update
                     instance = MODELS_EDIT[active_tab].objects.get(job_id=id)
-                    form = FORMS_EDIT[active_tab](request.POST,
-                                                  instance=instance,
-                                                  request=request,
-                                                  job_id=id)
+                    form = FORMS_EDIT[active_tab](instance=instance, request=request, job_id=id)
                 except:
-                    form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
-
-
-        active_tab = save_form(form, request, active_tab)
-
-    else:
-        if active_tab == START:
-            instance = MODELS_EDIT[active_tab].objects.get(id=id)
-            form = FORMS_EDIT[active_tab](instance=instance, request=request, job_id=id)
-        else:
-            try:
-                instance = MODELS_EDIT[active_tab].objects.get(job_id=id)
-                form = FORMS_EDIT[active_tab](instance=instance, request=request, job_id=id)
-            except:
-                form = FORMS_NEW[active_tab](request=request, id=id)
+                    form = FORMS_NEW[active_tab](request=request, id=id)
 
     # OTHER TABS
     forms = []
