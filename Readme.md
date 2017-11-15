@@ -17,11 +17,14 @@ files (`base.py`, `development.py`, `production.py` etc.)
 
 The following settings needs to be present in the `local.py` settings file.
 
-Specify the base directory
+Specify the base and media directories
 ```python
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MEDIA_URL = '../media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 ```
 
 The admins of the site who will receive error emails.
@@ -104,6 +107,16 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, '../db.sqlite3'),
     }
 }
+```
+
+Set the REST framework permissions. E.g.
+```python
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
 ```
 
 (Optional) Force the https protocol even if the request is not secure
