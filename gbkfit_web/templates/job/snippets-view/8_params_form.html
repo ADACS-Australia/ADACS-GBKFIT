@@ -1,5 +1,6 @@
 {% load fieldset %}
 {% if params_view.fields.items|length > 0 %}
+    <div id="id_params_view">
     {% get_fieldset xo_fixed,xo_value,xo_min,xo_max,xo_wrap,xo_step,xo_relstep,xo_side as xo_fields from params_view %}
     {% if xo_fields.fields.items|length > 0 %}
     <fieldset id="xo_fieldset">
@@ -26,6 +27,7 @@
         </div>
     </fieldset>
     {% endif %}
+    </div>
 
     {% get_fieldset yo_fixed,yo_value,yo_min,yo_max,yo_wrap,yo_step,yo_relstep,yo_side as yo_fields from params_view %}
     {% if yo_fields.fields.items|length > 0 %}

@@ -1,23 +1,24 @@
 {% if data_model_view.fields.items|length > 0 %}
-    {% for field,value in data_model_view.fields.items %}
+    <div id="id_dmodel_view">
+        {% for field,value in data_model_view.fields.items %}
+            <div class="container-fluid field
+                div-{{ field }}
+                col-md-6
+                ">
 
-        <div class="container-fluid field
-            div-{{ field }}
-            col-md-6
-            ">
+                <!-- Label -->
+                <label class="col-md-4">
+                    {{ value.0 }}
+                </label>
 
-            <!-- Label -->
-            <label class="col-md-4">
-                {{ value.0 }}
-            </label>
+                <!-- Field -->
+                <div class="bg-info col-md-8">
+                    {{ value.1 }}
+                </div>
 
-            <!-- Field -->
-            <div class="bg-info col-md-8">
-                {{ value.1 }}
             </div>
-
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 {% else %}
     <div class="container-fluid col-md-6 not-saved-yet">
         <label class="col-md-4">

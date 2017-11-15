@@ -1663,6 +1663,19 @@ class ParameterSet(models.Model):
 
         return b_dict
 
+class JobResults(models.Model):
+    """
+                JobResults class
+
+                DESCRIPTION:
+                    Stores the JSON data outputted by gbkfit_app_cli
+            """
+    job = models.OneToOneField(Job, related_name='job_job_results')
+
+    json = models.IntegerField(blank=False)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
 class Result(models.Model):
     """
             Result class
