@@ -580,7 +580,7 @@ HELP_TEXTS = {
 }
 
 class ParamsForm(forms.ModelForm):
-    prefixes = ['i0', 'r0', 'xo', 'yo', 'pa', 'incl', 'rt', 'vt', 'vsys', 'vsig']
+    prefixes = ['xo', 'yo', 'pa', 'incl', 'vsys', 'vsig', 'i0', 'r0', 'rt', 'vt', 'a', 'b']
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -610,24 +610,6 @@ class ParamsForm(forms.ModelForm):
 
         ParameterSet.objects.create(
             job=job,
-
-            i0_fixed=data.get('i0_fixed'),
-            i0_value=data.get('i0_value'),
-            i0_min=data.get('i0_min'),
-            i0_max=data.get('i0_max'),
-            i0_wrap=data.get('i0_wrap'),
-            i0_step=data.get('i0_step'),
-            i0_relstep=data.get('i0_relstep'),
-            i0_side=data.get('i0_side'),
-
-            r0_fixed=data.get('r0_fixed'),
-            r0_value=data.get('r0_value'),
-            r0_min=data.get('r0_min'),
-            r0_max=data.get('r0_max'),
-            r0_wrap=data.get('r0_wrap'),
-            r0_step=data.get('r0_step'),
-            r0_relstep=data.get('r0_relstep'),
-            r0_side=data.get('r0_side'),
 
             xo_fixed=data.get('xo_fixed'),
             xo_value=data.get('xo_value'),
@@ -665,6 +647,42 @@ class ParamsForm(forms.ModelForm):
             incl_relstep=data.get('incl_relstep'),
             incl_side=data.get('incl_side'),
 
+            vsys_fixed=data.get('vsys_fixed'),
+            vsys_value=data.get('vsys_value'),
+            vsys_min=data.get('vsys_min'),
+            vsys_max=data.get('vsys_max'),
+            vsys_wrap=data.get('vsys_wrap'),
+            vsys_step=data.get('vsys_step'),
+            vsys_relstep=data.get('vsys_relstep'),
+            vsys_side=data.get('vsys_side'),
+
+            vsig_fixed=data.get('vsig_fixed'),
+            vsig_value=data.get('vsig_value'),
+            vsig_min=data.get('vsig_min'),
+            vsig_max=data.get('vsig_max'),
+            vsig_wrap=data.get('vsig_wrap'),
+            vsig_step=data.get('vsig_step'),
+            vsig_relstep=data.get('vsig_relstep'),
+            vsig_side=data.get('vsig_side'),
+
+            i0_fixed=data.get('i0_fixed'),
+            i0_value=data.get('i0_value'),
+            i0_min=data.get('i0_min'),
+            i0_max=data.get('i0_max'),
+            i0_wrap=data.get('i0_wrap'),
+            i0_step=data.get('i0_step'),
+            i0_relstep=data.get('i0_relstep'),
+            i0_side=data.get('i0_side'),
+
+            r0_fixed=data.get('r0_fixed'),
+            r0_value=data.get('r0_value'),
+            r0_min=data.get('r0_min'),
+            r0_max=data.get('r0_max'),
+            r0_wrap=data.get('r0_wrap'),
+            r0_step=data.get('r0_step'),
+            r0_relstep=data.get('r0_relstep'),
+            r0_side=data.get('r0_side'),
+
             rt_fixed=data.get('rt_fixed'),
             rt_value=data.get('rt_value'),
             rt_min=data.get('rt_min'),
@@ -683,23 +701,23 @@ class ParamsForm(forms.ModelForm):
             vt_relstep=data.get('vt_relstep'),
             vt_side=data.get('vt_side'),
 
-            vsys_fixed=data.get('vsys_fixed'),
-            vsys_value=data.get('vsys_value'),
-            vsys_min=data.get('vsys_min'),
-            vsys_max=data.get('vsys_max'),
-            vsys_wrap=data.get('vsys_wrap'),
-            vsys_step=data.get('vsys_step'),
-            vsys_relstep=data.get('vsys_relstep'),
-            vsys_side=data.get('vsys_side'),
+            a_fixed=data.get('a_fixed'),
+            a_value=data.get('a_value'),
+            a_min=data.get('a_min'),
+            a_max=data.get('a_max'),
+            a_wrap=data.get('a_wrap'),
+            a_step=data.get('a_step'),
+            a_relstep=data.get('a_relstep'),
+            a_side=data.get('a_side'),
 
-            vsig_fixed=data.get('vsig_fixed'),
-            vsig_value=data.get('vsig_value'),
-            vsig_min=data.get('vsig_min'),
-            vsig_max=data.get('vsig_max'),
-            vsig_wrap=data.get('vsig_wrap'),
-            vsig_step=data.get('vsig_step'),
-            vsig_relstep=data.get('vsig_relstep'),
-            vsig_side=data.get('vsig_side'),
+            b_fixed=data.get('b_fixed'),
+            b_value=data.get('b_value'),
+            b_min=data.get('b_min'),
+            b_max=data.get('b_max'),
+            b_wrap=data.get('b_wrap'),
+            b_step=data.get('b_step'),
+            b_relstep=data.get('b_relstep'),
+            b_side=data.get('b_side'),
         )
 
         self.request.session['params'] = self.as_array(data)
@@ -714,7 +732,10 @@ class ParamsForm(forms.ModelForm):
                 self.rt_dict(data),
                 self.vt_dict(data),
                 self.vsys_dict(data),
-                self.vsig_dict(data)]
+                self.vsig_dict(data),
+                self.a_dict(data),
+                self.a_dict(data)
+                ]
 
     def i0_dict(self, data):
         # i0
@@ -1265,6 +1286,116 @@ class ParamsForm(forms.ModelForm):
             pass
 
         return vsig_dict
+    
+    def a_dict(self, data):
+        # a
+        a_dict = {
+            'name': 'a'
+        }
+        try:
+            a_dict['fixed'] = data.get('a_fixed')
+        except:
+            pass
+
+        try:
+            a_dict['value'] = data.get('a_value')
+        except:
+            pass
+
+        try:
+            a_dict['min'] = data.get('a_min')
+        except:
+            pass
+
+        try:
+            a_dict['max'] = data.get('a_max')
+        except:
+            pass
+        try:
+            a_dict['wrap'] = data.get('a_wrap')
+        except:
+            pass
+
+        try:
+            a_dict['step'] = data.get('a_step')
+        except:
+            pass
+
+        try:
+            a_dict['relstep'] = data.get('a_relstep')
+        except:
+            pass
+
+        try:
+            a_dict['side'] = data.get('a_side')
+        except:
+            pass
+
+        try:
+            a_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            a_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return a_dict
+
+    def b_dict(self, data):
+        # b
+        b_dict = {
+            'name': 'b'
+        }
+        try:
+            b_dict['fixed'] = data.get('b_fixed')
+        except:
+            pass
+
+        try:
+            b_dict['value'] = data.get('b_value')
+        except:
+            pass
+
+        try:
+            b_dict['min'] = data.get('b_min')
+        except:
+            pass
+
+        try:
+            b_dict['max'] = data.get('b_max')
+        except:
+            pass
+        try:
+            b_dict['wrap'] = data.get('b_wrap')
+        except:
+            pass
+
+        try:
+            b_dict['step'] = data.get('b_step')
+        except:
+            pass
+
+        try:
+            b_dict['relstep'] = data.get('b_relstep')
+        except:
+            pass
+
+        try:
+            b_dict['side'] = data.get('b_side')
+        except:
+            pass
+
+        try:
+            b_dict['error'] = data.get('errorfile1.path')
+        except:
+            pass
+        try:
+            b_dict['mask'] = data.get('maskfile1.path')
+        except:
+            pass
+
+        return b_dict
 
 class EditParamsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

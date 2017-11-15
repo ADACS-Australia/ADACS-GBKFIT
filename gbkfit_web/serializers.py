@@ -40,6 +40,9 @@ class create_task_json:
         with open(path + filename, 'w+') as f:
             json_dump(self.as_json(), f)
 
+####
+# Begining of Job serializers
+####
 class JobSerializer(serializers.Serializer):
 
     class Meta:
@@ -85,7 +88,13 @@ class ParamsSerializer(serializers.Serializer):
         model = ParameterSet
         fields = [XO_FIELDS, YO_FIELDS, PA_FIELDS, INCL_FIELDS, VSYS_FIELDS, VSIG_FIELDS,
                   I0_FIELDS, R0_FIELDS, RT_FIELDS, VT_FIELDS, A_FIELDS, B_FIELDS]
+####
+# End of Job serializers
+####
 
+####
+# Begining of Result serializers
+####
 class ResultSerializer(serializers.Serializer):
     class Meta:
         model = Result
@@ -105,3 +114,6 @@ class ResultFileSerializer(serializers.Serializer):
     class Meta:
         model = ModeParameters
         fields = ['id', 'result_id', 'filename']
+####
+# End of Result serializers
+####
