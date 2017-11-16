@@ -2,7 +2,7 @@
     <div class='inner'>
         <ul class='cf'>
             <li id="li_start"
-                {% if active_tab == 'start' %} class="active"{% endif %}
+                {% if active_tab == 'start' %}class="active"{% endif %}
             >
                 <a data-toggle="tab" href="#start">
                   <span>1</span>
@@ -10,7 +10,8 @@
                 </a>
             </li>
             <li id="li_data-model"
-                class="{% if active_tab == 'data-model' %} active {% endif %}
+                class="has-popover {% if active_tab == 'data-model' %}active{% endif %}"
+                data-content="Data model" data-placement="top" data-container="body"
                 {% if disable_other_tabs == True %} disabled {% endif %}"
             >
                 <a data-toggle="tab" href="#data-model">
@@ -19,7 +20,8 @@
                 </a>
             </li>
             <li id="li_data-set"
-                class="{% if active_tab == 'data-set' %} active {% endif %}
+                class="has-popover {% if active_tab == 'data-set' %}active{% endif %}"
+                data-content="Upload dataset" data-placement="top" data-container="body"
                 {% if disable_other_tabs == True %} disabled {% endif %}"
             >
                 <a data-toggle="tab" href="#data-set">
@@ -28,7 +30,8 @@
                 </a>
             </li>
             <li id="li_psf"
-                class="{% if active_tab == 'psf' %} active {% endif %}
+                class="has-popover {% if active_tab == 'psf' %}active{% endif %}"
+                data-content="Point Spread Function" data-placement="top" data-container="body"
                 {% if disable_other_tabs == True %} disabled {% endif %}"
             >
                 <a data-toggle="tab" href="#psf">
@@ -37,7 +40,8 @@
                 </a>
             </li>
             <li id="li_lsf"
-                class="{% if active_tab == 'lsf' %} active {% endif %}
+                class="has-popover {% if active_tab == 'lsf' %}active{% endif %}"
+                data-content="Line Spread Function" data-placement="top" data-container="body"
                 {% if disable_other_tabs == True %} disabled {% endif %}"
             >
                 <a data-toggle="tab" href="#lsf">
@@ -46,7 +50,8 @@
                 </a>
             </li>
             <li id="li_galaxy-model"
-                class="{% if active_tab == 'galaxy-model' %} active{% endif %}
+                class="has-popover {% if active_tab == 'galaxy-model' %}active{% endif %}"
+                data-content="Galaxy Model" data-placement="top" data-container="body"
                 {% if disable_other_tabs == True %} disabled {% endif %}"
             >
                 <a data-toggle="tab" href="#galaxy-model">
@@ -55,7 +60,8 @@
                 </a>
             </li>
             <li id="li_fitter"
-                class="{% if active_tab == 'fitter' %} active {% endif %}
+                class="has-popover {% if active_tab == 'fitter' %}active{% endif %}"
+                data-content="Fitter" data-placement="top" data-container="body"
                 {% if disable_other_tabs == True %} disabled {% endif %}"
             >
                 <a data-toggle="tab" href="#fitter">
@@ -64,7 +70,8 @@
                 </a>
             </li>
             <li id="li_params"
-                class="{% if active_tab == 'params' %} active {% endif %}
+                class="has-popover {% if active_tab == 'params' %}active{% endif %}"
+                data-content="Parameter set" data-placement="top" data-container="body"
                 {% if disable_other_tabs == True %} disabled {% endif %}"
             >
                 <a data-toggle="tab" href="#params">

@@ -145,6 +145,13 @@ def user_job_errorfile_directory_path(instance, filename):
 def user_job_maskfile_directory_path(instance, filename):
     return MEDIA_ROOT + 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
+def user_job_data_image_directory_path(instance, filename):
+    return MEDIA_ROOT + 'user_{0}/job_{1}/data_image/{2}'.format(instance.job.user_id, instance.job.id, filename)
+def user_job_model_image_directory_path(instance, filename):
+    return MEDIA_ROOT + 'user_{0}/job_{1}/model_image/{2}'.format(instance.job.user_id, instance.job.id, filename)
+def user_job_residual_image_directory_path(instance, filename):
+    return MEDIA_ROOT + 'user_{0}/job_{1}/residual_image/{2}'.format(instance.job.user_id, instance.job.id, filename)
+
 class DataSet(models.Model):
     """
         DataSet class
@@ -180,8 +187,6 @@ class DataSet(models.Model):
     datafile2 = models.FileField(upload_to=user_job_datafile_directory_path, blank=True, null=True)
     errorfile2 = models.FileField(upload_to=user_job_errorfile_directory_path, blank=True, null=True)
     maskfile2 = models.FileField(upload_to=user_job_maskfile_directory_path, blank=True, null=True)
-
-    creation_time = models.DateTimeField(auto_now_add=True)
 
     # TODO: This will need a bit of work to enable any number of files...
     def as_array(self):
@@ -279,8 +284,6 @@ class DataModel(models.Model):
     step_y = models.FloatField(blank=False, default=1., validators=[MinValueValidator(1.)])
     step_z = models.FloatField(blank=True, default=1., validators=[MinValueValidator(1.)])
 
-    creation_time = models.DateTimeField(auto_now_add=True)
-
     def clean(self):
         errors = []
 
@@ -363,8 +366,6 @@ class PSF(models.Model):
     # If Moffat, need to figure out how to require the following field.
     beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
 
-    creation_time = models.DateTimeField(auto_now_add=True)
-
     def clean(self):
         errors = []
 
@@ -434,8 +435,6 @@ class LSF(models.Model):
     fwhm = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     # If Moffat, need to figure out how to require the following field.
     beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
-
-    creation_time = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
         errors = []
@@ -539,8 +538,6 @@ class GalaxyModel(models.Model):
     ]
     vel_profile = models.CharField(max_length=11, choices=vel_profile_TYPE_CHOICES, blank=False, default=ARCTAN)
 
-    creation_time = models.DateTimeField(auto_now_add=True)
-
     def as_json(self):
         return dict(
             type="gbkfit.gmodel." + self.gmodel_type,
@@ -600,8 +597,6 @@ class Fitter(models.Model):
     multinest_maxiter = models.IntegerField(blank=True, null=True, default=-1)
     seed = models.IntegerField(blank=True, null=True, )
     outfile = models.BooleanField(blank=True, default=1)
-
-    creation_time = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
         errors = []
@@ -857,8 +852,6 @@ class ParameterSet(models.Model):
     b_step = models.FloatField(blank=True, null=True, default=0.)
     b_relstep = models.FloatField(blank=True, null=True, default=0.)
     b_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
-
-    creation_time = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
         errors = []
@@ -1674,8 +1667,6 @@ class JobResults(models.Model):
 
     json = models.IntegerField(blank=False)
 
-    creation_time = models.DateTimeField(auto_now_add=True)
-
 class Result(models.Model):
     """
             Result class
@@ -1686,8 +1677,6 @@ class Result(models.Model):
     job = models.OneToOneField(Job, related_name='job_result')
 
     dof = models.IntegerField(blank=False)
-
-    creation_time = models.DateTimeField(auto_now_add=True)
 
 class Mode(models.Model):
     """
@@ -1700,9 +1689,8 @@ class Mode(models.Model):
     chisqr = models.FloatField(blank=False)
     rchisqr = models.FloatField(blank=False)
 
-    creation_time = models.DateTimeField(auto_now_add=True)
 
-class ModeParameters(models.Model):
+class ModeParameter(models.Model):
     """
             ModeParameters class
 
@@ -1724,6 +1712,7 @@ class ResultFile(models.Model):
         """
     result = models.ForeignKey(Result, related_name='result_file_mode', on_delete=models.CASCADE)
     filename = models.CharField(max_length=255, blank=False, null=False)
+    image = models.FileField(upload_to=user_job_data_image_directory_path, null=True)
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
