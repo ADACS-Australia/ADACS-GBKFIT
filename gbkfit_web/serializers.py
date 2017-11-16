@@ -2,7 +2,7 @@ from rest_framework import serializers
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF, LSF,
     GalaxyModel, Fitter, ParameterSet,
-    Result, Mode, ModeParameters
+    Result, Mode, ModeParameter
 
 )
 from gbkfit_web.forms.job.params import (
@@ -107,13 +107,16 @@ class ModeSerializer(serializers.Serializer):
 
 class ModeParametersSerializer(serializers.Serializer):
     class Meta:
-        model = ModeParameters
+        model = ModeParameter
         fields = ['id', 'mode_id', 'name', 'value', 'error']
 
 class ResultFileSerializer(serializers.Serializer):
     class Meta:
-        model = ModeParameters
+        model = ModeParameter
         fields = ['id', 'result_id', 'filename']
+
+
+
 ####
 # End of Result serializers
 ####
