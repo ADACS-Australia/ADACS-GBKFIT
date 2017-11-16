@@ -8,6 +8,7 @@ from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from gbkfit.settings.local import MEDIA_ROOT
 
 MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001 
 
@@ -138,11 +139,11 @@ class Job(models.Model):
     
 """
 def user_job_datafile_directory_path(instance, filename):
-    return '../media/user_{0}/job_{1}/data_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    return MEDIA_ROOT + 'user_{0}/job_{1}/data_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 def user_job_errorfile_directory_path(instance, filename):
-    return '../media/user_{0}/job_{1}/error_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    return MEDIA_ROOT + 'user_{0}/job_{1}/error_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 def user_job_maskfile_directory_path(instance, filename):
-    return '../media/user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    return MEDIA_ROOT + 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
 class DataSet(models.Model):
     """
@@ -1675,36 +1676,6 @@ class Result(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
-    def clean(self):
-        errors = []
-
-        if self.scale_x <= 0:
-            errors.append(ValidationError({'scale_x':
-                                               ['Scale X: Accepted values: unsigned non-zero integer value.']}))
-
-        if len(errors) > 0:  # Check if dict is empty. If not, raise error.
-            raise ValidationError(errors)
-
-    def save(self, *args, **kwargs):
-        Result.full_clean(self)
-        super(Result, self).save(*args, **kwargs)
-
-    def as_json(self):
-        pass
-        # if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
-        #     return dict(
-        #         type="gbkfit.dmodel." + self.dmodel_type,
-        #         step=[self.step_x, self.step_y, self.step_z],
-        #         scale=[self.scale_x, self.scale_y, self.scale_z]
-        #     )
-        # else:
-        #     return dict(
-        #         type="gbkfit.dmodel." + self.dmodel_type,
-        #         method=self.method,
-        #         step=[self.step_x, self.step_y],
-        #         scale=[self.scale_x, self.scale_y],
-        #     )
-
 class Mode(models.Model):
     """
             Mode class
@@ -1718,39 +1689,9 @@ class Mode(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
-    # def clean(self):
-    #     errors = []
-        #
-        # if self.scale_x <= 0:
-        #     errors.append(ValidationError({'scale_x':
-        #                                        ['Scale X: Accepted values: unsigned non-zero integer value.']}))
-        #
-        # if len(errors) > 0:  # Check if dict is empty. If not, raise error.
-        #     raise ValidationError(errors)
-
-    def save(self, *args, **kwargs):
-        Mode.full_clean(self)
-        super(Mode, self).save(*args, **kwargs)
-
-    def as_json(self):
-        pass
-        # if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
-        #     return dict(
-        #         type="gbkfit.dmodel." + self.dmodel_type,
-        #         step=[self.step_x, self.step_y, self.step_z],
-        #         scale=[self.scale_x, self.scale_y, self.scale_z]
-        #     )
-        # else:
-        #     return dict(
-        #         type="gbkfit.dmodel." + self.dmodel_type,
-        #         method=self.method,
-        #         step=[self.step_x, self.step_y],
-        #         scale=[self.scale_x, self.scale_y],
-        #     )
-
 class ModeParameters(models.Model):
     """
-            Mode class
+            ModeParameters class
 
             DESCRIPTION:
 
@@ -1761,35 +1702,15 @@ class ModeParameters(models.Model):
     value = models.FloatField(blank=False)
     error = models.FloatField(blank=False)
 
-    # def clean(self):
-    #     errors = []
-        #
-        # if self.scale_x <= 0:
-        #     errors.append(ValidationError({'scale_x':
-        #                                        ['Scale X: Accepted values: unsigned non-zero integer value.']}))
-        #
-        # if len(errors) > 0:  # Check if dict is empty. If not, raise error.
-        #     raise ValidationError(errors)
+class ResultFile(models.Model):
+    """
+            ResultFile class
 
-    def save(self, *args, **kwargs):
-        ModeParameters.full_clean(self)
-        super(Mode, self).save(*args, **kwargs)
+            DESCRIPTION:
 
-    def as_json(self):
-        pass
-        # if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
-        #     return dict(
-        #         type="gbkfit.dmodel." + self.dmodel_type,
-        #         step=[self.step_x, self.step_y, self.step_z],
-        #         scale=[self.scale_x, self.scale_y, self.scale_z]
-        #     )
-        # else:
-        #     return dict(
-        #         type="gbkfit.dmodel." + self.dmodel_type,
-        #         method=self.method,
-        #         step=[self.step_x, self.step_y],
-        #         scale=[self.scale_x, self.scale_y],
-        #     )
+        """
+    result = models.ForeignKey(Result, related_name='result_file_mode', on_delete=models.CASCADE)
+    filename = models.CharField(max_length=255, blank=False, null=False)
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

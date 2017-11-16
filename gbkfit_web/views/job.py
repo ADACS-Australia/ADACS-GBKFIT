@@ -205,6 +205,7 @@ def act_on_request_method_edit(request, active_tab, id):
 
     tab_checker = active_tab
     instance = None
+    get_instance = False
 
     # ACTIVE TAB
     if active_tab != LAUNCH:
@@ -230,10 +231,14 @@ def act_on_request_method_edit(request, active_tab, id):
                                                       request=request,
                                                       job_id=id)
                     except:
+                        # Create
                         form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
+                        get_instance = True
 
 
             active_tab = save_form(form, request, active_tab)
+            if get_instance:
+                instance = MODELS_EDIT[previous_tab(active_tab)].objects.get(job_id=id)
 
         else:
             if active_tab == START:
