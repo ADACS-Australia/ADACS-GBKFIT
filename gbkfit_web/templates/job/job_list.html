@@ -48,11 +48,10 @@
                             <span class="glyphicon glyphicon-pencil has-popover"
                                   data-content="Edit details" data-placement="top" data-container="body" />
                         </a>
-{#                        <a href="" id="delete_job_{{ job.id }}" class="delete_job" job_name="{{ job.name }}" job_id="{{ job.id }}">#}
-{#                            <span class="glyphicon glyphicon-trash has-popover"#}
-{#                                  data-content="Delete job" data-placement="top" data-container="body" />#}
-{#                        </a>#}
-                        <a href="" id="delete_job_{{ job.id }}" class="delete_job" job_name="{{ job.name }}" job_id="{{ job.id }}"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a href="" id="delete_job_{{ job.id }}" class="delete_job" job_name="{{ job.name }}" job_id="{{ job.id }}">
+                            <span class="glyphicon glyphicon-trash has-popover"
+                                  data-content="Delete job" data-placement="top" data-container="body" />
+                        </a>
                     {% endif %}
                     {% if job.status == job.COMPLETED %}
                         <a href="{% url 'job_results' id=job.id %}">

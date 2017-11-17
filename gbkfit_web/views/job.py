@@ -812,39 +812,60 @@ def job_duplicate(request, id):
     job.save()
     print("after save", job.id)
 
-    dmodel = DataModel.objects.get(job_id=id)
-    dmodel.pk = None
-    dmodel.job_id = job.id
-    dmodel.save()
+    try:
+        dmodel = DataModel.objects.get(job_id=id)
+        dmodel.pk = None
+        dmodel.job_id = job.id
+        dmodel.save()
+    except:
+        pass
 
-    dataset = DataSet.objects.get(job_id=id)
-    dataset.pk = None
-    dataset.job_id = job.id
-    dataset.save()
+    try:
+        dataset = DataSet.objects.get(job_id=id)
+        dataset.pk = None
+        dataset.job_id = job.id
+        dataset.save()
+    except:
+        pass
 
-    psf = PSF_model.objects.get(job_id=id)
-    psf.pk = None
-    psf.job_id = job.id
-    psf.save()
-    
-    lsf = LSF_model.objects.get(job_id=id)
-    lsf.pk = None
-    lsf.job_id = job.id
-    lsf.save()
-    
-    gmodel = GalaxyModel.objects.get(job_id=id)
-    gmodel.pk = None
-    gmodel.job_id = job.id
-    gmodel.save()
-    
-    fitter = Fitter_model.objects.get(job_id=id)
-    fitter.pk = None
-    fitter.job_id = job.id
-    fitter.save()
-    
-    params = Params.objects.get(job_id=id)
-    params.pk = None
-    params.job_id = job.id
-    params.save()
+    try:
+        psf = PSF_model.objects.get(job_id=id)
+        psf.pk = None
+        psf.job_id = job.id
+        psf.save()
+    except:
+        pass
+
+    try:
+        lsf = LSF_model.objects.get(job_id=id)
+        lsf.pk = None
+        lsf.job_id = job.id
+        lsf.save()
+    except:
+        pass
+
+    try:
+        gmodel = GalaxyModel.objects.get(job_id=id)
+        gmodel.pk = None
+        gmodel.job_id = job.id
+        gmodel.save()
+    except:
+        pass
+
+    try:
+        fitter = Fitter_model.objects.get(job_id=id)
+        fitter.pk = None
+        fitter.job_id = job.id
+        fitter.save()
+    except:
+        pass
+
+    try:
+        params = Params.objects.get(job_id=id)
+        params.pk = None
+        params.job_id = job.id
+        params.save()
+    except:
+        pass
 
     return redirect('job_name_edit', id=job.id)
