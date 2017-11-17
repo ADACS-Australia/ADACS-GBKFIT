@@ -163,7 +163,7 @@ class EditDataSetForm(forms.ModelForm):
         super(EditDataSetForm, self).__init__(*args, **kwargs)
 
         if dmodel_type != None:
-            if dmodel_type == DataModel.MMAPS_CUDA or dmodel_type == DataModel.MMAPS_OMP:
+            if dmodel_type in [DataModel.MMAPS_CUDA, DataModel.MMAPS_OMP, DataModel.MMAPS]:
                 self.fields['dataset1_type'].choices = DataSet.TYPE_CHOICES[:-1]
 
     class Meta:
