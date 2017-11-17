@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import json
 
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django import forms
@@ -18,11 +19,12 @@ from gbkfit_web.forms.job.fitter import FitterForm, EditFitterForm
 from gbkfit_web.forms.job.params import ParamsForm, EditParamsForm
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
-    GalaxyModel, Fitter as Fitter_model, ParameterSet as Params
+    GalaxyModel, Fitter as Fitter_model, ParameterSet as Params,
+    Result, Mode, ModeParameter, ResultFile
 )
 
 from gbkfit_web.views.job_info import model_instance_to_iterable
-
+from gbkfit_web.utility.utils import set_dict_indices
 
 
 """
@@ -31,6 +33,7 @@ from gbkfit_web.views.job_info import model_instance_to_iterable
 
 """
 
+# Job Creation/Edit/Summary related
 START = 'start'
 DATASET = 'data-set'
 DMODEL = 'data-model'
@@ -50,16 +53,7 @@ TABS = [START,
         FITTER,
         PARAMS,
         LAUNCH]
-
-TABS_INDEXES = {START: 0,
-                DMODEL: 1,
-                DATASET: 2,
-                PSF: 3,
-                LSF: 4,
-                GMODEL: 5,
-                FITTER: 6,
-                PARAMS: 7,
-                LAUNCH: 8}
+TABS_INDEXES = set_dict_indices(TABS)
 
 FORMS_NEW = {START: JobInitialForm,
              DMODEL: DataModelForm,
@@ -87,6 +81,24 @@ MODELS_EDIT = {START: Job,
                GMODEL: GalaxyModel,
                FITTER: Fitter_model,
                PARAMS: Params}
+
+# Job results related
+RESULT = 'result'
+MODE = 'mode'
+MODE_PARAMS = 'mode_parameter'
+RESULT_FILE = 'result_file'
+
+RESULTS_PARTS = [RESULT,
+                MODE,
+                MODE_PARAMS,
+                RESULT_FILE]
+RESULTS_PARTS_INDEXES = set_dict_indices(RESULTS_PARTS)
+
+MODELS_RESULTS = {START: Job,
+                  RESULT: Result,
+                  MODE: Mode,
+                  MODE_PARAMS: ModeParameter,
+                  RESULT_FILE: ResultFile}
 
 
 def set_list(l, i, v):
@@ -250,6 +262,14 @@ def act_on_request_method_edit(request, active_tab, id):
                     form = FORMS_EDIT[active_tab](instance=instance, request=request, job_id=id)
                 except:
                     form = FORMS_NEW[active_tab](request=request, id=id)
+    else:
+        if request.method == 'POST':
+            job = Job.objects.get(id=id)
+            job.user = request.user
+            job.status = Job.SUBMITTED
+            job.submission_time = now()
+            job.save()
+            return Job.SUBMITTED, [], []
 
     # OTHER TABS
     forms = []
@@ -671,22 +691,98 @@ def launch(request, id):
     active_tab = LAUNCH
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
+    if active_tab != Job.SUBMITTED:
+        return render(
+            request,
+            "job/edit.html",
+            {
+                'job_id': id,
+                'active_tab': active_tab,
+                'disable_other_tabs': False,
+
+                'start_form': forms[TABS_INDEXES[START]],
+                'dataset_form': forms[TABS_INDEXES[DATASET]],
+                'data_model_form': forms[TABS_INDEXES[DMODEL]],
+                'psf_form': forms[TABS_INDEXES[PSF]],
+                'lsf_form': forms[TABS_INDEXES[LSF]],
+                'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
+                'fitter_form': forms[TABS_INDEXES[FITTER]],
+                'params_form': forms[TABS_INDEXES[PARAMS]],
+
+                'start_view': views[TABS_INDEXES[START]],
+                'dataset_view': views[TABS_INDEXES[DATASET]],
+                'data_model_view': views[TABS_INDEXES[DMODEL]],
+                'psf_view': views[TABS_INDEXES[PSF]],
+                'lsf_view': views[TABS_INDEXES[LSF]],
+                'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
+                'fitter_view': views[TABS_INDEXES[FITTER]],
+                'params_view': views[TABS_INDEXES[PARAMS]],
+            }
+        )
+    else:
+        return redirect('job_list')
+
+    # task_json = build_task_json(request)
+    #
+    # request.session['task'] = task_json
+    #
+    # return HttpResponse(task_json, content_type='application/json')
+
+"""
+
+    JOB RESULTS
+
+"""
+
+def get_model_objects(model, job_id):
+    return MODELS_RESULTS[model].objects.filter(job_id=job_id)
+
+def set_iterable_views(model, views, instance):
+    return set_list(views, RESULTS_PARTS_INDEXES[model], model_instance_to_iterable(instance,
+                                                                      model=model,
+                                                                      views=views) if instance else None)
+
+# Should require that you have access to this job id too.
+@login_required
+def results(request, id):
+
+    job = model_instance_to_iterable(Job.objects.get(id=id), model=START)
+    job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
+
+    filterargs = {'result__id': job.result.id, 'filetype': ResultFile.IMAGE_FILE}
+    job.result.image_field = model_instance_to_iterable(ResultFile.objects.filter(**filterargs), model=RESULT_FILE)
+
+    job.result.modes = {}
+    i=0
+    for mode in Mode.objects.filter(result__id = job.result.id):
+        job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
+        job.result.modes[i].params = {}
+        j=0
+        for params in ModeParameter.objects.filter(mode__id=job.result.modes[i].id):
+            job.result.modes[i].params[j] = model_instance_to_iterable(params, model=MODE_PARAMS)
+            j+=1
+        i+=1
+
     return render(
         request,
-        "job/edit.html",
+        "job/job_result.html",
         {
             'job_id': id,
-            'active_tab': active_tab,
-            'disable_other_tabs': False,
+            'job_view': job,
+        }
+    )
 
-            'start_form': forms[TABS_INDEXES[START]],
-            'dataset_form': forms[TABS_INDEXES[DATASET]],
-            'data_model_form': forms[TABS_INDEXES[DMODEL]],
-            'psf_form': forms[TABS_INDEXES[PSF]],
-            'lsf_form': forms[TABS_INDEXES[LSF]],
-            'galaxy_model_form': forms[TABS_INDEXES[GMODEL]],
-            'fitter_form': forms[TABS_INDEXES[FITTER]],
-            'params_form': forms[TABS_INDEXES[PARAMS]],
+@login_required
+def job_overview(request, id):
+    active_tab = LAUNCH
+    # This could be cleaned to avoid getting forms and only gather views.
+    active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
+
+    return render(
+        request,
+        "job/job_overview.html",
+        {
+            'job_id': id,
 
             'start_view': views[TABS_INDEXES[START]],
             'dataset_view': views[TABS_INDEXES[DATASET]],
@@ -698,8 +794,3 @@ def launch(request, id):
             'params_view': views[TABS_INDEXES[PARAMS]],
         }
     )
-    # task_json = build_task_json(request)
-    #
-    # request.session['task'] = task_json
-    #
-    # return HttpResponse(task_json, content_type='application/json')

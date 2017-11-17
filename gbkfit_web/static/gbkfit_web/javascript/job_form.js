@@ -489,7 +489,19 @@ $(document).ready(function() {
             $('.div-b_side').removeClass('hidden');
         }
     }
-    
+
+    // Disable launch button if not all models are saved
+    if ($("#id_dmodel_view").length === 0       ||
+            $("#id_dataset_view").length === 0  ||
+            $("#id_psf_view").length === 0      ||
+            $("#id_lsf_view").length === 0      ||
+            $("#id_gmodel_view").length === 0   ||
+            $("#id_fitter_view").length === 0   ||
+            $("#id_params_view").length === 0)      {
+
+        document.getElementById("id_launch_job").disabled = true;
+
+    }
 
     // Confirm job deletion
     $('body').on('click', '.delete_job',

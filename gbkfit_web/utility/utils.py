@@ -86,3 +86,17 @@ def check_path(my_path):
         makedirs(path)
 
     return path
+
+def set_dict_indices(my_array):
+    """
+    Creates a dictionary based on values in my_array, and links each of them to an indice.
+    :param my_array: An array (e.g. [a,b,c])
+    :return: A dictionary (e.g. {a:0, b:1, c:2})
+    """
+    my_dict = {}
+    i = 0
+    for value in my_array:
+        my_dict[value] = i
+        i += 1
+
+    return my_dict
