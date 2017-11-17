@@ -17,8 +17,8 @@
 {% endblock page_header %}
 
 {% block content %}
-    <div id="id_dmodel_view">
-        <h3 class="col-md-2">Job info</h3>
+    <div id="id_view">
+        <legend>Job info</legend>
         {% for field,value in job_view.fields.items %}
             <div class="container-fluid field
                 div-{{ field }}
@@ -38,7 +38,27 @@
             </div>
         {% endfor %}
 
-        <h3 class="col-md-2">Image</h3>
+{#        <legend>Image</legend>#}
+{#        {% for field,value in job_view.result.fields.items %}#}
+{#            <div class="container-fluid field#}
+{#                div-{{ field }}#}
+{#                col-md-12#}
+{#                ">#}
+{##}
+{#                <!-- Label -->#}
+{#                <label class="col-md-2">#}
+{#                    {{ value.0 }}#}
+{#                </label>#}
+{##}
+{#                <!-- Field -->#}
+{#                <div class="bg-info col-md-8">#}
+{#                    {{ value.1 }}#}
+{#                </div>#}
+{##}
+{#            </div>#}
+{#        {% endfor %}#}
+
+        <legend>Best fit</legend>
         {% for field,value in job_view.result.fields.items %}
             <div class="container-fluid field
                 div-{{ field }}
@@ -51,27 +71,7 @@
                 </label>
 
                 <!-- Field -->
-                <div class="bg-info col-md-8">
-                    {{ value.1 }}
-                </div>
-
-            </div>
-        {% endfor %}
-
-        <h3 class="col-md-2">Best fit</h3>
-        {% for field,value in job_view.result.fields.items %}
-            <div class="container-fluid field
-                div-{{ field }}
-                col-md-12
-                ">
-
-                <!-- Label -->
-                <label class="col-md-2">
-                    {{ value.0 }}
-                </label>
-
-                <!-- Field -->
-                <div class="bg-info col-md-8">
+                <div class="bg-info col-md-10">
                     {{ value.1 }}
                 </div>
 
@@ -79,13 +79,13 @@
         {% endfor %}
 
         {% for index, mode in job_view.result.modes.items %}
-            <h3 class="col-md-2">Modes</h3>
+            <legend>Modes</legend>
             <div class="container-fluid field col-md-12">
-                <label class="col-md-2">Mode {{ index }} </label>
+                <legend>Mode {{ index }} </legend>
                 {% for field,value in mode.fields.items %}
                     <div class="container-fluid field
                         div-mode-{{ index }}
-                        col-md-11-
+                        col-md-12-
                         ">
 
                         <!-- Label -->
@@ -94,7 +94,7 @@
                         </label>
 
                         <!-- Field -->
-                        <div class="bg-info col-md-4">
+                        <div class="bg-info col-md-8">
                             {{ value.1 }}
                         </div>
 
@@ -103,29 +103,35 @@
                 <div class="container-fluid field
                         col-md-12
                         ">
-                    <label class="col-md-4">Parameters</label>
+                    <label class="col-md-2">Parameters</label>
                     {% for index_param,param in mode.params.items %}
                         <div class="div-mode-params
                                     container-fluid field
                                     col-md-12">
-                        <label class="col-md-1">
+                            <label class="col-md-1">
 
-                        </label>
-                        {% for field_param,value_param in param.fields.items %}
-                                <!-- Label -->
-                                <label class="col-md-1">
-                                    {{ value_param.0 }}
-                                </label>
+                            </label>
+                            {% for field_param,value_param in param.fields.items %}
+                                    <!-- Label -->
+                                    <label class="col-md-1">
+                                        {{ value_param.0 }}
+                                    </label>
 
-                                <!-- Field -->
-                                <div class="bg-info col-md-2">
-                                    {{ value_param.1 }}
-                                </div>
-                        {% endfor %}
+                                    <!-- Field -->
+                                    <div class="bg-info col-md-2">
+                                        {{ value_param.1 }}
+                                    </div>
+                            {% endfor %}
                         </div>
                     {% endfor %}
                 </div>
             </div>
         {% endfor %}
+
+        <div id="params_details">
+            <legend>Summary inputs</legend>
+            {% include 'job/snippets-view/8_params_form.html' %}
+        </div>
     </div>
+
 {% endblock content %}

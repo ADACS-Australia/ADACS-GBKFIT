@@ -745,6 +745,10 @@ def set_iterable_views(model, views, instance):
 # Should require that you have access to this job id too.
 @login_required
 def results(request, id):
+    active_tab = LAUNCH
+    # This could be cleaned to avoid getting forms and only gather the one view we need
+    # (which also requires info from gmodel and fitter).
+    active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
     job = model_instance_to_iterable(Job.objects.get(id=id), model=START)
     job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
@@ -769,6 +773,7 @@ def results(request, id):
         {
             'job_id': id,
             'job_view': job,
+            'params_view': views[TABS_INDEXES[PARAMS]],
         }
     )
 
