@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import uuid
 import django.contrib.auth.models as auth_models
+import os
 from django.db import models
 from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -11,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001
+
 
 class User(auth_models.AbstractUser):
     def __init__(self, *args, **kwargs):
@@ -69,7 +71,7 @@ class User(auth_models.AbstractUser):
 
     def as_json(self):
         return dict(
-            user = self,
+            user=self,
             id=self.id,
             value=dict(
                 username=self.username,
@@ -78,6 +80,7 @@ class User(auth_models.AbstractUser):
                 last_name=self.last_name,
             ),
         )
+
 
 class Job(models.Model):
     user = models.ForeignKey(User, related_name='user_job')
@@ -130,6 +133,7 @@ class Job(models.Model):
             ),
         )
 
+
 """
     The following functions create the path to save files 
     in link to the user_id, job_id, and file category (data, error, mask)
@@ -138,12 +142,31 @@ class Job(models.Model):
     ../media/user_<user_id>/job_<job_id>/<category>_file/filename.extension
     
 """
+
+
 def user_job_datafile_directory_path(instance, filename):
-    return settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/data_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    print("data")
+    dir_path = settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/data_files/'.format(instance.job.user_id, instance.job.id)
+    os.makedirs(dir_path, exist_ok=True)
+    print(dir_path + filename)
+    return dir_path + filename
+
+
 def user_job_errorfile_directory_path(instance, filename):
-    return settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/error_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    print("error")
+    dir_path = settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/error_files/'.format(instance.job.user_id, instance.job.id)
+    os.makedirs(dir_path, exist_ok=True)
+    print(dir_path + filename)
+    return dir_path + filename
+
+
 def user_job_maskfile_directory_path(instance, filename):
-    return settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    print("mask")
+    dir_path = settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/mask_files/'.format(instance.job.user_id, instance.job.id)
+    os.makedirs(dir_path, exist_ok=True)
+    print(dir_path + filename)
+    return dir_path + filename
+
 
 class DataSet(models.Model):
     """
@@ -221,6 +244,7 @@ class DataSet(models.Model):
             result.append(file2_dict)
 
         return result
+
 
 class DataModel(models.Model):
     """
@@ -308,7 +332,7 @@ class DataModel(models.Model):
             errors.append(ValidationError({'step_z':
                                                ['Step: Accepted values: unsigned non-zero value.']}))
 
-        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+        if len(errors) > 0:  # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
@@ -329,6 +353,7 @@ class DataModel(models.Model):
                 step=[self.step_x, self.step_y],
                 scale=[self.scale_x, self.scale_y],
             )
+
 
 class PSF(models.Model):
     """
@@ -380,7 +405,7 @@ class PSF(models.Model):
             errors.append(ValidationError({'fwhm':
                                                ['FWHM: Accepted values: positive non-zero value.']}))
 
-        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+        if len(errors) > 0:  # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
@@ -403,6 +428,7 @@ class PSF(models.Model):
                 fwhm_y=self.fwhm_y,
                 pa=self.pa
             )
+
 
 class LSF(models.Model):
     """
@@ -448,7 +474,7 @@ class LSF(models.Model):
             errors.append(ValidationError({'fwhm':
                                                ['FWHM: Accepted values: positive non-zero value.']}))
 
-        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+        if len(errors) > 0:  # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
@@ -467,6 +493,7 @@ class LSF(models.Model):
                 type=self.lsf_type,
                 fwhm=self.fwhm
             )
+
 
 class GalaxyModel(models.Model):
     """
@@ -514,7 +541,7 @@ class GalaxyModel(models.Model):
     gmodel_type = models.CharField(max_length=13, choices=TYPE_CHOICES, blank=False, default=GMODEL_OMP)
 
     EXPONENTIAL = 'exponential'
-    FLAT= 'flat'
+    FLAT = 'flat'
     BOISSIER = 'boissier'
     ARCTAN = 'arctan'
     EPINAT = 'epinat'
@@ -548,6 +575,7 @@ class GalaxyModel(models.Model):
             vel_profile=self.vel_profile,
         )
 
+
 class Fitter(models.Model):
     """
     Fitter class.
@@ -576,12 +604,12 @@ class Fitter(models.Model):
     ]
 
     # MPFIT properties
-    ftol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
-    xtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
-    gtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
-    epsfcn = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
-    stepfactor = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
-    covtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0. )])
+    ftol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0.)])
+    xtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0.)])
+    gtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0.)])
+    epsfcn = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0.)])
+    stepfactor = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0.)])
+    covtol = models.FloatField(blank=True, default=1, validators=[MinValueValidator(0.)])
     mpfit_maxiter = models.PositiveIntegerField(blank=True, default=1)
     maxfev = models.PositiveIntegerField(blank=True, default=1)
     nprint = models.BooleanField(blank=True, default=1)
@@ -642,7 +670,8 @@ class Fitter(models.Model):
         if self.fitter_type == self.MULTINEST:
             if self.nlive < 0:
                 errors.append(ValidationError({'nlive':
-                                                   ['Multinest, nlive: Accepted values: any positive non-zero integer value.']}))
+                                                   [
+                                                       'Multinest, nlive: Accepted values: any positive non-zero integer value.']}))
 
             if self.tol < 0:
                 errors.append(ValidationError({'tol':
@@ -655,18 +684,21 @@ class Fitter(models.Model):
             if self.ztol != None:
                 if self.ztol < 0:
                     errors.append(ValidationError({'ztol':
-                                                       ['Multinest, ztol: Accepted values: any positive non-zero value.']}))
+                                                       [
+                                                           'Multinest, ztol: Accepted values: any positive non-zero value.']}))
 
             if self.logzero != None:
                 if self.logzero < 0:
                     errors.append(ValidationError({'logzero':
-                                                       ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
+                                                       [
+                                                           'Multinest, logzero: Accepted values: any positive non-zero value.']}))
 
             if self.outfile < 0:
                 errors.append(ValidationError({'logzero':
-                                                   ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
+                                                   [
+                                                       'Multinest, logzero: Accepted values: any positive non-zero value.']}))
 
-        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+        if len(errors) > 0:  # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
@@ -690,34 +722,35 @@ class Fitter(models.Model):
 
         if self.fitter_type == self.MPFIT:
             return dict(
-                    type="gbkfit.fitter." + self.fitter_type,
-                    ftol = self.ftol,
-                    xtol = self.xtol,
-                    gtol = self.gtol,
-                    epsfcn = self.epsfcn,
-                    stepfactor = self.stepfactor,
-                    covtol = self.covtol,
-                    maxiter = self.mpfit_maxiter,
-                    maxfev = self.maxfev,
-                    nprint = nprint,
-                    douserscale = douserscale,
-                    nofinitecheck = nofinitecheck
-                )
+                type="gbkfit.fitter." + self.fitter_type,
+                ftol=self.ftol,
+                xtol=self.xtol,
+                gtol=self.gtol,
+                epsfcn=self.epsfcn,
+                stepfactor=self.stepfactor,
+                covtol=self.covtol,
+                maxiter=self.mpfit_maxiter,
+                maxfev=self.maxfev,
+                nprint=nprint,
+                douserscale=douserscale,
+                nofinitecheck=nofinitecheck
+            )
         else:
             return dict(
-                    type="gbkfit.fitter." + self.fitter_type,
-                    _is = multinest_is,
-                    mmodal = mmodal,
-                    nlive = self.nlive,
-                    tol = self.tol,
-                    efr = efr,
-                    ceff = self.ceff,
-                    ztol = self.ztol,
-                    logzero = self.logzero,
-                    maxiter = self.multinest_maxiter,
-                    seed = self.seed,
-                    outfile = outfile
-                )
+                type="gbkfit.fitter." + self.fitter_type,
+                _is=multinest_is,
+                mmodal=mmodal,
+                nlive=self.nlive,
+                tol=self.tol,
+                efr=efr,
+                ceff=self.ceff,
+                ztol=self.ztol,
+                logzero=self.logzero,
+                maxiter=self.multinest_maxiter,
+                seed=self.seed,
+                outfile=outfile
+            )
+
 
 class ParameterSet(models.Model):
     """
@@ -865,34 +898,42 @@ class ParameterSet(models.Model):
         # xo
         if self.xo_fixed == 1:
             if self.xo_min > self.xo_max:
-                errors.append(ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
+                errors.append(
+                    ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
 
             elif self.xo_value < self.xo_min or self.xo_value > self.xo_max:
-                errors.append(ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
+                errors.append(
+                    ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
 
         # yo
         if self.yo_fixed == 1:
             if self.yo_min > self.yo_max:
-                errors.append(ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
+                errors.append(
+                    ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
 
             elif self.yo_value < self.yo_min or self.yo_value > self.yo_max:
-                errors.append(ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
+                errors.append(
+                    ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
 
         # pa
         if self.pa_fixed == 1:
             if self.pa_min > self.pa_max:
-                errors.append(ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
+                errors.append(
+                    ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
 
             elif self.pa_value < self.pa_min or self.pa_value > self.pa_max:
-                errors.append(ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
+                errors.append(
+                    ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
 
         # incl
         if self.incl_fixed == 1:
             if self.incl_min > self.incl_max:
-                errors.append(ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
+                errors.append(
+                    ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
 
             elif self.incl_value < self.incl_min or self.incl_value > self.incl_max:
-                errors.append(ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
+                errors.append(
+                    ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
 
         # vsys
         if self.vsys_fixed == 1:
@@ -936,18 +977,22 @@ class ParameterSet(models.Model):
         # rt
         if self.rt_fixed == 1:
             if self.rt_min > self.rt_max:
-                errors.append(ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
+                errors.append(
+                    ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
 
             elif self.rt_value < self.rt_min or self.rt_value > self.rt_max:
-                errors.append(ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
+                errors.append(
+                    ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
 
         # vt
         if self.vt_fixed == 1:
             if self.vt_min > self.vt_max:
-                errors.append(ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
+                errors.append(
+                    ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
 
             elif self.vt_value < self.vt_min or self.vt_value > self.vt_max:
-                errors.append(ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
+                errors.append(
+                    ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
 
         # a
         if self.a_fixed == 1:
@@ -969,7 +1014,7 @@ class ParameterSet(models.Model):
                 errors.append(
                     ValidationError({'b_value': ['b: Value must be within range set by minimum and maximum.']}))
 
-        if len(errors) > 0: # Check if dict is empty. If not, raise error.
+        if len(errors) > 0:  # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
@@ -977,19 +1022,19 @@ class ParameterSet(models.Model):
         super(ParameterSet, self).save(*args, **kwargs)
 
     def as_array(self):
-        return [ self.xo_dict(),
-                 self.yo_dict(),
-                 self.pa_dict(),
-                 self.incl_dict(),
-                 self.vsys_dict(),
-                 self.vsig_dict(),
-                 self.i0_dict(),
-                 self.r0_dict(),
-                 self.rt_dict(),
-                 self.vt_dict(),
-                 self.a_dict(),
-                 self.b_dict()
-                 ]
+        return [self.xo_dict(),
+                self.yo_dict(),
+                self.pa_dict(),
+                self.incl_dict(),
+                self.vsys_dict(),
+                self.vsig_dict(),
+                self.i0_dict(),
+                self.r0_dict(),
+                self.rt_dict(),
+                self.vt_dict(),
+                self.a_dict(),
+                self.b_dict()
+                ]
 
     def xo_dict(self):
         # xo
@@ -1663,6 +1708,7 @@ class ParameterSet(models.Model):
 
         return b_dict
 
+
 class Result(models.Model):
     """
             Result class
@@ -1675,6 +1721,7 @@ class Result(models.Model):
     dof = models.IntegerField(blank=False)
 
     creation_time = models.DateTimeField(auto_now_add=True)
+
 
 class Mode(models.Model):
     """
@@ -1689,6 +1736,7 @@ class Mode(models.Model):
 
     creation_time = models.DateTimeField(auto_now_add=True)
 
+
 class ModeParameters(models.Model):
     """
             ModeParameters class
@@ -1702,6 +1750,7 @@ class ModeParameters(models.Model):
     value = models.FloatField(blank=False)
     error = models.FloatField(blank=False)
 
+
 class ResultFile(models.Model):
     """
             ResultFile class
@@ -1711,6 +1760,7 @@ class ResultFile(models.Model):
         """
     result = models.ForeignKey(Result, related_name='result_file_mode', on_delete=models.CASCADE)
     filename = models.CharField(max_length=255, blank=False, null=False)
+
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -1723,5 +1773,3 @@ class Verification(models.Model):
 
     def __str__(self):
         return u'%s' % self.information
-
-
