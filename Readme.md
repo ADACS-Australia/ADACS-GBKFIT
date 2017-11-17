@@ -23,13 +23,8 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-MEDIA_URL = '../media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
-```
-
-Specify the location of the mounted shared data directory
-```python
-DATA_MOUNT_DIR = '/data/' # Must end in trailing slash
+MEDIA_URL = '/media/'   # The media URL
+MEDIA_ROOT = '/data/'   # The location on disk, set this to the location of the shared mounted filesystem
 ```
 
 The admins of the site who will receive error emails.
