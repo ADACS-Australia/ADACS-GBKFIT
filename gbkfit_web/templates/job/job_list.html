@@ -39,6 +39,9 @@
                         <a href="{% url 'job_name_edit' id=job.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
                         <a href="" id="delete_job_{{ job.id }}" class="delete_job" job_name="{{ job.name }}" job_id="{{ job.id }}"><span class="glyphicon glyphicon-trash"></span></a>
                      {% endif %}
+                    {% if job.status == job.COMPLETED %}
+                        <a href="{% url 'job_results' id=job.id %}"><span class="glyphicon glyphicon-signal"></span></a>
+                    {% endif %}
                 </td>
             </tr>
         {% empty %}

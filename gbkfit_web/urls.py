@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^new_job/(?P<id>\d+)/fitter$', job.edit_job_fitter, name='job_fitter_edit'),
     url(r'^new_job/(?P<id>\d+)/params$', job.edit_job_params, name='job_params_edit'),
     url(r'^new_job/(?P<id>\d+)/launch$', job.launch, name='job_launch'),
+    url(r'^new_job/(?P<id>\d+)/results', job.results, name='job_results'),
 
     url(r'^register/$', account.registration, name='register'),
     url(r'^verify/$', verify.verify, name='verify'),

@@ -94,7 +94,8 @@ RESULTS_PARTS = [RESULT,
                 RESULT_FILE]
 RESULTS_PARTS_INDEXES = set_dict_indices(RESULTS_PARTS)
 
-MODELS_RESULTS = {RESULT: Result,
+MODELS_RESULTS = {START: Job,
+                  RESULT: Result,
                   MODE: Mode,
                   MODE_PARAMS: ModeParameter,
                   RESULT_FILE: ResultFile}
@@ -734,36 +735,39 @@ def launch(request, id):
 """
 
 def get_model_objects(model, job_id):
-    return MODELS_RESULTS[model].objects.get(job_id=job_id)
+    return MODELS_RESULTS[model].objects.filter(job_id=job_id)
 
 def set_iterable_views(model, views, instance):
     return set_list(views, RESULTS_PARTS_INDEXES[model], model_instance_to_iterable(instance,
                                                                       model=model,
                                                                       views=views) if instance else None)
 
+# Should require that you have access to this job id too.
+@login_required
 def results(request, id):
 
-    views = []
+    job = model_instance_to_iterable(Job.objects.get(id=id), model=START)
+    job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
 
-    result_instance = get_model_objects(RESULT, id)
-    modes_instance = get_model_objects(MODE, id)
-    modes_params_instance = get_model_objects(MODE_PARAMS, id)
-    result_files_instance = get_model_objects(RESULT_FILE, id)
+    filterargs = {'result__id': job.result.id, 'filetype': ResultFile.IMAGE_FILE}
+    job.result.image_field = model_instance_to_iterable(ResultFile.objects.filter(**filterargs), model=RESULT_FILE)
 
-    set_iterable_views(views, RESULT_FILE, result_instance)
-    set_iterable_views(views, RESULT_FILE, modes_instance)
-    set_iterable_views(views, RESULT_FILE, modes_params_instance)
-    set_iterable_views(views, RESULT_FILE, result_files_instance)
+    job.result.modes = {}
+    i=0
+    for mode in Mode.objects.filter(result__id = job.result.id):
+        job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
+        job.result.modes[i].params = {}
+        j=0
+        for params in ModeParameter.objects.filter(mode__id=job.result.modes[i].id):
+            job.result.modes[i].params[j] = model_instance_to_iterable(params, model=MODE_PARAMS)
+            j+=1
+        i+=1
 
     return render(
         request,
         "job/job_result.html",
         {
             'job_id': id,
-
-            'result_view': views[TABS_INDEXES[START]],
-            'modes_view': views[TABS_INDEXES[DATASET]],
-            'mode_params_view': views[TABS_INDEXES[DMODEL]],
-            'result_view': views[TABS_INDEXES[PSF]],
+            'job_view': job,
         }
     )

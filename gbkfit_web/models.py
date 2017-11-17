@@ -145,12 +145,8 @@ def user_job_errorfile_directory_path(instance, filename):
 def user_job_maskfile_directory_path(instance, filename):
     return MEDIA_ROOT + 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
-def user_job_data_image_directory_path(instance, filename):
-    return MEDIA_ROOT + 'user_{0}/job_{1}/data_image/{2}'.format(instance.job.user_id, instance.job.id, filename)
-def user_job_model_image_directory_path(instance, filename):
-    return MEDIA_ROOT + 'user_{0}/job_{1}/model_image/{2}'.format(instance.job.user_id, instance.job.id, filename)
-def user_job_residual_image_directory_path(instance, filename):
-    return MEDIA_ROOT + 'user_{0}/job_{1}/residual_image/{2}'.format(instance.job.user_id, instance.job.id, filename)
+def user_job_result_files_directory_path(instance, filename):
+    return MEDIA_ROOT + 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
 class DataSet(models.Model):
     """
@@ -1710,9 +1706,15 @@ class ResultFile(models.Model):
             DESCRIPTION:
 
         """
+
+    # Could be good to have another table stating the accepted filetypes.
+    JSON_FILE = 'json'
+    FITS_FILE = 'fits'
+    IMAGE_FILE = 'image'
+
     result = models.ForeignKey(Result, related_name='result_file_mode', on_delete=models.CASCADE)
     filename = models.CharField(max_length=255, blank=False, null=False)
-    image = models.FileField(upload_to=user_job_data_image_directory_path, null=True)
+    filetype = models.CharField(max_length=255, blank=False, null=False)
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

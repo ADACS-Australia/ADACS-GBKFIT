@@ -260,6 +260,12 @@ Welcome page
 }
 
 
+.div-mode-params {
+    /*border-bottom: 1px solid darkslategrey;*/
+    margin-bottom: 2px;
+}
+
+
 /********************************************/
 /*                                          */
 /*                 Breadcrumbs              */
