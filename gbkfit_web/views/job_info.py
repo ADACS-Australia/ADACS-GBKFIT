@@ -5,6 +5,7 @@ import json
 from gbkfit_web.models import Job
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 
 from collections import OrderedDict
 
@@ -15,7 +16,13 @@ from gbkfit_web.models import (
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params
 )
 
-# This should be integrated somewhere common for both job.py and job_info.py
+from gbkfit_web.utility.utils import set_dict_indices
+
+"""
+
+    UTILITIES SECTION
+
+"""
 START = 'start'
 DATASET = 'data-set'
 DMODEL = 'data-model'
@@ -25,26 +32,33 @@ GMODEL = 'galaxy-model'
 FITTER = 'fitter'
 PARAMS = 'params'
 LAUNCH = 'launch'
-
 TABS = [START,
-            DMODEL,
-            DATASET,
-            PSF,
-            LSF,
-            GMODEL,
-            FITTER,
-            PARAMS,
-            LAUNCH]
-TABS_INDEXES = {START: 0,
-                    DMODEL: 1,
-                    DATASET: 2,
-                    PSF: 3,
-                    LSF: 4,
-                    GMODEL: 5,
-                    FITTER: 6,
-                    PARAMS: 7,
-                    LAUNCH: 8}
+        DMODEL,
+        DATASET,
+        PSF,
+        LSF,
+        GMODEL,
+        FITTER,
+        PARAMS,
+        LAUNCH]
+TABS_INDEXES = set_dict_indices(TABS)
 
+RESULT = 'result'
+MODE = 'mode'
+MODE_PARAMS = 'mode_parameter'
+RESULT_FILE = 'result_file'
+
+RESULTS_PARTS = [RESULT,
+                MODE,
+                MODE_PARAMS,
+                RESULT_FILE]
+RESULTS_PARTS_INDEXES = set_dict_indices(RESULTS_PARTS)
+
+"""
+
+    JOB DETAIL/LIST SECTION
+
+"""
 class JobDetailView(DetailView):
     model = Job
 
@@ -87,6 +101,11 @@ class JobDetailView(DetailView):
 
         return context
 
+"""
+
+    JOB DETAIL/LIST SECTION
+
+"""
 def model_instance_to_iterable(object, model=START, views=[]):
     """
     Converts the object returned from a Model query into an iterable object to be used by a template
@@ -100,8 +119,12 @@ def model_instance_to_iterable(object, model=START, views=[]):
 
     try:
         object.fields = OrderedDict(((field.name, [labels[field.name], field.value_to_string(object)])
-                             if 'file' not in field.name else (field.name, [labels[field.name],
-                                                                            basename(field.value_to_string(object))]))
+                             if 'file' not in field.name else
+                                     ((field.name, [labels[field.name], basename(field.value_to_string(object))])
+                                      if 'filename' not in field.name else
+                                      (field.name, [labels[field.name], field.value_to_string(object)])
+                                      )
+                                     )
                              for field in object._meta.fields if field.name in fields)
 
         return object
@@ -187,31 +210,31 @@ def get_meta(model, views, object):
         fields = filter_fitter_fields(fields, object)
 
         labels = {
-    'fitter_type': _('Type'),
-    'ftol': _('Chi-square criterium'),
-    'xtol': _('Parameter criterium'),
-    'gtol': _('Orthogonality criterium'),
-    'epsfcn': _('Derivative step size'),
-    'stepfactor': _('Initial step bound'),
-    'covtol': _('Covariance tolerance'),
-    'mpfit_maxiter': _('Maximum iterations'),
-    'maxfev': _('Maximum function evaluations'),
-    'nprint': _('Print information to stdout'),
-    'douserscale': _('Scale variables'),
-    'nofinitecheck': _('Check for infinite quantities'),
+            'fitter_type': _('Type'),
+            'ftol': _('Chi-square criterium'),
+            'xtol': _('Parameter criterium'),
+            'gtol': _('Orthogonality criterium'),
+            'epsfcn': _('Derivative step size'),
+            'stepfactor': _('Initial step bound'),
+            'covtol': _('Covariance tolerance'),
+            'mpfit_maxiter': _('Maximum iterations'),
+            'maxfev': _('Maximum function evaluations'),
+            'nprint': _('Print information to stdout'),
+            'douserscale': _('Scale variables'),
+            'nofinitecheck': _('Check for infinite quantities'),
 
-    'efr': _('Sampling efficiency'),
-    'tol': _('Evidence tolerance'),
-    'ztol': _('Null log-evidence'),
-    'logzero': _('Log-zero'),
-    'multinest_is': _('Importance Nested Sampling'),
-    'mmodal': _('Mode separation'),
-    'ceff': _('Constant efficiency'),
-    'nlive': _('Live points'),
-    'multinest_maxiter': _('Maximum iterations'),
-    'seed': _('Seed'),
-    'outfile': _('Output to file'),
-}
+            'efr': _('Sampling efficiency'),
+            'tol': _('Evidence tolerance'),
+            'ztol': _('Null log-evidence'),
+            'logzero': _('Log-zero'),
+            'multinest_is': _('Importance Nested Sampling'),
+            'mmodal': _('Mode separation'),
+            'ceff': _('Constant efficiency'),
+            'nlive': _('Live points'),
+            'multinest_maxiter': _('Maximum iterations'),
+            'seed': _('Seed'),
+            'outfile': _('Output to file'),
+        }
 
     if model == PARAMS:
         fields = filter_params_fields(get_ParamsFields(),
@@ -220,6 +243,31 @@ def get_meta(model, views, object):
                                       views[TABS_INDEXES[FITTER]])
 
         labels = ParamsMeta.LABELS
+
+    if model == RESULT:
+        fields = ['dof']
+        labels = {'dof': _('Degree of freedom'),}
+
+    if model == MODE:
+        fields = [#'chisqr',
+                  'rchisqr']
+        labels = {#'chisqr': _('Chi squared'),
+                  'rchisqr': _(mark_safe('Reduced &Chi;<sup>2</sup>'))}
+
+    if model == MODE_PARAMS:
+        fields = ['name', 'value', 'error']
+        labels = {'name': _('Name'),
+                  'value': _('Value'),
+                  'error': _('Error')}
+
+    if model == RESULT_FILE:
+        # This will have to be changed to gather the actual file!
+        fields = ['filename',
+                  #'filetype'
+                 ]
+        labels = {'filename': _('File name'),
+                  #'filetype': _('File type')
+                  }
 
     return fields, labels
 
