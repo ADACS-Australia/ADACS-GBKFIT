@@ -27,6 +27,11 @@ MEDIA_URL = '/media/'   # The media URL
 MEDIA_ROOT = '/data/'   # The location on disk, set this to the location of the shared mounted filesystem
 ```
 
+The secret key used to authenticate the workflow with the UI API
+```python
+WORKFLOW_SECRET = 'some really long string with $YMb0l$'
+```
+
 The admins of the site who will receive error emails.
 ```python
 ADMINS = [
