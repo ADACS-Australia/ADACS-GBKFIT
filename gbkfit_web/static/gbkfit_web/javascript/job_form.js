@@ -25,10 +25,7 @@ $(document).ready(function() {
         });
 
     function check_dmodel_type() {
-        if ($('#id_dmodel_type').find(":selected").text() == 'mmnt_omp' ||
-            $('#id_dmodel_type').find(":selected").text() == 'mmnt_cuda' ||
-            $('#id_dmodel_type').find(":selected").text() == 'mmaps_omp' ||
-            $('#id_dmodel_type').find(":selected").text() == 'mmaps_cuda')
+        if ($('#id_dmodel_type').find(":selected").text() == 'Moment map')
         {
             $('.div-method').removeClass('hidden');
             $('.div-step_z').addClass('hidden');
@@ -49,12 +46,12 @@ $(document).ready(function() {
         });
 
     function check_psf_type() {
-        if ($('#id_psf_type').find(":selected").text() == 'moffat')
+        if ($('#id_psf_type').find(":selected").text().toLowerCase() == 'moffat')
         {
-            $('.div-beta').removeClass('hidden');
+            $('.div-psf-beta').removeClass('hidden');
         }
         else{
-            $('.div-beta').addClass('hidden');
+            $('.div-psf-beta').addClass('hidden');
         }
     }
 
@@ -66,12 +63,12 @@ $(document).ready(function() {
         });
 
     function check_lsf_type() {
-        if ($('#id_lsf_type').find(":selected").text() == 'moffat')
+        if ($('#id_lsf_type').find(":selected").text().toLowerCase() == 'moffat')
         {
-            $('.div-beta').removeClass('hidden');
+            $('.div-lsf-beta').removeClass('hidden');
         }
         else{
-            $('.div-beta').addClass('hidden');
+            $('.div-lsf-beta').addClass('hidden');
         }
     }
 
@@ -83,7 +80,7 @@ $(document).ready(function() {
         });
 
     function check_fitter_type() {
-        if ($('#id_fitter_type').find(":selected").text() == 'mpfit') {
+        if ($('#id_fitter_type').find(":selected").text().toLowerCase() == 'mpfit') {
             $('.div-mpfit').removeClass('hidden');
             $('.div-multinest').addClass('hidden');
         }

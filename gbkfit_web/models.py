@@ -248,15 +248,17 @@ class DataModel(models.Model):
     MMAPS_CUDA = 'mmaps_cuda'
 
     SCUBE = 'scube'
+    SCUBE_LABEL = 'Spectral cube'
     MMAPS = 'mmaps'
+    MMAPS_LABEL = 'Moment map'
 
     TYPE_CHOICES = [
         # (SCUBE_OMP, SCUBE_OMP),
         # (SCUBE_CUDA, SCUBE_CUDA),
         # (MMAPS_OMP, MMAPS_OMP),
         # (MMAPS_CUDA, MMAPS_CUDA)
-        (SCUBE, SCUBE),
-        (MMAPS, MMAPS)
+        (SCUBE, SCUBE_LABEL),
+        (MMAPS, MMAPS_LABEL)
     ]
     dmodel_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=SCUBE)
 
@@ -351,13 +353,16 @@ class PSF(models.Model):
     # name = models.CharField(max_length=255, blank=False, null=False)
 
     GAUSS = 'gaussian'
+    GAUSS_LABEL = 'Gaussian'
     MOFFAT = 'moffat'
+    MOFFAT_LABEL = 'Moffat'
     LORENTZ = 'lorentzian'
+    LORENTZ_LABEL = 'Lorentzian'
 
     TYPE_CHOICES = [
-        (GAUSS, GAUSS),
-        (MOFFAT, MOFFAT),
-        (LORENTZ, LORENTZ),
+        (GAUSS, GAUSS_LABEL),
+        (MOFFAT, MOFFAT_LABEL),
+        (LORENTZ, LORENTZ_LABEL),
     ]
     psf_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
 
@@ -423,13 +428,16 @@ class LSF(models.Model):
     # name = models.CharField(max_length=255, blank=False, null=False)
 
     GAUSS = 'gaussian'
+    GAUSS_LABEL = 'Gaussian'
     MOFFAT = 'moffat'
+    MOFFAT_LABEL = 'Moffat'
     LORENTZ = 'lorentzian'
+    LORENTZ_LABEL = 'Lorentzian'
 
     TYPE_CHOICES = [
-        (GAUSS, GAUSS),
-        (MOFFAT, MOFFAT),
-        (LORENTZ, LORENTZ),
+        (GAUSS, GAUSS_LABEL),
+        (MOFFAT, MOFFAT_LABEL),
+        (LORENTZ, LORENTZ_LABEL),
     ]
     lsf_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
 
