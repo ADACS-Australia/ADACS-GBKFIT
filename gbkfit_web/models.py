@@ -324,14 +324,14 @@ class DataModel(models.Model):
             return dict(
                 type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
                 step=[self.step_x, self.step_y, self.step_z],
-                scale=[self.scale_x, self.scale_y, self.scale_z]
+                upsampling=[self.scale_x, self.scale_y, self.scale_z]
             )
         else:
             return dict(
                 type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
                 method=self.method,
                 step=[self.step_x, self.step_y],
-                scale=[self.scale_x, self.scale_y],
+                upsampling=[self.scale_x, self.scale_y],
             )
 
 class PSF(models.Model):
