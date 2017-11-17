@@ -771,3 +771,26 @@ def results(request, id):
             'job_view': job,
         }
     )
+
+@login_required
+def job_overview(request, id):
+    active_tab = LAUNCH
+    # This could be cleaned to avoid getting forms and only gather views.
+    active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
+
+    return render(
+        request,
+        "job/job_overview.html",
+        {
+            'job_id': id,
+
+            'start_view': views[TABS_INDEXES[START]],
+            'dataset_view': views[TABS_INDEXES[DATASET]],
+            'data_model_view': views[TABS_INDEXES[DMODEL]],
+            'psf_view': views[TABS_INDEXES[PSF]],
+            'lsf_view': views[TABS_INDEXES[LSF]],
+            'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
+            'fitter_view': views[TABS_INDEXES[FITTER]],
+            'params_view': views[TABS_INDEXES[PARAMS]],
+        }
+    )
