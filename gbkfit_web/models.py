@@ -8,9 +8,9 @@ from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from gbkfit.settings.local import MEDIA_ROOT
+from django.conf import settings
 
-MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001 
+MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001
 
 class User(auth_models.AbstractUser):
     def __init__(self, *args, **kwargs):
@@ -139,11 +139,11 @@ class Job(models.Model):
     
 """
 def user_job_datafile_directory_path(instance, filename):
-    return MEDIA_ROOT + 'user_{0}/job_{1}/data_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    return settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/data_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 def user_job_errorfile_directory_path(instance, filename):
-    return MEDIA_ROOT + 'user_{0}/job_{1}/error_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    return settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/error_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 def user_job_maskfile_directory_path(instance, filename):
-    return MEDIA_ROOT + 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+    return settings.DATA_MOUNT_DIR + 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
 class DataSet(models.Model):
     """

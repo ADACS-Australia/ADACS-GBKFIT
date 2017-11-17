@@ -27,6 +27,11 @@ MEDIA_URL = '../media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 ```
 
+Specify the location of the mounted shared data directory
+```python
+DATA_MOUNT_DIR = '/data/' # Must end in trailing slash
+```
+
 The admins of the site who will receive error emails.
 ```python
 ADMINS = [
