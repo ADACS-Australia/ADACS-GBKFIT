@@ -804,14 +804,14 @@ def job_overview(request, id):
 def job_duplicate(request, id):
 
     job = Job.objects.get(id = id)
-    print("before save", job.id)
     job.pk = None
+    # TODO: Need a mechanism to ensure name unique constraint.
     job.name = job.name + '_copy'
     job.submission_time = None
     job.status = Job.DRAFT
     job.save()
-    print("after save", job.id)
 
+    # Other models may not be existing. In such a case, pass.
     try:
         dmodel = DataModel.objects.get(job_id=id)
         dmodel.pk = None
