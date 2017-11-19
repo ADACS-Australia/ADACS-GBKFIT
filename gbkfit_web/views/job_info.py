@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
+
 from collections import OrderedDict
 
 from os.path import basename
@@ -15,6 +16,7 @@ from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params
 )
+from gbkfit.settings.local import MEDIA_ROOT
 
 from gbkfit_web.utility.utils import set_dict_indices
 

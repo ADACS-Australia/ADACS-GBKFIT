@@ -10,7 +10,7 @@
         <div class="container-fluid field
                     {% if field.name == 'beta' %}hidden{% endif %}
                     {% if field.errors %}error alert alert-danger{% endif %}
-                    div-{{ field.name }}
+                    div-lsf-{{ field.name }}
                     ">
 
             <!-- Label -->
@@ -27,6 +27,5 @@
         </div>
     {% endfor %}
 
-{#    <input class="btn btn-primary" type="submit" value="Save and next" />#}
     {% include 'job/snippets/pager.html' %}
 </form>

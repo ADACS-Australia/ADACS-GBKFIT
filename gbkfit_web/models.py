@@ -8,7 +8,7 @@ from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from gbkfit.settings.local import MEDIA_ROOT
+from gbkfit.settings.local import MEDIA_ROOT, OMP_OR_CUDA
 
 MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001 
 
@@ -247,13 +247,20 @@ class DataModel(models.Model):
     MMAPS_OMP = 'mmaps_omp'
     MMAPS_CUDA = 'mmaps_cuda'
 
+    SCUBE = 'scube'
+    SCUBE_LABEL = 'Spectral cube'
+    MMAPS = 'mmaps'
+    MMAPS_LABEL = 'Moment map'
+
     TYPE_CHOICES = [
-        (SCUBE_OMP, SCUBE_OMP),
-        (SCUBE_CUDA, SCUBE_CUDA),
-        (MMAPS_OMP, MMAPS_OMP),
-        (MMAPS_CUDA, MMAPS_CUDA)
+        # (SCUBE_OMP, SCUBE_OMP),
+        # (SCUBE_CUDA, SCUBE_CUDA),
+        # (MMAPS_OMP, MMAPS_OMP),
+        # (MMAPS_CUDA, MMAPS_CUDA)
+        (SCUBE, SCUBE_LABEL),
+        (MMAPS, MMAPS_LABEL)
     ]
-    dmodel_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=SCUBE_OMP)
+    dmodel_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=SCUBE)
 
     MOMENTS = 'moments'
     GAUSS = 'gauss'
@@ -317,16 +324,16 @@ class DataModel(models.Model):
     def as_json(self):
         if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
             return dict(
-                type="gbkfit.dmodel." + self.dmodel_type,
+                type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
                 step=[self.step_x, self.step_y, self.step_z],
-                scale=[self.scale_x, self.scale_y, self.scale_z]
+                upsampling=[self.scale_x, self.scale_y, self.scale_z]
             )
         else:
             return dict(
-                type="gbkfit.dmodel." + self.dmodel_type,
+                type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
                 method=self.method,
                 step=[self.step_x, self.step_y],
-                scale=[self.scale_x, self.scale_y],
+                upsampling=[self.scale_x, self.scale_y],
             )
 
 class PSF(models.Model):
@@ -346,13 +353,16 @@ class PSF(models.Model):
     # name = models.CharField(max_length=255, blank=False, null=False)
 
     GAUSS = 'gaussian'
+    GAUSS_LABEL = 'Gaussian'
     MOFFAT = 'moffat'
+    MOFFAT_LABEL = 'Moffat'
     LORENTZ = 'lorentzian'
+    LORENTZ_LABEL = 'Lorentzian'
 
     TYPE_CHOICES = [
-        (GAUSS, GAUSS),
-        (MOFFAT, MOFFAT),
-        (LORENTZ, LORENTZ),
+        (GAUSS, GAUSS_LABEL),
+        (MOFFAT, MOFFAT_LABEL),
+        (LORENTZ, LORENTZ_LABEL),
     ]
     psf_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
 
@@ -418,13 +428,16 @@ class LSF(models.Model):
     # name = models.CharField(max_length=255, blank=False, null=False)
 
     GAUSS = 'gaussian'
+    GAUSS_LABEL = 'Gaussian'
     MOFFAT = 'moffat'
+    MOFFAT_LABEL = 'Moffat'
     LORENTZ = 'lorentzian'
+    LORENTZ_LABEL = 'Lorentzian'
 
     TYPE_CHOICES = [
-        (GAUSS, GAUSS),
-        (MOFFAT, MOFFAT),
-        (LORENTZ, LORENTZ),
+        (GAUSS, GAUSS_LABEL),
+        (MOFFAT, MOFFAT_LABEL),
+        (LORENTZ, LORENTZ_LABEL),
     ]
     lsf_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=GAUSS)
 
@@ -502,11 +515,15 @@ class GalaxyModel(models.Model):
     GMODEL_OMP = 'gmodel1_omp'
     GMODEL_CUDA = 'gmodel1_cuda'
 
+    GMODEL = 'gmodel1'
+    # GMODEL_CUDA = 'gmodel1_cuda'
+
     TYPE_CHOICES = [
-        (GMODEL_OMP, GMODEL_OMP),
-        (GMODEL_CUDA, GMODEL_CUDA),
+        # (GMODEL_OMP, GMODEL_OMP),
+        # (GMODEL_CUDA, GMODEL_CUDA),
+        (GMODEL, GMODEL)
     ]
-    gmodel_type = models.CharField(max_length=13, choices=TYPE_CHOICES, blank=False, default=GMODEL_OMP)
+    gmodel_type = models.CharField(max_length=13, choices=TYPE_CHOICES, blank=False, default=GMODEL)
 
     EXPONENTIAL = 'exponential'
     FLAT= 'flat'
@@ -536,7 +553,7 @@ class GalaxyModel(models.Model):
 
     def as_json(self):
         return dict(
-            type="gbkfit.gmodel." + self.gmodel_type,
+            type="gbkfit.gmodel." + self.gmodel_type + '_' + OMP_OR_CUDA,
             flx_profile=self.flx_profile,
             vel_profile=self.vel_profile,
         )
@@ -1685,7 +1702,6 @@ class Mode(models.Model):
     chisqr = models.FloatField(blank=False)
     rchisqr = models.FloatField(blank=False)
 
-
 class ModeParameter(models.Model):
     """
             ModeParameters class
@@ -1711,6 +1727,7 @@ class ResultFile(models.Model):
     JSON_FILE = 'json'
     FITS_FILE = 'fits'
     IMAGE_FILE = 'image'
+    TAR_FILE = 'tar'
 
     result = models.ForeignKey(Result, related_name='result_file_mode', on_delete=models.CASCADE)
     filename = models.CharField(max_length=255, blank=False, null=False)

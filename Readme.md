@@ -17,7 +17,7 @@ files (`base.py`, `development.py`, `production.py` etc.)
 
 The following settings needs to be present in the `local.py` settings file.
 
-Specify the base and media directories
+Specify the base and media directories:
 ```python
 import os
 
@@ -31,6 +31,18 @@ The secret key used to authenticate the workflow with the UI API
 ```python
 WORKFLOW_SECRET = 'some really long string with $YMb0l$'
 ```
+
+Specify if the GBKFIT was configured with CUDA or OpenMP:
+
+```python
+OMP_OR_CUDA = 'cuda'
+```
+or 
+
+```python
+OMP_OR_CUDA = 'omp'
+```
+
 
 The admins of the site who will receive error emails.
 ```python
