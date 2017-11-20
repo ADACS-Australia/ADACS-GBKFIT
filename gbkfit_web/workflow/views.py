@@ -21,31 +21,33 @@ class WorkflowTokenPermission(permissions.BasePermission):
             return False
 
         # Calculate the local hash
-        hash = sha512(settings.WORKFLOW_SECRET.encode("utf-8")).hexdigest()
+        _hash = sha512(settings.WORKFLOW_SECRET.encode("utf-8")).hexdigest()
 
         # Compare the digests
-        return compare_digest(request.META['HTTP_TOKEN'], hash)
+        return compare_digest(request.META['HTTP_TOKEN'], _hash)
 
 
 class WorkFlowView(GenericAPIView):
     permission_classes = (WorkflowTokenPermission,)
 
     def get(self, request):
-        print(request.GET)
         # Get all jobs with the requested status
         jobs = Job.objects.filter(status=request.GET['status'])
-        print(jobs)
 
         # Now serialize the jobs
+        data = [
+            {
+                'userid': job.user.id,
+                'jobid': job.id,
+            }
+            for job in jobs
+        ]
 
-        data = {
-            'good': 'one'
-        }
-
-        return HttpResponse(json.dumps(data))
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
     def post(self, request):
-        print("Workflow Get")
+        data = json.loads(request.data)
+        print(data)
         data = {
             'good': 'one'
         }
