@@ -823,3 +823,73 @@ def job_overview(request, id):
             'params_view': views[TABS_INDEXES[PARAMS]],
         }
     )
+
+@login_required
+def job_duplicate(request, id):
+
+    job = Job.objects.get(id = id)
+    job.pk = None
+    # TODO: Need a mechanism to ensure name unique constraint.
+    job.name = job.name + '_copy'
+    job.submission_time = None
+    job.status = Job.DRAFT
+    job.save()
+
+    # Other models may not be existing. In such a case, pass.
+    try:
+        dmodel = DataModel.objects.get(job_id=id)
+        dmodel.pk = None
+        dmodel.job_id = job.id
+        dmodel.save()
+    except:
+        pass
+
+    try:
+        dataset = DataSet.objects.get(job_id=id)
+        dataset.pk = None
+        dataset.job_id = job.id
+        dataset.save()
+    except:
+        pass
+
+    try:
+        psf = PSF_model.objects.get(job_id=id)
+        psf.pk = None
+        psf.job_id = job.id
+        psf.save()
+    except:
+        pass
+
+    try:
+        lsf = LSF_model.objects.get(job_id=id)
+        lsf.pk = None
+        lsf.job_id = job.id
+        lsf.save()
+    except:
+        pass
+
+    try:
+        gmodel = GalaxyModel.objects.get(job_id=id)
+        gmodel.pk = None
+        gmodel.job_id = job.id
+        gmodel.save()
+    except:
+        pass
+
+    try:
+        fitter = Fitter_model.objects.get(job_id=id)
+        fitter.pk = None
+        fitter.job_id = job.id
+        fitter.save()
+    except:
+        pass
+
+    try:
+        params = Params.objects.get(job_id=id)
+        params.pk = None
+        params.job_id = job.id
+        params.save()
+    except:
+        pass
+
+    return redirect('job_name_edit', id=job.id)
