@@ -5,8 +5,11 @@ import json
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
 from django import forms
+
+from django.http import HttpResponse, JsonResponse
+from wsgiref.util import FileWrapper
+import os
 
 from django.shortcuts import render, redirect
 from gbkfit_web.forms.job.dataset import DataSetForm, EditDataSetForm
@@ -521,6 +524,39 @@ def edit_job_dataset(request, id):
             'params_view': views[TABS_INDEXES[PARAMS]],
         }
     )
+
+@login_required
+def ajax_edit_job_dataset(request, id):
+    job = Job.objects.get(id=id)
+
+    filetype = request.filetype
+
+    try:
+        dataset = DataSet.objects.get(job_id=id)
+        if filetype == 'data':
+            dataset.datafile1 = request.FILES['file']
+        if filetype == 'error':
+            dataset.errorfile1 = request.FILES['file']
+        if filetype == 'mask':
+            dataset.maskfile1 = request.FILES['file']
+    except:
+        dataset = DataSet()
+        dataset.job = job
+        if filetype == 'data':
+            dataset.datafile1 = request.FILES['file']
+        if filetype == 'error':
+            dataset.errorfile1 = request.FILES['file']
+        if filetype == 'mask':
+            dataset.maskfile1 = request.FILES['file']
+
+    if dataset.is_valid():
+        data_file = dataset.save()
+        data = {'is_valid': True, 'name': data_file.file.name, 'url': data_file.file.url}
+    else:
+        data = {'is_valid': False}
+
+    return JsonResponse(data)
+
 @login_required
 def edit_job_psf(request, id):
     active_tab = PSF
@@ -776,6 +812,23 @@ def results(request, id):
             'params_view': views[TABS_INDEXES[PARAMS]],
         }
     )
+
+@login_required
+def download_results_tar(request, id):
+
+    print ("job_id", id)
+
+    # job = Job.objects.get(id=id)
+    result = Result.objects.get(job_id = id)
+
+    filterargs = {'result__id': result.id, 'filetype': ResultFile.TAR_FILE}
+    tar_file = ResultFile.objects.filter(**filterargs)
+    # filename = 'job_{}_results.tar'.format(job.id)
+    content = FileWrapper(tar_file.file)
+    response = HttpResponse(content, content_type='application/pdf')
+    response['Content-Length'] = tar_file.size
+    response['Content-Disposition'] = 'attachment; filename=%s' % tar_file.name
+    return response
 
 @login_required
 def job_overview(request, id):

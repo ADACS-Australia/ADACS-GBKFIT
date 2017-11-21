@@ -368,7 +368,7 @@ class PSF(models.Model):
 
     fwhm_x = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     fwhm_y = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
-    pa = models.IntegerField(blank=False, default=1)
+    pa = models.FloatField(blank=False, default=1)
     # If Moffat, need to figure out how to require the following field.
     beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
 
