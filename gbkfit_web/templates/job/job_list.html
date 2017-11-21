@@ -39,6 +39,10 @@
                         <span class="glyphicon glyphicon-th-list has-popover"
                               data-content="Job details" data-placement="top" data-container="body" />
                     </a>
+                    <a href="{% url 'job_duplicate' id=job.id %}">
+                        <span class="glyphicon glyphicon-paste has-popover"
+                              data-content="Duplicate" data-placement="top" data-container="body" />
+                    </a>
                     {% if job.status == job.DRAFT %}
                         <a href="{% url 'job_name_edit' id=job.id %}">
                             <span class="glyphicon glyphicon-pencil has-popover"
@@ -48,7 +52,7 @@
                             <span class="glyphicon glyphicon-trash has-popover"
                                   data-content="Delete job" data-placement="top" data-container="body" />
                         </a>
-                     {% endif %}
+                    {% endif %}
                     {% if job.status == job.COMPLETED %}
                         <a href="{% url 'job_results' id=job.id %}">
                             <span class="glyphicon glyphicon-signal has-popover"
