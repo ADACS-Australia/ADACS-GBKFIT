@@ -6,19 +6,19 @@ FIELDS = ['psf_type', 'fwhm_x', 'fwhm_y', 'pa', 'beta']
 
 WIDGETS = {
     'psf_type': forms.Select(
-        attrs={'class': 'form-control'},
+        attrs={'class': 'form-control has-popover'},
     ),
     'fwhm_x': forms.TextInput(
-        attrs={'class': "form-control"},
+        attrs={'class': "form-control has-popover"},
     ),
     'fwhm_y': forms.TextInput(
-        attrs={'class': "form-control"},
+        attrs={'class': "form-control has-popover"},
     ),
     'pa': forms.TextInput(
-        attrs={'class': "form-control"},
+        attrs={'class': "form-control has-popover"},
     ),
     'beta': forms.TextInput(
-        attrs={'class': "form-control"},
+        attrs={'class': "form-control has-popover"},
     ),
 }
 
@@ -26,8 +26,13 @@ LABELS = {
     'psf_type': _('Type'),
     'fwhm_x': _('FWHM X'),
     'fwhm_y': _('FWHM Y'),
-    'pa': _('PA'),
+    'pa': _('Position Angle'),
     'beta': _('Beta'),
+}
+
+HELP_TEXTS = {
+    'fwhm_x': _('Full width at half maximum (X)'),
+    'fwhm_y': _('Full width at half maximum (Y)'),
 }
 
 
@@ -89,8 +94,17 @@ class EditPSFForm(forms.ModelForm):
                 pass
         super(EditPSFForm, self).__init__(*args, **kwargs)
 
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {'data-content': help_text, 'data-placement': 'top',
+                     'data-container': 'body'})
+
     class Meta:
         model = PSF
         fields = FIELDS
         widgets = WIDGETS
         labels = LABELS
+        help_texts = HELP_TEXTS
