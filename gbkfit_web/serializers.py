@@ -1,8 +1,10 @@
+from django.core.files import File
+from django.core.files.images import ImageFile
 from rest_framework import serializers
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF, LSF,
     GalaxyModel, Fitter, ParameterSet,
-    Result, Mode, ModeParameter
+    Result, Mode, ModeParameter, ModeImage, ResultFile
 
 )
 from gbkfit_web.forms.job.params import (
@@ -10,7 +12,8 @@ from gbkfit_web.forms.job.params import (
     RT_FIELDS, VT_FIELDS, A_FIELDS, B_FIELDS
 )
 from gbkfit_web.utility.utils import check_path
-from json import dump as json_dump
+from json import load as json_load, dump as json_dump
+
 
 class create_task_json:
     def __init__(self, job_id):
@@ -39,6 +42,61 @@ class create_task_json:
         path = check_path(path)
         with open(path + filename, 'w+') as f:
             json_dump(self.as_json(), f)
+
+
+
+def save_job_results(job_id, json_file):
+
+    job = Job.objects.get(id=job_id)
+    json_file = json_load(open(json_file))
+
+    result = Result()
+    result.job_id = job.id
+    result.dof = json_file['dof']
+    if result.is_valid():
+        result = result.save()
+
+    # Save modes
+    mode_number=0
+    for mode in json_file['modes']:
+        mode = Mode()
+        mode.mode_number = mode_number
+        mode.result = result
+        mode.chisqr = mode['chisqr']
+        mode.rchisqr = mode['rchisqr']
+        if mode.is_valid():
+            mode = mode.save()
+
+        # Save mode parameters
+        params = ModeParameter()
+        params.mode = mode
+        for param in mode['params']:
+            params.name = param['name']
+            param.value = param['value']
+            param.error = param['error']
+            if param.is_valid():
+                param.save()
+
+        #increase mode number
+        mode_number+=1
+
+def save_job_tar(job_id, tar_file_path, tar_file_name):
+    result = Result.objects.get(job_id=job_id)
+    result_file = ResultFile()
+    result_file.result_id = result.id
+    result_file.tar_file = File(open(check_path(tar_file_path) + tar_file_name, 'rb'))
+    if result_file.is_valid():
+        result_file.save()
+
+def save_job_tar(job_id, mode_number, image_file_path, image_file_name):
+    result = Result.objects.get(job_id=job_id)
+    filterargs = {'result__id': result.id, 'mode_number': mode_number}
+    mode = Result.job.filter(**filterargs)[0]
+    mode_image = ModeImage()
+    mode_image.mode = result.id
+    mode_image.image_file = ImageFile(open(check_path(image_file_path) + image_file_name, 'rb'))
+    if mode_image.is_valid():
+        mode_image.save()
 
 ####
 # Begining of Job serializers

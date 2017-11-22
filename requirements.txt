@@ -15,4 +15,7 @@ django-filter>=1.0.1
 #For dev only:
 django-extensions==1.9.7
 ipython==6.2.1
-
+astropy==2.0.2
+matplotlib==2.1.0
+numpy==1.13.1
+Pillow==4.3.0

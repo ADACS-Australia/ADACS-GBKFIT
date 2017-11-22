@@ -6,8 +6,11 @@ import os
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
 from django import forms
+
+from django.http import HttpResponse, JsonResponse
+from wsgiref.util import FileWrapper
+import os
 
 from django.shortcuts import render, redirect
 from gbkfit_web.forms.job.dataset import DataSetForm, EditDataSetForm
@@ -23,6 +26,8 @@ from gbkfit_web.models import (
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params,
     Result, Mode, ModeParameter, ResultFile,
     user_job_input_file_directory_path)
+
+from gbkfit.settings.local import MAX_FILE_SIZE
 
 from gbkfit_web.views.job_info import model_instance_to_iterable
 from gbkfit_web.utility.utils import set_dict_indices
@@ -477,6 +482,7 @@ def edit_job_name(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -510,6 +516,7 @@ def edit_job_data_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -543,8 +550,47 @@ def edit_job_dataset(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
+
+@login_required
+def ajax_edit_job_dataset(request, id):
+    job = Job.objects.get(id=id)
+
+    filetype = request.POST['filetype']
+
+    # if request.FILES['datafile1']:
+    #     form = FORMS_NEW[DATASET](request.POST, request.FILES, request=request, id=id)
+    # else:
+    #     form = FORMS_NEW[DATASET](request=request, id=id)
+
+    try:
+        dataset = DataSet.objects.get(job_id=id)
+        if filetype == 'data':
+            dataset.datafile1 = request.FILES['file']
+        if filetype == 'error':
+            dataset.errorfile1 = request.FILES['file']
+        if filetype == 'mask':
+            dataset.maskfile1 = request.FILES['file']
+    except:
+        dataset = DataSet()
+        dataset.job = job
+        if filetype == 'data':
+            dataset.datafile1 = request.FILES['file']
+        if filetype == 'error':
+            dataset.errorfile1 = request.FILES['file']
+        if filetype == 'mask':
+            dataset.maskfile1 = request.FILES['file']
+
+    try:
+        data_file = dataset.save()
+        data = {'is_valid': True, 'name': data_file.file.name, 'url': data_file.file.url}
+    except:
+        data = {'is_valid': False}
+
+    return JsonResponse(data)
+
 @login_required
 def edit_job_psf(request, id):
     active_tab = PSF
@@ -575,6 +621,7 @@ def edit_job_psf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -608,6 +655,7 @@ def edit_job_lsf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -641,6 +689,7 @@ def edit_job_galaxy_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -674,6 +723,7 @@ def edit_job_fitter(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -707,6 +757,7 @@ def edit_job_params(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -741,6 +792,7 @@ def launch(request, id):
                 'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
                 'fitter_view': views[TABS_INDEXES[FITTER]],
                 'params_view': views[TABS_INDEXES[PARAMS]],
+                'max_file_size': MAX_FILE_SIZE
             }
         )
     else:
@@ -800,6 +852,23 @@ def results(request, id):
             'params_view': views[TABS_INDEXES[PARAMS]],
         }
     )
+
+@login_required
+def download_results_tar(request, id):
+
+    print ("job_id", id)
+
+    # job = Job.objects.get(id=id)
+    result = Result.objects.get(job_id = id)
+
+    filterargs = {'result__id': result.id, 'filetype': ResultFile.TAR_FILE}
+    tar_file = ResultFile.objects.filter(**filterargs)
+    # filename = 'job_{}_results.tar'.format(job.id)
+    content = FileWrapper(tar_file.file)
+    response = HttpResponse(content, content_type='application/gzip')
+    response['Content-Length'] = tar_file.size
+    response['Content-Disposition'] = 'attachment; filename=%s' % tar_file.name
+    return response
 
 @login_required
 def job_overview(request, id):
