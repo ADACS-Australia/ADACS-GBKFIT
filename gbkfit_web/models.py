@@ -9,6 +9,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from gbkfit.settings.local import MEDIA_ROOT, OMP_OR_CUDA
+# TODO: replace FileField with ContentTypeRestrictedFileField to manage file size restriction.
+# from gbkfit_web.utility.format_checker import ContentTypeRestrictedFileField
 
 MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001
 
@@ -267,7 +269,7 @@ class DataModel(models.Model):
         (SCUBE, SCUBE_LABEL),
         (MMAPS, MMAPS_LABEL)
     ]
-    dmodel_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=SCUBE)
+    dmodel_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=MMAPS)
 
     MOMENTS = 'moments'
     GAUSS = 'gauss'
