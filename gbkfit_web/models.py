@@ -319,7 +319,7 @@ class DataModel(models.Model):
         super(DataModel, self).save(*args, **kwargs)
 
     def as_json(self):
-        if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
+        if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA, self.SCUBE]:
             return dict(
                 type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
                 step=[self.step_x, self.step_y, self.step_z],
@@ -1696,7 +1696,7 @@ class Mode(models.Model):
 
         """
     result = models.ForeignKey(Result, related_name='result_mode', on_delete=models.CASCADE)
-    mode_number = models.IntegerField(blank=False)
+    mode_number = models.IntegerField(blank=False, default=0)
     chisqr = models.FloatField(blank=False)
     rchisqr = models.FloatField(blank=False)
 
@@ -1734,7 +1734,7 @@ class ResultFile(models.Model):
                 Output files from gbkfit_app_cli in a tarball
         """
     result = models.OneToOneField(Result, related_name='result_file_mode')
-    tar_file = models.FileField(upload_to=user_job_result_files_directory_path)
+    tar_file = models.FileField(upload_to=user_job_result_files_directory_path, null=True)
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
