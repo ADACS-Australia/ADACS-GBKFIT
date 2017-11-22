@@ -253,7 +253,7 @@ def get_meta(model, views, object):
     if model == MODE:
         fields = [#'chisqr',
                   'rchisqr']
-        labels = {#'chisqr': _('Chi squared'),
+        labels = {#'chisqr': _(mark_safe('&Chi;<sup>2</sup>')),
                   'rchisqr': _(mark_safe('Reduced &Chi;<sup>2</sup>'))}
 
     if model == MODE_PARAMS:

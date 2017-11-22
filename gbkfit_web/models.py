@@ -145,9 +145,6 @@ def user_job_errorfile_directory_path(instance, filename):
 def user_job_maskfile_directory_path(instance, filename):
     return 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
-def user_job_result_files_directory_path(instance, filename):
-    return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
-
 class DataSet(models.Model):
     """
         DataSet class
@@ -279,13 +276,13 @@ class DataModel(models.Model):
     # # Need to figure out how to require the z field when required.
     # size_z = models.PositiveIntegerField(blank=True)
 
-    scale_x = models.PositiveIntegerField(blank=False, default=1, validators=[MinValueValidator(1)])
-    scale_y = models.PositiveIntegerField(blank=False, default=1, validators=[MinValueValidator(1)])
-    scale_z = models.PositiveIntegerField(blank=True, default=1, validators=[MinValueValidator(1)])
+    scale_x = models.PositiveIntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
+    scale_y = models.PositiveIntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
+    scale_z = models.PositiveIntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
 
-    step_x = models.FloatField(blank=False, default=1., validators=[MinValueValidator(1.)])
-    step_y = models.FloatField(blank=False, default=1., validators=[MinValueValidator(1.)])
-    step_z = models.FloatField(blank=True, default=1., validators=[MinValueValidator(1.)])
+    step_x = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(1.)])
+    step_y = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(1.)])
+    step_z = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(1.)])
 
     def clean(self):
         errors = []
@@ -322,7 +319,7 @@ class DataModel(models.Model):
         super(DataModel, self).save(*args, **kwargs)
 
     def as_json(self):
-        if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA]:
+        if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA, self.SCUBE]:
             return dict(
                 type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
                 step=[self.step_x, self.step_y, self.step_z],
@@ -368,7 +365,7 @@ class PSF(models.Model):
 
     fwhm_x = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     fwhm_y = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
-    pa = models.IntegerField(blank=False, default=1)
+    pa = models.FloatField(blank=False, default=1)
     # If Moffat, need to figure out how to require the following field.
     beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
 
@@ -1699,6 +1696,7 @@ class Mode(models.Model):
 
         """
     result = models.ForeignKey(Result, related_name='result_mode', on_delete=models.CASCADE)
+    mode_number = models.IntegerField(blank=False, default=0)
     chisqr = models.FloatField(blank=False)
     rchisqr = models.FloatField(blank=False)
 
@@ -1715,23 +1713,28 @@ class ModeParameter(models.Model):
     value = models.FloatField(blank=False)
     error = models.FloatField(blank=False)
 
+def user_job_result_files_directory_path(instance, filename):
+    return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
+
+class ModeImage(models.Model):
+    """
+            ModeImage class
+
+            DESCRIPTION:
+
+        """
+    mode = models.ForeignKey(Mode, related_name='mode_mode_image', on_delete=models.CASCADE)
+    image_file = models.ImageField(upload_to=user_job_result_files_directory_path)
+
 class ResultFile(models.Model):
     """
             ResultFile class
 
             DESCRIPTION:
-
+                Output files from gbkfit_app_cli in a tarball
         """
-
-    # Could be good to have another table stating the accepted filetypes.
-    JSON_FILE = 'json'
-    FITS_FILE = 'fits'
-    IMAGE_FILE = 'image'
-    TAR_FILE = 'tar'
-
-    result = models.ForeignKey(Result, related_name='result_file_mode', on_delete=models.CASCADE)
-    filename = models.CharField(max_length=255, blank=False, null=False)
-    filetype = models.CharField(max_length=255, blank=False, null=False)
+    result = models.OneToOneField(Result, related_name='result_file_mode')
+    tar_file = models.FileField(upload_to=user_job_result_files_directory_path, null=True)
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
