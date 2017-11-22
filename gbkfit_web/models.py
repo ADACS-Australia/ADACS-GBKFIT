@@ -259,7 +259,7 @@ class DataModel(models.Model):
         (SCUBE, SCUBE_LABEL),
         (MMAPS, MMAPS_LABEL)
     ]
-    dmodel_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=SCUBE)
+    dmodel_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=MMAPS)
 
     MOMENTS = 'moments'
     GAUSS = 'gauss'
