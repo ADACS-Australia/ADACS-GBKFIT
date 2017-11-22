@@ -108,3 +108,4 @@ class EditPSFForm(forms.ModelForm):
         widgets = WIDGETS
         labels = LABELS
         help_texts = HELP_TEXTS
+        
