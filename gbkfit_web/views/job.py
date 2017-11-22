@@ -265,7 +265,11 @@ def act_on_request_method_edit(request, active_tab, id):
 
             active_tab = save_form(form, request, active_tab)
             if get_instance:
-                instance = MODELS_EDIT[previous_tab(active_tab)].objects.get(job_id=id)
+                if 'next' in request.POST:
+                    instance = MODELS_EDIT[previous_tab(active_tab)].objects.get(job_id=id)
+                if 'previous' in request.POST:
+                    instance = MODELS_EDIT[next_tab(active_tab)].objects.get(job_id=id)
+
 
         else:
             if active_tab == START:
