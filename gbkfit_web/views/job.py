@@ -26,6 +26,8 @@ from gbkfit_web.models import (
     Result, Mode, ModeParameter, ResultFile
 )
 
+from gbkfit.settings.local import MAX_FILE_SIZE
+
 from gbkfit_web.views.job_info import model_instance_to_iterable
 from gbkfit_web.utility.utils import set_dict_indices
 
@@ -456,6 +458,7 @@ def edit_job_name(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -489,6 +492,7 @@ def edit_job_data_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -522,6 +526,7 @@ def edit_job_dataset(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -529,7 +534,12 @@ def edit_job_dataset(request, id):
 def ajax_edit_job_dataset(request, id):
     job = Job.objects.get(id=id)
 
-    filetype = request.filetype
+    filetype = request.POST['filetype']
+
+    # if request.FILES['datafile1']:
+    #     form = FORMS_NEW[DATASET](request.POST, request.FILES, request=request, id=id)
+    # else:
+    #     form = FORMS_NEW[DATASET](request=request, id=id)
 
     try:
         dataset = DataSet.objects.get(job_id=id)
@@ -549,10 +559,10 @@ def ajax_edit_job_dataset(request, id):
         if filetype == 'mask':
             dataset.maskfile1 = request.FILES['file']
 
-    if dataset.is_valid():
+    try:
         data_file = dataset.save()
         data = {'is_valid': True, 'name': data_file.file.name, 'url': data_file.file.url}
-    else:
+    except:
         data = {'is_valid': False}
 
     return JsonResponse(data)
@@ -587,6 +597,7 @@ def edit_job_psf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -620,6 +631,7 @@ def edit_job_lsf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -653,6 +665,7 @@ def edit_job_galaxy_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -686,6 +699,7 @@ def edit_job_fitter(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -719,6 +733,7 @@ def edit_job_params(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
+            'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -753,6 +768,7 @@ def launch(request, id):
                 'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
                 'fitter_view': views[TABS_INDEXES[FITTER]],
                 'params_view': views[TABS_INDEXES[PARAMS]],
+                'max_file_size': MAX_FILE_SIZE
             }
         )
     else:
@@ -825,7 +841,7 @@ def download_results_tar(request, id):
     tar_file = ResultFile.objects.filter(**filterargs)
     # filename = 'job_{}_results.tar'.format(job.id)
     content = FileWrapper(tar_file.file)
-    response = HttpResponse(content, content_type='application/pdf')
+    response = HttpResponse(content, content_type='application/gzip')
     response['Content-Length'] = tar_file.size
     response['Content-Disposition'] = 'attachment; filename=%s' % tar_file.name
     return response
