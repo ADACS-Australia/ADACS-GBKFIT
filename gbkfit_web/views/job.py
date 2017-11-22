@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import json
+from os.path import basename
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
@@ -209,7 +210,13 @@ def build_task_json(request):
 
 """
 def save_form(form, request, active_tab):
-    if form.is_valid():
+    # Dataset upload is now managed in ajax_edit_job_dataset, so we simply fetch previous/next.
+    if active_tab == DATASET:
+        if 'next' in request.POST:
+            active_tab = next_tab(active_tab)
+        if 'previous' in request.POST:
+            active_tab = previous_tab(active_tab)
+    elif form.is_valid():
         form.save()
         if 'next' in request.POST:
             active_tab = next_tab(active_tab)
@@ -235,9 +242,12 @@ def act_on_request_method_edit(request, active_tab, id):
                                               job_id=id)
             else:
                 if active_tab == DATASET:
-                    if request.FILES['datafile1']:
-                        form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
-                    else:
+                    try:
+                        if request.FILES['datafile1']:
+                            form = FORMS_NEW[active_tab](request.POST, request.FILES, request=request, id=id)
+                        else:
+                            form = FORMS_NEW[active_tab](request=request, id=id)
+                    except:
                         form = FORMS_NEW[active_tab](request=request, id=id)
                 else:
                     try:
@@ -543,25 +553,30 @@ def ajax_edit_job_dataset(request, id):
 
     try:
         dataset = DataSet.objects.get(job_id=id)
-        if filetype == 'data':
-            dataset.datafile1 = request.FILES['file']
-        if filetype == 'error':
-            dataset.errorfile1 = request.FILES['file']
-        if filetype == 'mask':
-            dataset.maskfile1 = request.FILES['file']
+        if 'datafile1' in request.FILES:
+            dataset.datafile1 = request.FILES['datafile1']
+        if 'errorfile1' in request.FILES:
+            dataset.errorfile1 = request.FILES['errorfile1']
+        if 'maskfile1' in request.FILES:
+            dataset.maskfile1 = request.FILES['maskfile1']
     except:
         dataset = DataSet()
         dataset.job = job
-        if filetype == 'data':
-            dataset.datafile1 = request.FILES['file']
-        if filetype == 'error':
-            dataset.errorfile1 = request.FILES['file']
-        if filetype == 'mask':
-            dataset.maskfile1 = request.FILES['file']
+        if 'datafile1' in request.FILES:
+            dataset.datafile1 = request.FILES['datafile1']
+        if 'errorfile1' in request.FILES:
+            dataset.errorfile1 = request.FILES['errorfile1']
+        if 'maskfile1' in request.FILES:
+            dataset.maskfile1 = request.FILES['maskfile1']
 
     try:
         data_file = dataset.save()
-        data = {'is_valid': True, 'name': data_file.file.name, 'url': data_file.file.url}
+        if filetype == 'datafile1':
+            data = {'is_valid': True, 'name': basename(dataset.datafile1.name)}
+        if filetype == 'errorfile1':
+            data = {'is_valid': True, 'name': basename(dataset.errorfile1.name)}
+        if filetype == 'maskfile1':
+            data = {'is_valid': True, 'name': basename(dataset.maskfile1.name)}
     except:
         data = {'is_valid': False}
 
