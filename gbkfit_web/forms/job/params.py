@@ -1432,7 +1432,6 @@ class EditParamsForm(forms.ModelForm):
                      'data-container': 'body'})
 
         if vel_profile != None:
-            print (self.fields)
             if vel_profile != GalaxyModel.EPINAT:
                 for field in A_FIELDS:
                     if field in self.fields: del self.fields[field]
