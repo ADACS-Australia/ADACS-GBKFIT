@@ -377,7 +377,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
                         if field in fields:
                             fields.remove(field)
 
-    if galaxy_model.fields['vel_profile'] != GalaxyModel.EPINAT:
+    if galaxy_model.fields['vel_profile'][1] != GalaxyModel.EPINAT:
         for field in ParamsMeta.A_FIELDS:
             if field in fields:
                 fields.remove(field)

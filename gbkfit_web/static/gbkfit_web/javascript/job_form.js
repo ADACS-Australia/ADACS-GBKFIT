@@ -496,8 +496,9 @@ $(document).ready(function() {
             $("#id_fitter_view").length === 0   ||
             $("#id_params_view").length === 0)      {
 
-        if (document.getElementById("id_launch_job"))
-            document.getElementById("id_launch_job").disabled = true;
+        if ($("input.launch_job_button"))
+            $("input.launch_job_button").attr("disabled", true);
+
 
     }
 
