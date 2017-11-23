@@ -29,7 +29,7 @@ from gbkfit_web.models import (
     user_job_input_file_directory_path
 )
 
-from gbkfit.settings.local import MAX_FILE_SIZE
+# from gbkfit.settings.local import MAX_FILE_SIZE
 
 from gbkfit_web.views.job_info import model_instance_to_iterable
 from gbkfit_web.utility.utils import set_dict_indices
@@ -512,7 +512,7 @@ def edit_job_name(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -546,7 +546,7 @@ def edit_job_data_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -580,7 +580,7 @@ def edit_job_dataset(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -656,7 +656,7 @@ def edit_job_psf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -690,7 +690,7 @@ def edit_job_lsf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -724,7 +724,7 @@ def edit_job_galaxy_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -758,7 +758,7 @@ def edit_job_fitter(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -792,7 +792,7 @@ def edit_job_params(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -827,7 +827,7 @@ def launch(request, id):
                 'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
                 'fitter_view': views[TABS_INDEXES[FITTER]],
                 'params_view': views[TABS_INDEXES[PARAMS]],
-                'max_file_size': MAX_FILE_SIZE
+                # 'max_file_size': MAX_FILE_SIZE
             }
         )
     else:

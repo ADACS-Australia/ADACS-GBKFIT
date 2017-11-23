@@ -61,10 +61,10 @@
                                         if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
                                             uploadErrors.push('Not an accepted file type. Requires FITS files (e.g. myfile.fits).');
                                         }
-                                        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > '{{ max_file_size }}') {
-                                            console.log('File size issue.');
-                                            uploadErrors.push('Filesize is too big');
-                                        }
+{#                                        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > '{{ max_file_size }}') {#}
+{#                                            console.log('File size issue.');#}
+{#                                            uploadErrors.push('Filesize is too big');#}
+{#                                        }#}
                                         if(uploadErrors.length > 0) {
                                             alert(uploadErrors.join("\n"));
                                         } else {
