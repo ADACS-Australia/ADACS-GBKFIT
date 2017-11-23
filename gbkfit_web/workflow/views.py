@@ -46,10 +46,18 @@ class WorkFlowView(GenericAPIView):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     def post(self, request):
-        data = json.loads(request.data)
-        print(data)
+        # Get the job with the requested id
+        job = Job.objects.get(id=request.data['jobid'])
+
+        # Set the job status
+        job.status = request.data['status']
+
+        # Save the job
+        job.save()
+
+        # Create a response
         data = {
-            'good': 'one'
+            'detail': 'Job {} updated to status {} successfully...'.format(job.id, job.status)
         }
 
-        return HttpResponse(json.dumps(data))
+        return HttpResponse(json.dumps(data), content_type='application/json')
