@@ -331,19 +331,19 @@ class DataModel(models.Model):
         super(DataModel, self).save(*args, **kwargs)
 
     def as_json(self):
-        if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA, self.SCUBE]:
-            return dict(
-                type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
-                step=[self.step_x, self.step_y, self.step_z],
-                upsampling=[self.scale_x, self.scale_y, self.scale_z]
-            )
-        else:
-            return dict(
-                type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
-                method=self.method,
-                step=[self.step_x, self.step_y],
-                upsampling=[self.scale_x, self.scale_y],
-            )
+        #if self.dmodel_type in [self.SCUBE_OMP, self.SCUBE_CUDA, self.SCUBE]:
+        return dict(
+            type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
+            step=[self.step_x, self.step_y, self.step_z],
+            upsampling=[self.scale_x, self.scale_y, self.scale_z]
+        )
+        # else:
+        #     return dict(
+        #         type="gbkfit.dmodel." + self.dmodel_type + '_' + OMP_OR_CUDA,
+        #         method=self.method,
+        #         step=[self.step_x, self.step_y],
+        #         upsampling=[self.scale_x, self.scale_y],
+        #     )
 
 class PSF(models.Model):
     """
@@ -623,63 +623,64 @@ class Fitter(models.Model):
     def clean(self):
         errors = []
 
+
         if self.fitter_type == self.MPFIT:
-            if self.ftol < 0:
+            if self.ftol != None and self.ftol < 0:
                 errors.append(ValidationError({'ftol':
                                                    ['mpfit, ftol: Accepted values: any positive value.']}))
 
-            if self.xtol < 0:
+            if self.xtol != None and self.xtol < 0:
                 errors.append(ValidationError({'xtol':
                                                    ['mpfit, xtol: Accepted values: any positive value.']}))
 
-            if self.gtol < 0:
+            if self.gtol != None and self.gtol < 0:
                 errors.append(ValidationError({'gtol':
                                                    ['mpfit, gtol: Accepted values: any positive value.']}))
 
-            if self.epsfcn < 0:
+            if self.epsfcn != None and self.epsfcn < 0:
                 errors.append(ValidationError({'epsfcn':
                                                    ['mpfit, epsfcn: Accepted values: any positive value.']}))
 
-            if self.stepfactor < 0:
+            if self.stepfactor != None and self.stepfactor < 0:
                 errors.append(ValidationError({'stepfactor':
                                                    ['mpfit, stepfactor: Accepted values: any positive value.']}))
 
-            if self.covtol < 0:
+            if self.covtol != None and self.covtol < 0:
                 errors.append(ValidationError({'covtol':
                                                    ['mpfit, covtol: Accepted values: any positive value.']}))
 
-            if self.mpfit_maxiter < 0:
+            if self.mpfit_maxiter != None and self.mpfit_maxiter < 0:
                 errors.append(ValidationError({'maxiter':
                                                    ['mpfit, maxiter: Accepted values: any positive value.']}))
 
-            if self.maxfev < 0:
+            if self.maxfev != None and self.maxfev < 0:
                 errors.append(ValidationError({'maxfev':
                                                    ['mpfit, maxfev: Accepted values: any positive value.']}))
 
         if self.fitter_type == self.MULTINEST:
-            if self.nlive < 0:
+            if self.nlive != None and self.nlive < 0:
                 errors.append(ValidationError({'nlive':
                                                    ['Multinest, nlive: Accepted values: any positive non-zero integer value.']}))
 
-            if self.tol < 0:
+            if self.tol != None and self.tol < 0:
                 errors.append(ValidationError({'tol':
                                                    ['Multinest, tol: Accepted values: any positive non-zero value.']}))
 
-            if self.efr < 0:
+            if self.efr != None and self.efr < 0:
                 errors.append(ValidationError({'efr':
                                                    ['Multinest, efr: Accepted values: any positive non-zero value.']}))
 
-            if self.ztol != None:
+            if self.ztol != None and self.ztol != None:
                 if self.ztol < 0:
                     errors.append(ValidationError({'ztol':
                                                        ['Multinest, ztol: Accepted values: any positive non-zero value.']}))
 
-            if self.logzero != None:
+            if self.logzero != None and self.logzero != None:
                 if self.logzero < 0:
                     errors.append(ValidationError({'logzero':
                                                        ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
 
-            if self.outfile < 0:
+            if self.outfile != None and self.outfile < 0:
                 errors.append(ValidationError({'logzero':
                                                    ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
 
@@ -856,7 +857,7 @@ class ParameterSet(models.Model):
     vt_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # a
-    a_fixed = models.NullBooleanField(blank=True, default=0)
+    a_fixed = models.NullBooleanField(blank=True, default=1)
     a_value = models.FloatField(blank=True, null=True, default=1)
     a_min = models.FloatField(blank=True, null=True, default=1)
     a_max = models.FloatField(blank=True, null=True, default=1)
@@ -866,7 +867,7 @@ class ParameterSet(models.Model):
     a_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # b
-    b_fixed = models.NullBooleanField(blank=True, default=0)
+    b_fixed = models.NullBooleanField(blank=True, default=1)
     b_value = models.FloatField(blank=True, null=True, default=1)
     b_min = models.FloatField(blank=True, null=True, default=1)
     b_max = models.FloatField(blank=True, null=True, default=1)
@@ -878,7 +879,8 @@ class ParameterSet(models.Model):
     def clean(self):
         errors = []
         # xo
-        if self.xo_fixed == 1:
+        if self.xo_fixed == 0:
+
             if self.xo_min > self.xo_max:
                 errors.append(ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -886,7 +888,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
 
         # yo
-        if self.yo_fixed == 1:
+        if self.yo_fixed == 0:
             if self.yo_min > self.yo_max:
                 errors.append(ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -894,7 +896,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
 
         # pa
-        if self.pa_fixed == 1:
+        if self.pa_fixed == 0:
             if self.pa_min > self.pa_max:
                 errors.append(ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -902,7 +904,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
 
         # incl
-        if self.incl_fixed == 1:
+        if self.incl_fixed == 0:
             if self.incl_min > self.incl_max:
                 errors.append(ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -910,7 +912,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
 
         # vsys
-        if self.vsys_fixed == 1:
+        if self.vsys_fixed == 0:
             if self.vsys_min > self.vsys_max:
                 errors.append(ValidationError(
                     {'vsys_min': ['vsys: Minimum must be smaller than or equal to the maximum.']}))
@@ -920,7 +922,7 @@ class ParameterSet(models.Model):
                     {'vsys_value': ['vsys: Value must be within range set by minimum and maximum.']}))
 
         # vsig
-        if self.vsig_fixed == 1:
+        if self.vsig_fixed == 0:
             if self.vsig_min > self.vsig_max:
                 errors.append(ValidationError(
                     {'vsig_min': ['vsig: Minimum must be smaller than or equal to the maximum.']}))
@@ -930,7 +932,7 @@ class ParameterSet(models.Model):
                     {'vsig_value': ['vsig: Value must be within range set by minimum and maximum.']}))
 
         # i0
-        if self.i0_fixed == 1:
+        if self.i0_fixed == 0:
             if self.i0_min > self.i0_max:
                 errors.append(
                     ValidationError({'i0_min': ['i0: Minimum must be smaller than or equal to the maximum.']}))
@@ -939,7 +941,7 @@ class ParameterSet(models.Model):
                     {'i0_value': ['i0: Value must be within range set by minimum and maximum.']}))
 
         # r0
-        if self.r0_fixed == 1:
+        if self.r0_fixed == 0:
             if self.r0_min > self.r0_max:
                 errors.append(
                     ValidationError({'r0_min': ['r0: Minimum must be smaller than or equal to the maximum.']}))
@@ -949,7 +951,7 @@ class ParameterSet(models.Model):
                     {'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
 
         # rt
-        if self.rt_fixed == 1:
+        if self.rt_fixed == 0:
             if self.rt_min > self.rt_max:
                 errors.append(ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -957,7 +959,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
 
         # vt
-        if self.vt_fixed == 1:
+        if self.vt_fixed == 0:
             if self.vt_min > self.vt_max:
                 errors.append(ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -965,24 +967,26 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
 
         # a
-        if self.a_fixed == 1:
-            if self.a_min > self.a_max:
-                errors.append(
-                    ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
+        if self.a_fixed == 0:
+            if self.a_min != None:
+                if self.a_min > self.a_max:
+                    errors.append(
+                        ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
 
-            elif self.a_value < self.a_min or self.a_value > self.a_max:
-                errors.append(
-                    ValidationError({'a_value': ['a: Value must be within range set by minimum and maximum.']}))
+                elif self.a_value < self.a_min or self.a_value > self.a_max:
+                    errors.append(
+                        ValidationError({'a_value': ['a: Value must be within range set by minimum and maximum.']}))
 
         # b
-        if self.b_fixed == 1:
-            if self.b_min > self.b_max:
-                errors.append(
-                    ValidationError({'b_min': ['b: Minimum must be smaller than or equal to the maximum.']}))
+        if self.b_fixed == 0:
+            if self.b_min != None:
+                if self.b_min > self.b_max:
+                    errors.append(
+                        ValidationError({'b_min': ['b: Minimum must be smaller than or equal to the maximum.']}))
 
-            elif self.b_value < self.b_min or self.b_value > self.b_max:
-                errors.append(
-                    ValidationError({'b_value': ['b: Value must be within range set by minimum and maximum.']}))
+                elif self.b_value < self.b_min or self.b_value > self.b_max:
+                    errors.append(
+                        ValidationError({'b_value': ['b: Value must be within range set by minimum and maximum.']}))
 
         if len(errors) > 0: # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
@@ -1018,45 +1022,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            xo_dict['value'] = self.xo_value
+            if self.xo_value != None:
+                xo_dict['value'] = self.xo_value
         except:
             pass
 
         try:
-            xo_dict['min'] = self.xo_min
+            if xo_dict['min'] != None:
+                xo_dict['min'] = self.xo_min
         except:
             pass
 
         try:
-            xo_dict['max'] = self.xo_max
+            if xo_dict['max'] != None:
+                xo_dict['max'] = self.xo_max
         except:
             pass
         try:
-            xo_dict['wrap'] = self.xo_wrap
-        except:
-            pass
-
-        try:
-            xo_dict['step'] = self.xo_step
+            if xo_dict['wrap'] != None:
+                xo_dict['wrap'] = self.xo_wrap
         except:
             pass
 
         try:
-            xo_dict['relstep'] = self.xo_relstep
+            if xo_dict['step'] != None:
+                xo_dict['step'] = self.xo_step
         except:
             pass
 
         try:
-            xo_dict['side'] = self.xo_side
+            if xo_dict['relstep'] != None:
+                xo_dict['relstep'] = self.xo_relstep
         except:
             pass
 
         try:
-            xo_dict['error'] = self.errorfile1.path
+            if xo_dict['side'] != None:
+                xo_dict['side'] = self.xo_side
+        except:
+            pass
+
+        try:
+            if xo_dict['error'] != None:
+                xo_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            xo_dict['mask'] = self.maskfile1.path
+            if xo_dict['mask'] != None:
+                xo_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1074,45 +1087,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            yo_dict['value'] = self.yo_value
+            if self.yo_value != None:
+                yo_dict['value'] = self.yo_value
         except:
             pass
 
         try:
-            yo_dict['min'] = self.yo_min
+            if yo_dict['min'] != None:
+                yo_dict['min'] = self.yo_min
         except:
             pass
 
         try:
-            yo_dict['max'] = self.yo_max
+            if yo_dict['max'] != None:
+                yo_dict['max'] = self.yo_max
         except:
             pass
         try:
-            yo_dict['wrap'] = self.yo_wrap
-        except:
-            pass
-
-        try:
-            yo_dict['step'] = self.yo_step
+            if yo_dict['wrap'] != None:
+                yo_dict['wrap'] = self.yo_wrap
         except:
             pass
 
         try:
-            yo_dict['relstep'] = self.yo_relstep
+            if yo_dict['step'] != None:
+                yo_dict['step'] = self.yo_step
         except:
             pass
 
         try:
-            yo_dict['side'] = self.yo_side
+            if yo_dict['relstep'] != None:
+                yo_dict['relstep'] = self.yo_relstep
         except:
             pass
 
         try:
-            yo_dict['error'] = self.errorfile1.path
+            if yo_dict['side'] != None:
+                yo_dict['side'] = self.yo_side
+        except:
+            pass
+
+        try:
+            if yo_dict['error'] != None:
+                yo_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            yo_dict['mask'] = self.maskfile1.path
+            if yo_dict['mask'] != None:
+                yo_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1130,45 +1152,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            pa_dict['value'] = self.pa_value
+            if self.pa_value != None:
+                pa_dict['value'] = self.pa_value
         except:
             pass
 
         try:
-            pa_dict['min'] = self.pa_min
+            if pa_dict['min'] != None:
+                pa_dict['min'] = self.pa_min
         except:
             pass
 
         try:
-            pa_dict['max'] = self.pa_max
+            if pa_dict['max'] != None:
+                pa_dict['max'] = self.pa_max
         except:
             pass
         try:
-            pa_dict['wrap'] = self.pa_wrap
-        except:
-            pass
-
-        try:
-            pa_dict['step'] = self.pa_step
+            if pa_dict['wrap'] != None:
+                pa_dict['wrap'] = self.pa_wrap
         except:
             pass
 
         try:
-            pa_dict['relstep'] = self.pa_relstep
+            if pa_dict['step'] != None:
+                pa_dict['step'] = self.pa_step
         except:
             pass
 
         try:
-            pa_dict['side'] = self.pa_side
+            if pa_dict['relstep'] != None:
+                pa_dict['relstep'] = self.pa_relstep
         except:
             pass
 
         try:
-            pa_dict['error'] = self.errorfile1.path
+            if pa_dict['side'] != None:
+                pa_dict['side'] = self.pa_side
+        except:
+            pass
+
+        try:
+            if pa_dict['error'] != None:
+                pa_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            pa_dict['mask'] = self.maskfile1.path
+            if pa_dict['mask'] != None:
+                pa_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1186,45 +1217,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            incl_dict['value'] = self.incl_value
+            if self.incl_value != None:
+                incl_dict['value'] = self.incl_value
         except:
             pass
 
         try:
-            incl_dict['min'] = self.incl_min
+            if incl_dict['min'] != None:
+                incl_dict['min'] = self.incl_min
         except:
             pass
 
         try:
-            incl_dict['max'] = self.incl_max
+            if incl_dict['max'] != None:
+                incl_dict['max'] = self.incl_max
         except:
             pass
         try:
-            incl_dict['wrap'] = self.incl_wrap
-        except:
-            pass
-
-        try:
-            incl_dict['step'] = self.incl_step
+            if incl_dict['wrap'] != None:
+                incl_dict['wrap'] = self.incl_wrap
         except:
             pass
 
         try:
-            incl_dict['relstep'] = self.incl_relstep
+            if incl_dict['step'] != None:
+                incl_dict['step'] = self.incl_step
         except:
             pass
 
         try:
-            incl_dict['side'] = self.incl_side
+            if incl_dict['relstep'] != None:
+                incl_dict['relstep'] = self.incl_relstep
         except:
             pass
 
         try:
-            incl_dict['error'] = self.errorfile1.path
+            if incl_dict['side'] != None:
+                incl_dict['side'] = self.incl_side
+        except:
+            pass
+
+        try:
+            if incl_dict['error'] != None:
+                incl_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            incl_dict['mask'] = self.maskfile1.path
+            if incl_dict['mask'] != None:
+                incl_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1242,45 +1282,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            vsys_dict['value'] = self.vsys_value
+            if self.vsys_value != None:
+                vsys_dict['value'] = self.vsys_value
         except:
             pass
 
         try:
-            vsys_dict['min'] = self.vsys_min
+            if vsys_dict['min'] != None:
+                vsys_dict['min'] = self.vsys_min
         except:
             pass
 
         try:
-            vsys_dict['max'] = self.vsys_max
+            if vsys_dict['max'] != None:
+                vsys_dict['max'] = self.vsys_max
         except:
             pass
         try:
-            vsys_dict['wrap'] = self.vsys_wrap
-        except:
-            pass
-
-        try:
-            vsys_dict['step'] = self.vsys_step
+            if vsys_dict['wrap'] != None:
+                vsys_dict['wrap'] = self.vsys_wrap
         except:
             pass
 
         try:
-            vsys_dict['relstep'] = self.vsys_relstep
+            if vsys_dict['step'] != None:
+                vsys_dict['step'] = self.vsys_step
         except:
             pass
 
         try:
-            vsys_dict['side'] = self.vsys_side
+            if vsys_dict['relstep'] != None:
+                vsys_dict['relstep'] = self.vsys_relstep
         except:
             pass
 
         try:
-            vsys_dict['error'] = self.errorfile1.path
+            if vsys_dict['side'] != None:
+                vsys_dict['side'] = self.vsys_side
+        except:
+            pass
+
+        try:
+            if vsys_dict['error'] != None:
+                vsys_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            vsys_dict['mask'] = self.maskfile1.path
+            if vsys_dict['mask'] != None:
+                vsys_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1298,45 +1347,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            vsig_dict['value'] = self.vsig_value
+            if self.vsig_value != None:
+                vsig_dict['value'] = self.vsig_value
         except:
             pass
 
         try:
-            vsig_dict['min'] = self.vsig_min
+            if vsig_dict['min'] != None:
+                vsig_dict['min'] = self.vsig_min
         except:
             pass
 
         try:
-            vsig_dict['max'] = self.vsig_max
+            if vsig_dict['max'] != None:
+                vsig_dict['max'] = self.vsig_max
         except:
             pass
         try:
-            vsig_dict['wrap'] = self.vsig_wrap
-        except:
-            pass
-
-        try:
-            vsig_dict['step'] = self.vsig_step
+            if vsig_dict['wrap'] != None:
+                vsig_dict['wrap'] = self.vsig_wrap
         except:
             pass
 
         try:
-            vsig_dict['relstep'] = self.vsig_relstep
+            if vsig_dict['step'] != None:
+                vsig_dict['step'] = self.vsig_step
         except:
             pass
 
         try:
-            vsig_dict['side'] = self.vsig_side
+            if vsig_dict['relstep'] != None:
+                vsig_dict['relstep'] = self.vsig_relstep
         except:
             pass
 
         try:
-            vsig_dict['error'] = self.errorfile1.path
+            if vsig_dict['side'] != None:
+                vsig_dict['side'] = self.vsig_side
+        except:
+            pass
+
+        try:
+            if vsig_dict['error'] != None:
+                vsig_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            vsig_dict['mask'] = self.maskfile1.path
+            if vsig_dict['mask'] != None:
+                vsig_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1354,45 +1412,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            i0_dict['value'] = self.i0_value
+            if self.i0_value != None:
+                i0_dict['value'] = self.i0_value
         except:
             pass
 
         try:
-            i0_dict['min'] = self.i0_min
+            if i0_dict['min'] != None:
+                i0_dict['min'] = self.i0_min
         except:
             pass
 
         try:
-            i0_dict['max'] = self.i0_max
+            if i0_dict['max'] != None:
+                i0_dict['max'] = self.i0_max
         except:
             pass
         try:
-            i0_dict['wrap'] = self.i0_wrap
-        except:
-            pass
-
-        try:
-            i0_dict['step'] = self.i0_step
+            if i0_dict['wrap'] != None:
+                i0_dict['wrap'] = self.i0_wrap
         except:
             pass
 
         try:
-            i0_dict['relstep'] = self.i0_relstep
+            if i0_dict['step'] != None:
+                i0_dict['step'] = self.i0_step
         except:
             pass
 
         try:
-            i0_dict['side'] = self.i0_side
+            if i0_dict['relstep'] != None:
+                i0_dict['relstep'] = self.i0_relstep
         except:
             pass
 
         try:
-            i0_dict['error'] = self.errorfile1.path
+            if i0_dict['side'] != None:
+                i0_dict['side'] = self.i0_side
+        except:
+            pass
+
+        try:
+            if i0_dict['error'] != None:
+                i0_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            i0_dict['mask'] = self.maskfile1.path
+            if i0_dict['mask'] != None:
+                i0_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1410,45 +1477,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            r0_dict['value'] = self.r0_value
+            if self.r0_value != None:
+                r0_dict['value'] = self.r0_value
         except:
             pass
 
         try:
-            r0_dict['min'] = self.r0_min
+            if r0_dict['min'] != None:
+                r0_dict['min'] = self.r0_min
         except:
             pass
 
         try:
-            r0_dict['max'] = self.r0_max
+            if r0_dict['max'] != None:
+                r0_dict['max'] = self.r0_max
         except:
             pass
         try:
-            r0_dict['wrap'] = self.r0_wrap
-        except:
-            pass
-
-        try:
-            r0_dict['step'] = self.r0_step
+            if r0_dict['wrap'] != None:
+                r0_dict['wrap'] = self.r0_wrap
         except:
             pass
 
         try:
-            r0_dict['relstep'] = self.r0_relstep
+            if r0_dict['step'] != None:
+                r0_dict['step'] = self.r0_step
         except:
             pass
 
         try:
-            r0_dict['side'] = self.r0_side
+            if r0_dict['relstep'] != None:
+                r0_dict['relstep'] = self.r0_relstep
         except:
             pass
 
         try:
-            r0_dict['error'] = self.errorfile1.path
+            if r0_dict['side'] != None:
+                r0_dict['side'] = self.r0_side
+        except:
+            pass
+
+        try:
+            if r0_dict['error'] != None:
+                r0_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            r0_dict['mask'] = self.maskfile1.path
+            if r0_dict['mask'] != None:
+                r0_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1466,45 +1542,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            rt_dict['value'] = self.rt_value
+            if self.rt_value != None:
+                rt_dict['value'] = self.rt_value
         except:
             pass
 
         try:
-            rt_dict['min'] = self.rt_min
+            if rt_dict['min'] != None:
+                rt_dict['min'] = self.rt_min
         except:
             pass
 
         try:
-            rt_dict['max'] = self.rt_max
+            if rt_dict['max'] != None:
+                rt_dict['max'] = self.rt_max
         except:
             pass
         try:
-            rt_dict['wrap'] = self.rt_wrap
-        except:
-            pass
-
-        try:
-            rt_dict['step'] = self.rt_step
+            if rt_dict['wrap'] != None:
+                rt_dict['wrap'] = self.rt_wrap
         except:
             pass
 
         try:
-            rt_dict['relstep'] = self.rt_relstep
+            if rt_dict['step'] != None:
+                rt_dict['step'] = self.rt_step
         except:
             pass
 
         try:
-            rt_dict['side'] = self.rt_side
+            if rt_dict['relstep'] != None:
+                rt_dict['relstep'] = self.rt_relstep
         except:
             pass
 
         try:
-            rt_dict['error'] = self.errorfile1.path
+            if rt_dict['side'] != None:
+                rt_dict['side'] = self.rt_side
+        except:
+            pass
+
+        try:
+            if rt_dict['error'] != None:
+                rt_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            rt_dict['mask'] = self.maskfile1.path
+            if rt_dict['mask'] != None:
+                rt_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1522,45 +1607,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            vt_dict['value'] = self.vt_value
+            if self.vt_value != None:
+                vt_dict['value'] = self.vt_value
         except:
             pass
 
         try:
-            vt_dict['min'] = self.vt_min
+            if vt_dict['min'] != None:
+                vt_dict['min'] = self.vt_min
         except:
             pass
 
         try:
-            vt_dict['max'] = self.vt_max
+            if vt_dict['max'] != None:
+                vt_dict['max'] = self.vt_max
         except:
             pass
         try:
-            vt_dict['wrap'] = self.vt_wrap
-        except:
-            pass
-
-        try:
-            vt_dict['step'] = self.vt_step
+            if vt_dict['wrap'] != None:
+                vt_dict['wrap'] = self.vt_wrap
         except:
             pass
 
         try:
-            vt_dict['relstep'] = self.vt_relstep
+            if vt_dict['step'] != None:
+                vt_dict['step'] = self.vt_step
         except:
             pass
 
         try:
-            vt_dict['side'] = self.vt_side
+            if vt_dict['relstep'] != None:
+                vt_dict['relstep'] = self.vt_relstep
         except:
             pass
 
         try:
-            vt_dict['error'] = self.errorfile1.path
+            if vt_dict['side'] != None:
+                vt_dict['side'] = self.vt_side
+        except:
+            pass
+
+        try:
+            if vt_dict['error'] != None:
+                vt_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            vt_dict['mask'] = self.maskfile1.path
+            if vt_dict['mask'] != None:
+                vt_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1578,45 +1672,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            a_dict['value'] = self.a_value
+            if self.a_value != None:
+                a_dict['value'] = self.a_value
         except:
             pass
 
         try:
-            a_dict['min'] = self.a_min
+            if a_dict['min'] != None:
+                a_dict['min'] = self.a_min
         except:
             pass
 
         try:
-            a_dict['max'] = self.a_max
+            if a_dict['max'] != None:
+                a_dict['max'] = self.a_max
         except:
             pass
         try:
-            a_dict['wrap'] = self.a_wrap
-        except:
-            pass
-
-        try:
-            a_dict['step'] = self.a_step
+            if a_dict['wrap'] != None:
+                a_dict['wrap'] = self.a_wrap
         except:
             pass
 
         try:
-            a_dict['relstep'] = self.a_relstep
+            if a_dict['step'] != None:
+                a_dict['step'] = self.a_step
         except:
             pass
 
         try:
-            a_dict['side'] = self.a_side
+            if a_dict['relstep'] != None:
+                a_dict['relstep'] = self.a_relstep
         except:
             pass
 
         try:
-            a_dict['error'] = self.errorfile1.path
+            if a_dict['side'] != None:
+                a_dict['side'] = self.a_side
+        except:
+            pass
+
+        try:
+            if a_dict['error'] != None:
+                a_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            a_dict['mask'] = self.maskfile1.path
+            if a_dict['mask'] != None:
+                a_dict['mask'] = self.maskfile1.path
         except:
             pass
 
@@ -1634,45 +1737,54 @@ class ParameterSet(models.Model):
             pass
 
         try:
-            b_dict['value'] = self.b_value
+            if self.b_value != None:
+                b_dict['value'] = self.b_value
         except:
             pass
 
         try:
-            b_dict['min'] = self.b_min
+            if b_dict['min'] != None:
+                b_dict['min'] = self.b_min
         except:
             pass
 
         try:
-            b_dict['max'] = self.b_max
+            if b_dict['max'] != None:
+                b_dict['max'] = self.b_max
         except:
             pass
         try:
-            b_dict['wrap'] = self.b_wrap
-        except:
-            pass
-
-        try:
-            b_dict['step'] = self.b_step
+            if b_dict['wrap'] != None:
+                b_dict['wrap'] = self.b_wrap
         except:
             pass
 
         try:
-            b_dict['relstep'] = self.b_relstep
+            if b_dict['step'] != None:
+                b_dict['step'] = self.b_step
         except:
             pass
 
         try:
-            b_dict['side'] = self.b_side
+            if b_dict['relstep'] != None:
+                b_dict['relstep'] = self.b_relstep
         except:
             pass
 
         try:
-            b_dict['error'] = self.errorfile1.path
+            if b_dict['side'] != None:
+                b_dict['side'] = self.b_side
+        except:
+            pass
+
+        try:
+            if b_dict['error'] != None:
+                b_dict['error'] = self.errorfile1.path
         except:
             pass
         try:
-            b_dict['mask'] = self.maskfile1.path
+            if b_dict['mask'] != None:
+                b_dict['mask'] = self.maskfile1.path
         except:
             pass
 

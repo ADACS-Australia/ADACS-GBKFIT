@@ -34,10 +34,71 @@
 
                     {# 2. FILE INPUT TO BE USED BY THE PLUG-IN #}
                     <div class="col-md-10">
-                        <input id="fileupload" type="file" name="{{ field.name }}"
+                        <input id="fileupload_{{ field.name }}" type="file" name="{{ field.name }}"
                                style="display: none;"
                                data-url="{% url 'basic_upload' id=job_id %}"
                                data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "filetype": "{{ field.name }}"}'>
+
+                        <script>
+                            $(function () {
+                                /* 1. OPEN THE FILE EXPLORER WINDOW */
+                                $(".js-upload-{{ field.name }}").click(function () {
+                                    $('#fileupload_{{ field.name }}').click();
+                                });
+
+                                /* 2. INITIALIZE THE FILE UPLOAD COMPONENT */
+                                $('#fileupload_{{ field.name }}').fileupload({
+                                    dataType: 'json',
+                                    autoUpload: false,
+                                    add: function(e, data) {
+                                        console.log($(this));
+                                        var uploadErrors = [];
+                                        var acceptFileTypes = /^image\/(fits|FITS)$/i;
+                                        if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                                            uploadErrors.push('Not an accepted file type. Requires FITS files (e.g. myfile.fits).');
+                                        }
+                                        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > '{{ max_file_size }}') {
+                                            console.log('File size issue.');
+                                            uploadErrors.push('Filesize is too big');
+                                        }
+                                        if(uploadErrors.length > 0) {
+                                            alert(uploadErrors.join("\n"));
+                                        } else {
+                                            data.submit();
+                                        }
+                                    },
+                                    start: function (e) {  /* 2. WHEN THE UPLOADING PROCESS STARTS, SHOW THE MODAL */
+                                        $("#modal-progress").modal("show");
+                                    },
+                                    stop: function (e) {  /* 3. WHEN THE UPLOADING PROCESS FINALIZE, HIDE THE MODAL */
+                                        $("#modal-progress").modal("hide");
+                                    },
+                                    progressall: function (e, data) {  /* 4. UPDATE THE PROGRESS BAR */
+                                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                                        var strProgress = progress + "%";
+                                        $(".progress-bar").css({"width": strProgress});
+                                        $(".progress-bar").text(strProgress);
+                                    },
+                                    done: function (e, data) {  /* 3. PROCESS THE RESPONSE FROM THE SERVER */
+                                        console.log(data.result.name);
+                                        if (data.result.is_valid) {
+                                            $('#table_{{ field.name }} tbody').html(
+                                                "<tr><td>" + data.result.name + "</td></tr>"
+                                            )
+                                        }
+                                    },
+                                    fail: function (e, data) {
+                                        $.each(data.messages, function (index, error) {
+                                            $("#gallery tbody").prepend(
+                                                "<tr><td style=\"color: red;\">" +
+                                                "Upload file error: " + error + "<i class=\"elusive-remove\" style=\"padding-left:10px;\"" +
+                                                "</td></tr>")
+                                                console.log(error);
+                                        });
+                                    },
+                                });
+                            });
+                        </script>
 
                         {# 3. TABLE TO DISPLAY THE UPLOADED PHOTOS #}
                         <table id="table_{{ field.name }}" class="table table-bordered">
@@ -96,82 +157,4 @@
     <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
     <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/jquery.fileupload.js' %}"></script>
 
-
-    {# PHOTOS PAGE SCRIPTS #}
-    <script>
-        $(function () {
-            TO_BE_UPDATED = '';
-
-            /* 1. OPEN THE FILE EXPLORER WINDOW */
-            $(".js-upload-datafile1").click(function () {
-                TO_BE_UPDATED = '#table_datafile1';
-                $("#fileupload").click();
-            });
-
-            $(".js-upload-errorfile1").click(function () {
-                TO_BE_UPDATED = '#table_errorfile1';
-                $("#fileupload").click();
-            });
-
-            $(".js-upload-maskfile1").click(function () {
-                TO_BE_UPDATED = '#table_maskfile1';
-                $("#fileupload").click();
-            });
-
-            /* 2. INITIALIZE THE FILE UPLOAD COMPONENT */
-            $("#fileupload").fileupload({
-                dataType: 'json',
-                autoUpload: false,
-                add: function(e, data) {
-                    var uploadErrors = [];
-                    var acceptFileTypes = /^image\/(fits|FITS)$/i;
-                    if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-                        uploadErrors.push('Not an accepted file type. Requires FITS files (e.g. myfile.fits).');
-                    }
-                    if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > '{{ max_file_size }}') {
-                        console.log('File size issue.');
-                        uploadErrors.push('Filesize is too big');
-                    }
-                    if(uploadErrors.length > 0) {
-                        alert(uploadErrors.join("\n"));
-                    } else {
-                        data.submit();
-                    }
-                },
-                start: function (e) {  /* 2. WHEN THE UPLOADING PROCESS STARTS, SHOW THE MODAL */
-                    $("#modal-progress").modal("show");
-                },
-                stop: function (e) {  /* 3. WHEN THE UPLOADING PROCESS FINALIZE, HIDE THE MODAL */
-                    $("#modal-progress").modal("hide");
-                },
-                progressall: function (e, data) {  /* 4. UPDATE THE PROGRESS BAR */
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    var strProgress = progress + "%";
-                    $(".progress-bar").css({"width": strProgress});
-                    $(".progress-bar").text(strProgress);
-                },
-                done: function (e, data) {  /* 3. PROCESS THE RESPONSE FROM THE SERVER */
-                    console.log(data.result.name);
-                    if (data.result.is_valid) {
-                        $(TO_BE_UPDATED + " tbody").html(
-                            "<tr><td>" + data.result.name + "</td></tr>"
-                        )
-                    }
-                },
-                fail: function (e, data) {
-                    $.each(data.messages, function (index, error) {
-                        $("#gallery tbody").prepend(
-                            "<tr><td style=\"color: red;\">" +
-                            "Upload file error: " + error + "<i class=\"elusive-remove\" style=\"padding-left:10px;\"" +
-                            "</td></tr>")
-                            console.log(error);
-                    });
-                },
-{#                progressall: function (e, data) {#}
-{#                    var progress = parseInt(data.loaded / data.total * 100, 10);#}
-{#                    $('#progress .bar').css('width', progress + '%');#}
-{#                }#}
-            });
-        });
-    </script>
 {% endblock javascript %}
