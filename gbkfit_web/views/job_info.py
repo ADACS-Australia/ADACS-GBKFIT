@@ -73,6 +73,9 @@ class JobListView(ListView):
 
     model = Job
 
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
     def get_context_data(self, **kwargs):
         context = super(JobListView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
