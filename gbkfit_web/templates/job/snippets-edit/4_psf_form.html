@@ -3,7 +3,7 @@
 
     {% include 'job/snippets/errors.html' %}
 
-    {% include 'job/snippets/pager.html' %}
+    {% include 'job/snippets/pager-with-skip.html' %}
 
     {% for field in psf_form %}
 
@@ -27,5 +27,5 @@
         </div>
     {% endfor %}
 
-    {% include 'job/snippets/pager.html' %}
+    {% include 'job/snippets/pager-with-skip.html' %}
 </form>

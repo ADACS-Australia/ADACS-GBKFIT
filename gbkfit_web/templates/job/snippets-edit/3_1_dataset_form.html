@@ -9,19 +9,22 @@
     {% for field in dataset_form %}
 
         <div class="container-fluid field
-                    {% if '2' in field.name %}hidden{% endif %}
                     {% if field.errors %}error alert alert-danger{% endif %}
                     div-{{ field.name }}
                     ">
 
             <!-- Label -->
             <label class="col-md-4" for="{{ field.auto_id }}">
-                {{ field.label }}
+                {% if field.label == 'Type' %}
+                    {{ field.label }} {% if '1' in field.name %}(File 1){% else %}(File 2 - Optional) {% endif %}
+                {% else %}
+                    {{ field.label }}
+                {% endif %}
             </label>
 
             <!-- Field -->
             <div class="col-md-12">
-                {% if field.name == 'dataset1_type' %}
+                {% if field.name in 'dataset1_type' or field.name == 'dataset2_type' %}
                     {{ field }}
                     {{ field.errors }}
                 {% else %}

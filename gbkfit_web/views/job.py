@@ -216,7 +216,7 @@ def save_form(form, request, active_tab, id=None):
         try:
             dataset = DataSet.objects.get(job_id=id)
             if dataset.datafile1 == None:
-                messages.error(request, "Data file is required. Please upload one.")
+                messages.error(request, "Data file 1 is required. Please upload one.")
             else:
                 if 'next' in request.POST:
                     active_tab = next_tab(active_tab)
@@ -224,8 +224,10 @@ def save_form(form, request, active_tab, id=None):
                     active_tab = previous_tab(active_tab)
         except:
             # raise forms.ValidationError({'datafile1': ['Data file is required. Please upload one.']})
-            messages.error(request, "Data file is required. Please upload one.")
-    if form.is_valid():
+            messages.error(request, "Data file 1 is required. Please upload one.")
+    if 'skip' in request.POST:
+        active_tab = next_tab(active_tab)
+    elif form.is_valid():
         form.save()
         if 'next' in request.POST:
             active_tab = next_tab(active_tab)
@@ -296,16 +298,22 @@ def act_on_request_method_edit(request, active_tab, id):
         job = Job.objects.get(id=id)
 
         # Create the task json descriptor
-        task_json = dict(
-            mode='fit',
-            dmodel=job.job_data_model.as_json(),
-            datasets=job.job_data_set.as_array(),
-            psf=job.job_psf.as_json(),
-            lsf=job.job_lsf.as_json(),
-            gmodel=job.job_gmodel.as_json(),
-            fitter=job.job_fitter.as_json(),
-            params=job.job_parameter_set.as_array(),
-        )
+        task_json = {}
+        task_json['mode'] = 'fit'
+        task_json['dmodel'] = job.job_data_model.as_json()
+        task_json['datasets'] = job.job_data_set.as_array()
+        # PSF and LSF are optional.
+        try:
+            task_json['psf'] = job.job_psf.as_json()
+        except:
+            pass
+        try:
+            task_json['lsf'] = job.job_lsf.as_json()
+        except:
+            pass
+        task_json['gmodel'] = job.job_gmodel.as_json()
+        task_json['fitter'] = job.job_fitter.as_json()
+        task_json['params'] = job.job_parameter_set.as_array()
 
         # Make sure the directory exists to write the json output
         os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
