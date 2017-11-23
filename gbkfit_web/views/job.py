@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django import forms
+from django.contrib import messages
 
 from django.http import HttpResponse, JsonResponse
 from wsgiref.util import FileWrapper
@@ -210,14 +211,21 @@ def build_task_json(request):
     JOB CREATION/EDITING  SECTION
 
 """
-def save_form(form, request, active_tab):
-    # Dataset upload is now managed in ajax_edit_job_dataset, so we simply fetch previous/next.
+def save_form(form, request, active_tab, id=None):
     if active_tab == DATASET:
-        if 'next' in request.POST:
-            active_tab = next_tab(active_tab)
-        if 'previous' in request.POST:
-            active_tab = previous_tab(active_tab)
-    elif form.is_valid():
+        try:
+            dataset = DataSet.objects.get(job_id=id)
+            if dataset.datafile1 == None:
+                messages.error(request, "Data file is required. Please upload one.")
+            else:
+                if 'next' in request.POST:
+                    active_tab = next_tab(active_tab)
+                if 'previous' in request.POST:
+                    active_tab = previous_tab(active_tab)
+        except:
+            # raise forms.ValidationError({'datafile1': ['Data file is required. Please upload one.']})
+            messages.error(request, "Data file is required. Please upload one.")
+    if form.is_valid():
         form.save()
         if 'next' in request.POST:
             active_tab = next_tab(active_tab)
@@ -264,7 +272,7 @@ def act_on_request_method_edit(request, active_tab, id):
                         get_instance = True
 
 
-            active_tab = save_form(form, request, active_tab)
+            active_tab = save_form(form, request, active_tab, id)
             if get_instance:
                 if 'next' in request.POST:
                     instance = MODELS_EDIT[previous_tab(active_tab)].objects.get(job_id=id)

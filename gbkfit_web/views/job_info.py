@@ -341,7 +341,7 @@ def filter_fitter_fields(fields, object):
 def filter_params_fields(fields, object, galaxy_model, fitter):
     object = add_fields_to_object(object, fields)
 
-    if fitter.fields['fitter_type'] == Fitter_model.MPFIT:
+    if fitter.fields['fitter_type'][1] == Fitter_model.MPFIT:
         """
         Doesn't use:
             - wrap
@@ -351,7 +351,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
                 if 'wrap' in field:
                     if field in fields: fields.remove(field)
 
-    if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
+    if fitter.fields['fitter_type'][1] == Fitter_model.MULTINEST:
         """
         Doesn't use:
             - step 
@@ -360,7 +360,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
         """
         for fields_list in ParamsMeta.FIELDS_LISTS:
             for field in fields_list:
-                if field in ['step', 'relstep', 'side']:
+                if 'step' in field or 'relstep' in field or 'side' in field:
                     if field in fields:
                         fields.remove(field)
 

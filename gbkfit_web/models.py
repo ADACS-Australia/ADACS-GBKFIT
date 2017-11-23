@@ -284,40 +284,40 @@ class DataModel(models.Model):
     # # Need to figure out how to require the z field when required.
     # size_z = models.PositiveIntegerField(blank=True)
 
-    scale_x = models.PositiveIntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
-    scale_y = models.PositiveIntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
-    scale_z = models.PositiveIntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
+    scale_x = models.IntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
+    scale_y = models.IntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
+    scale_z = models.IntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
 
-    step_x = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(1.)])
-    step_y = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(1.)])
-    step_z = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(1.)])
+    step_x = models.FloatField(blank=False, null=False, default=1.)
+    step_y = models.FloatField(blank=False, null=False, default=1.)
+    step_z = models.FloatField(blank=False, null=False, default=1.)
 
     def clean(self):
         errors = []
 
-        if self.scale_x <= 0:
-            errors.append(ValidationError({'scale_x':
-                                               ['Scale X: Accepted values: unsigned non-zero integer value.']}))
-
-        if self.scale_y <= 0:
-            errors.append(ValidationError({'scale_y':
-                                               ['Scale Y: Accepted values: unsigned non-zero integer value.']}))
-
-        if self.scale_z <= 0:
-            errors.append(ValidationError({'scale_z':
-                                               ['Scale Z: Accepted values: unsigned non-zero integer value.']}))
-
-        if self.step_x <= 0:
+        # if self.scale_x <= 0:
+        #     errors.append(ValidationError({'scale_x':
+        #                                        ['Scale X: Accepted values: unsigned non-zero integer value.']}))
+        #
+        # if self.scale_y <= 0:
+        #     errors.append(ValidationError({'scale_y':
+        #                                        ['Scale Y: Accepted values: unsigned non-zero integer value.']}))
+        #
+        # if self.scale_z <= 0:
+        #     errors.append(ValidationError({'scale_z':
+        #                                        ['Scale Z: Accepted values: unsigned non-zero integer value.']}))
+        #
+        if self.step_x == 0:
             errors.append(ValidationError({'step_x':
-                                               ['Step X: Accepted values: unsigned non-zero value.']}))
+                                               ['Step X - Accepted values: any non-zero value.']}))
 
-        if self.step_y <= 0:
+        if self.step_y == 0:
             errors.append(ValidationError({'step_y':
-                                               ['Step Y: Accepted values: unsigned non-zero value.']}))
+                                               ['Step Y - Accepted values: any non-zero value.']}))
 
-        if self.step_z <= 0:
+        if self.step_z == 0:
             errors.append(ValidationError({'step_z':
-                                               ['Step: Accepted values: unsigned non-zero value.']}))
+                                               ['Step Z - Accepted values: any non-zero value.']}))
 
         if len(errors) > 0: # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
@@ -755,7 +755,7 @@ class ParameterSet(models.Model):
     xo_value = models.FloatField(blank=True, null=True, default=1)
     xo_min = models.FloatField(blank=True, null=True, default=1)
     xo_max = models.FloatField(blank=True, null=True, default=1)
-    xo_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    xo_wrap = models.NullBooleanField(blank=True, default=0)
     xo_step = models.FloatField(blank=True, null=True, default=0.)
     xo_relstep = models.FloatField(blank=True, null=True, default=0.)
     xo_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -765,7 +765,7 @@ class ParameterSet(models.Model):
     yo_value = models.FloatField(blank=True, null=True, default=1)
     yo_min = models.FloatField(blank=True, null=True, default=1)
     yo_max = models.FloatField(blank=True, null=True, default=1)
-    yo_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    yo_wrap = models.NullBooleanField(blank=True, default=0)
     yo_step = models.FloatField(blank=True, null=True, default=0.)
     yo_relstep = models.FloatField(blank=True, null=True, default=0.)
     yo_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -775,7 +775,7 @@ class ParameterSet(models.Model):
     pa_value = models.FloatField(blank=True, null=True, default=1)
     pa_min = models.FloatField(blank=True, null=True, default=1)
     pa_max = models.FloatField(blank=True, null=True, default=1)
-    pa_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    pa_wrap = models.NullBooleanField(blank=True, default=0)
     pa_step = models.FloatField(blank=True, null=True, default=0.)
     pa_relstep = models.FloatField(blank=True, null=True, default=0.)
     pa_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -785,7 +785,7 @@ class ParameterSet(models.Model):
     incl_value = models.FloatField(blank=True, null=True, default=1)
     incl_min = models.FloatField(blank=True, null=True, default=1)
     incl_max = models.FloatField(blank=True, null=True, default=1)
-    incl_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    incl_wrap = models.NullBooleanField(blank=True, default=0)
     incl_step = models.FloatField(blank=True, null=True, default=0.)
     incl_relstep = models.FloatField(blank=True, null=True, default=0.)
     incl_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -795,7 +795,7 @@ class ParameterSet(models.Model):
     vsys_value = models.FloatField(blank=True, null=True, default=1)
     vsys_min = models.FloatField(blank=True, null=True, default=1)
     vsys_max = models.FloatField(blank=True, null=True, default=1)
-    vsys_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    vsys_wrap = models.NullBooleanField(blank=True, default=0)
     vsys_step = models.FloatField(blank=True, null=True, default=0.)
     vsys_relstep = models.FloatField(blank=True, null=True, default=0.)
     vsys_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -805,7 +805,7 @@ class ParameterSet(models.Model):
     vsig_value = models.FloatField(blank=True, null=True, default=1)
     vsig_min = models.FloatField(blank=True, null=True, default=1)
     vsig_max = models.FloatField(blank=True, null=True, default=1)
-    vsig_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    vsig_wrap = models.NullBooleanField(blank=True, default=0)
     vsig_step = models.FloatField(blank=True, null=True, default=0.)
     vsig_relstep = models.FloatField(blank=True, null=True, default=0.)
     vsig_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -815,7 +815,7 @@ class ParameterSet(models.Model):
     i0_value = models.FloatField(blank=True, null=True, default=1)
     i0_min = models.FloatField(blank=True, null=True, default=1)
     i0_max = models.FloatField(blank=True, null=True, default=1)
-    i0_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    i0_wrap = models.NullBooleanField(blank=True, default=0)
     i0_step = models.FloatField(blank=True, null=True, default=0.)
     i0_relstep = models.FloatField(blank=True, null=True, default=0.)
     i0_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -825,7 +825,7 @@ class ParameterSet(models.Model):
     r0_value = models.FloatField(blank=True, null=True, default=1)
     r0_min = models.FloatField(blank=True, null=True, default=1)
     r0_max = models.FloatField(blank=True, null=True, default=1)
-    r0_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    r0_wrap = models.NullBooleanField(blank=True, default=0)
     r0_step = models.FloatField(blank=True, null=True, default=0.)
     r0_relstep = models.FloatField(blank=True, null=True, default=0.)
     r0_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -837,7 +837,7 @@ class ParameterSet(models.Model):
     rt_value = models.FloatField(blank=True, null=True, default=1)
     rt_min = models.FloatField(blank=True, null=True, default=1)
     rt_max = models.FloatField(blank=True, null=True, default=1)
-    rt_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    rt_wrap = models.NullBooleanField(blank=True, default=0)
     rt_step = models.FloatField(blank=True, null=True, default=0.)
     rt_relstep = models.FloatField(blank=True, null=True, default=0.)
     rt_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -847,7 +847,7 @@ class ParameterSet(models.Model):
     vt_value = models.FloatField(blank=True, null=True, default=1)
     vt_min = models.FloatField(blank=True, null=True, default=1)
     vt_max = models.FloatField(blank=True, null=True, default=1)
-    vt_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    vt_wrap = models.NullBooleanField(blank=True, default=0)
     vt_step = models.FloatField(blank=True, null=True, default=0.)
     vt_relstep = models.FloatField(blank=True, null=True, default=0.)
     vt_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -857,7 +857,7 @@ class ParameterSet(models.Model):
     a_value = models.FloatField(blank=True, null=True, default=1)
     a_min = models.FloatField(blank=True, null=True, default=1)
     a_max = models.FloatField(blank=True, null=True, default=1)
-    a_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    a_wrap = models.NullBooleanField(blank=True, default=0)
     a_step = models.FloatField(blank=True, null=True, default=0.)
     a_relstep = models.FloatField(blank=True, null=True, default=0.)
     a_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
@@ -867,7 +867,7 @@ class ParameterSet(models.Model):
     b_value = models.FloatField(blank=True, null=True, default=1)
     b_min = models.FloatField(blank=True, null=True, default=1)
     b_max = models.FloatField(blank=True, null=True, default=1)
-    b_wrap = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(1)])
+    b_wrap = models.NullBooleanField(blank=True, default=0)
     b_step = models.FloatField(blank=True, null=True, default=0.)
     b_relstep = models.FloatField(blank=True, null=True, default=0.)
     b_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
