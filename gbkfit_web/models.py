@@ -147,6 +147,12 @@ def user_job_errorfile_directory_path(instance, filename):
 def user_job_maskfile_directory_path(instance, filename):
     return 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
+def user_job_input_file_directory_path(instance):
+    """
+    Not a model field instance handler
+    """
+    return MEDIA_ROOT + 'user_{0}/job_{1}/input_files/{2}'.format(instance.user.id, instance.id, "input.json")
+
 class DataSet(models.Model):
     """
         DataSet class
@@ -613,63 +619,64 @@ class Fitter(models.Model):
     def clean(self):
         errors = []
 
+
         if self.fitter_type == self.MPFIT:
-            if self.ftol < 0:
+            if self.ftol != None and self.ftol < 0:
                 errors.append(ValidationError({'ftol':
                                                    ['mpfit, ftol: Accepted values: any positive value.']}))
 
-            if self.xtol < 0:
+            if self.xtol != None and self.xtol < 0:
                 errors.append(ValidationError({'xtol':
                                                    ['mpfit, xtol: Accepted values: any positive value.']}))
 
-            if self.gtol < 0:
+            if self.gtol != None and self.gtol < 0:
                 errors.append(ValidationError({'gtol':
                                                    ['mpfit, gtol: Accepted values: any positive value.']}))
 
-            if self.epsfcn < 0:
+            if self.epsfcn != None and self.epsfcn < 0:
                 errors.append(ValidationError({'epsfcn':
                                                    ['mpfit, epsfcn: Accepted values: any positive value.']}))
 
-            if self.stepfactor < 0:
+            if self.stepfactor != None and self.stepfactor < 0:
                 errors.append(ValidationError({'stepfactor':
                                                    ['mpfit, stepfactor: Accepted values: any positive value.']}))
 
-            if self.covtol < 0:
+            if self.covtol != None and self.covtol < 0:
                 errors.append(ValidationError({'covtol':
                                                    ['mpfit, covtol: Accepted values: any positive value.']}))
 
-            if self.mpfit_maxiter < 0:
+            if self.mpfit_maxiter != None and self.mpfit_maxiter < 0:
                 errors.append(ValidationError({'maxiter':
                                                    ['mpfit, maxiter: Accepted values: any positive value.']}))
 
-            if self.maxfev < 0:
+            if self.maxfev != None and self.maxfev < 0:
                 errors.append(ValidationError({'maxfev':
                                                    ['mpfit, maxfev: Accepted values: any positive value.']}))
 
         if self.fitter_type == self.MULTINEST:
-            if self.nlive < 0:
+            if self.nlive != None and self.nlive < 0:
                 errors.append(ValidationError({'nlive':
                                                    ['Multinest, nlive: Accepted values: any positive non-zero integer value.']}))
 
-            if self.tol < 0:
+            if self.tol != None and self.tol < 0:
                 errors.append(ValidationError({'tol':
                                                    ['Multinest, tol: Accepted values: any positive non-zero value.']}))
 
-            if self.efr < 0:
+            if self.efr != None and self.efr < 0:
                 errors.append(ValidationError({'efr':
                                                    ['Multinest, efr: Accepted values: any positive non-zero value.']}))
 
-            if self.ztol != None:
+            if self.ztol != None and self.ztol != None:
                 if self.ztol < 0:
                     errors.append(ValidationError({'ztol':
                                                        ['Multinest, ztol: Accepted values: any positive non-zero value.']}))
 
-            if self.logzero != None:
+            if self.logzero != None and self.logzero != None:
                 if self.logzero < 0:
                     errors.append(ValidationError({'logzero':
                                                        ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
 
-            if self.outfile < 0:
+            if self.outfile != None and self.outfile < 0:
                 errors.append(ValidationError({'logzero':
                                                    ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
 
@@ -868,7 +875,8 @@ class ParameterSet(models.Model):
     def clean(self):
         errors = []
         # xo
-        if self.xo_fixed == 1:
+        if self.xo_fixed == 0:
+
             if self.xo_min > self.xo_max:
                 errors.append(ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -876,7 +884,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
 
         # yo
-        if self.yo_fixed == 1:
+        if self.yo_fixed == 0:
             if self.yo_min > self.yo_max:
                 errors.append(ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -884,7 +892,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
 
         # pa
-        if self.pa_fixed == 1:
+        if self.pa_fixed == 0:
             if self.pa_min > self.pa_max:
                 errors.append(ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -892,7 +900,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
 
         # incl
-        if self.incl_fixed == 1:
+        if self.incl_fixed == 0:
             if self.incl_min > self.incl_max:
                 errors.append(ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -900,7 +908,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
 
         # vsys
-        if self.vsys_fixed == 1:
+        if self.vsys_fixed == 0:
             if self.vsys_min > self.vsys_max:
                 errors.append(ValidationError(
                     {'vsys_min': ['vsys: Minimum must be smaller than or equal to the maximum.']}))
@@ -910,7 +918,7 @@ class ParameterSet(models.Model):
                     {'vsys_value': ['vsys: Value must be within range set by minimum and maximum.']}))
 
         # vsig
-        if self.vsig_fixed == 1:
+        if self.vsig_fixed == 0:
             if self.vsig_min > self.vsig_max:
                 errors.append(ValidationError(
                     {'vsig_min': ['vsig: Minimum must be smaller than or equal to the maximum.']}))
@@ -920,7 +928,7 @@ class ParameterSet(models.Model):
                     {'vsig_value': ['vsig: Value must be within range set by minimum and maximum.']}))
 
         # i0
-        if self.i0_fixed == 1:
+        if self.i0_fixed == 0:
             if self.i0_min > self.i0_max:
                 errors.append(
                     ValidationError({'i0_min': ['i0: Minimum must be smaller than or equal to the maximum.']}))
@@ -929,7 +937,7 @@ class ParameterSet(models.Model):
                     {'i0_value': ['i0: Value must be within range set by minimum and maximum.']}))
 
         # r0
-        if self.r0_fixed == 1:
+        if self.r0_fixed == 0:
             if self.r0_min > self.r0_max:
                 errors.append(
                     ValidationError({'r0_min': ['r0: Minimum must be smaller than or equal to the maximum.']}))
@@ -939,7 +947,7 @@ class ParameterSet(models.Model):
                     {'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
 
         # rt
-        if self.rt_fixed == 1:
+        if self.rt_fixed == 0:
             if self.rt_min > self.rt_max:
                 errors.append(ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -947,7 +955,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
 
         # vt
-        if self.vt_fixed == 1:
+        if self.vt_fixed == 0:
             if self.vt_min > self.vt_max:
                 errors.append(ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
 
@@ -955,7 +963,7 @@ class ParameterSet(models.Model):
                 errors.append(ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
 
         # a
-        if self.a_fixed == 1:
+        if self.a_fixed == 0:
             if self.a_min > self.a_max:
                 errors.append(
                     ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
@@ -965,7 +973,7 @@ class ParameterSet(models.Model):
                     ValidationError({'a_value': ['a: Value must be within range set by minimum and maximum.']}))
 
         # b
-        if self.b_fixed == 1:
+        if self.b_fixed == 0:
             if self.b_min > self.b_max:
                 errors.append(
                     ValidationError({'b_min': ['b: Minimum must be smaller than or equal to the maximum.']}))

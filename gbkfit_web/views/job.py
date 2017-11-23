@@ -24,7 +24,8 @@ from gbkfit_web.forms.job.params import ParamsForm, EditParamsForm
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params,
-    Result, Mode, ModeParameter, ResultFile
+    Result, Mode, ModeParameter, ResultFile,
+    user_job_input_file_directory_path
 )
 
 from gbkfit.settings.local import MAX_FILE_SIZE
@@ -282,6 +283,29 @@ def act_on_request_method_edit(request, active_tab, id):
                 except:
                     form = FORMS_NEW[active_tab](request=request, id=id)
     else:
+        # Job is being submitted, write the json descriptor for this job
+
+        job = Job.objects.get(id=id)
+
+        # Create the task json descriptor
+        task_json = dict(
+            mode='fit',
+            dmodel=job.job_data_model.as_json(),
+            datasets=job.job_data_set.as_array(),
+            psf=job.job_psf.as_json(),
+            lsf=job.job_lsf.as_json(),
+            gmodel=job.job_gmodel.as_json(),
+            fitter=job.job_fitter.as_json(),
+            params=job.job_parameter_set.as_array(),
+        )
+
+        # Make sure the directory exists to write the json output
+        os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
+
+        # Write the input json file
+        with open(user_job_input_file_directory_path(job), 'w') as outfile:
+            json.dump(task_json, outfile)
+
         if request.method == 'POST':
             job = Job.objects.get(id=id)
             job.user = request.user

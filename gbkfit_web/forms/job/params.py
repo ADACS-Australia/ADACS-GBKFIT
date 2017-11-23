@@ -5,7 +5,7 @@ from gbkfit_web.models import ParameterSet, Job, GalaxyModel, Fitter
 # For convenience
 XO_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side',]
 YO_FIELDS = ['yo_fixed', 'yo_value', 'yo_min', 'yo_max', 'yo_wrap', 'yo_step', 'yo_relstep', 'yo_side',]
-PA_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side',]
+PA_FIELDS = ['pa_fixed', 'pa_value', 'pa_min', 'pa_max', 'pa_wrap', 'pa_step', 'pa_relstep', 'pa_side',]
 INCL_FIELDS = ['incl_fixed', 'incl_value', 'incl_min', 'incl_max', 'incl_wrap', 'incl_step', 'incl_relstep', 'incl_side',]
 VSYS_FIELDS = ['vsys_fixed', 'vsys_value', 'vsys_min', 'vsys_max', 'vsys_wrap', 'vsys_step', 'vsys_relstep', 'vsys_side',]
 VSIG_FIELDS = ['vsig_fixed', 'vsig_value', 'vsig_min', 'vsig_max', 'vsig_wrap', 'vsig_step', 'vsig_relstep', 'vsig_side',]
@@ -734,7 +734,7 @@ class ParamsForm(forms.ModelForm):
                 self.vsys_dict(data),
                 self.vsig_dict(data),
                 self.a_dict(data),
-                self.a_dict(data)
+                self.b_dict(data),
                 ]
 
     def i0_dict(self, data):
@@ -1432,6 +1432,7 @@ class EditParamsForm(forms.ModelForm):
                      'data-container': 'body'})
 
         if vel_profile != None:
+            print (self.fields)
             if vel_profile != GalaxyModel.EPINAT:
                 for field in A_FIELDS:
                     if field in self.fields: del self.fields[field]

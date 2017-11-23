@@ -294,7 +294,7 @@
     {% endif %}
 
     {% get_fieldset b_fixed,b_value,b_min,b_max,b_wrap,b_step,b_relstep,b_side as b_fields from params_form %}
-    {% if b_fixed.fields.items|length > 0 %}
+    {% if b_fields.fields.items|length > 0 %}
     <fieldset id="b_fieldset">
         <legend>{{ b_fields.b_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
