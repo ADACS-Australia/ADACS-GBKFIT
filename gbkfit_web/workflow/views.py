@@ -46,11 +46,19 @@ class WorkFlowView(GenericAPIView):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     def post(self, request):
+        # Create a status map to map workflow status to UI status
+        status_map = {
+            "QUEUED": Job.QUEUED,
+            "IN_PROGRESS": Job.IN_PROGRESS,
+            "COMPLETED": Job.COMPLETED,
+            "ERROR": Job.ERROR
+        }
+
         # Get the job with the requested id
         job = Job.objects.get(id=request.data['jobid'])
 
         # Set the job status
-        job.status = request.data['status']
+        job.status = status_map[request.data['status']]
 
         # Save the job
         job.save()
