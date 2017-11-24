@@ -17,7 +17,7 @@
             <!-- Label -->
             <label class="col-md-4 control-label" for="{{ field.auto_id }}">
                 {% if field.label == 'Type' %}
-                    {{ field.label }} {% if '1' in field.name %}(File 1){% else %}(File 2 - Optional) {% endif %}
+                    {{ field.label }} {% if '1' in field.name %}(File 1){% else %}(File 2) {% endif %}
                 {% else %}
                     {{ field.label }}
                 {% endif %}
