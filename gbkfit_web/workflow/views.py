@@ -1,13 +1,16 @@
+import glob
 import json
 from _sha512 import sha512
 from hmac import compare_digest
 
+import os
 from django.conf import settings
 from django.http import HttpResponse
 from rest_framework import permissions
 from rest_framework.generics import GenericAPIView
 
-from gbkfit_web.models import Job
+from gbkfit_web.models import Job, user_job_results_file_directory_path_not_field
+from gbkfit_web.serializers import save_job_results, save_job_tar
 
 
 class WorkflowTokenPermission(permissions.BasePermission):
@@ -25,6 +28,24 @@ class WorkflowTokenPermission(permissions.BasePermission):
 
         # Compare the digests
         return compare_digest(request.META['HTTP_TOKEN'], _hash)
+
+
+def job_completed(job):
+    """
+    Called when a job is completed to handle creating the results instances in the database
+    :param job: The job instance being marked completed
+    :return:
+    """
+
+    # Save the job results
+    save_job_results(job.id, os.path.join(user_job_results_file_directory_path_not_field(job), 'results.json'))
+
+    # Next save the job tar file
+    save_job_tar(job.id, os.path.join(user_job_results_file_directory_path_not_field(job), 'results.tar.gz'))
+
+    # Next get all mode image files from the results directory
+    for file in glob.glob(os.path.join(user_job_results_file_directory_path_not_field(job), 'mode_*.png')):
+        save_job_image(job.id, os.path.join(user_job_results_file_directory_path_not_field(job), 'results.tar.gz'))
 
 
 class WorkFlowView(GenericAPIView):
@@ -62,6 +83,11 @@ class WorkFlowView(GenericAPIView):
 
         # Save the job
         job.save()
+
+        # Check if the job is being marked complete
+        if request.data['status'] == "COMPLETED":
+            # Process the completed job and add the results to the database
+            job_completed(job)
 
         # Create a response
         data = {
