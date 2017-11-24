@@ -165,7 +165,7 @@ class ModeParametersSerializer(serializers.Serializer):
 
 class ResultFileSerializer(serializers.Serializer):
     class Meta:
-        model = ModeParameter
+        model = ResultFile
         fields = ['id', 'result_id', 'filename']
 
 
