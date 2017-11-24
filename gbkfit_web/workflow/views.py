@@ -45,7 +45,7 @@ def job_completed(job):
 
     # Next get all mode image files from the results directory
     for file in glob.glob(os.path.join(user_job_results_file_directory_path_not_field(job), 'mode_*.png')):
-        save_job_image(job.id, int(file.split('_')[1].split('.')[0]), file)
+        save_job_image(job.id, int(file.split('_')[-1].split('.')[0]), file)
 
 
 class WorkFlowView(GenericAPIView):
