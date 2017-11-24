@@ -8,13 +8,14 @@
     {% for field in psf_form %}
 
         <div class="container-fluid field
+                    {% if field.field.required %}required{% endif %}
                     {% if field.name == 'beta' %}hidden{% endif %}
                     {% if field.errors %}error alert alert-danger{% endif %}
                     div-psf-{{ field.name }}
                     ">
 
             <!-- Label -->
-            <label class="col-md-4" for="{{ field.auto_id }}">
+            <label class="col-md-4 control-label" for="{{ field.auto_id }}">
                 {{ field.label }}
             </label>
 

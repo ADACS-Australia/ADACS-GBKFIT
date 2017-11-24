@@ -9,12 +9,13 @@
     {% for field in dataset_form %}
 
         <div class="container-fluid field
+                    {% if field.field.required %}required{% endif %}
                     {% if field.errors %}error alert alert-danger{% endif %}
                     div-{{ field.name }}
                     ">
 
             <!-- Label -->
-            <label class="col-md-4" for="{{ field.auto_id }}">
+            <label class="col-md-4 control-label" for="{{ field.auto_id }}">
                 {% if field.label == 'Type' %}
                     {{ field.label }} {% if '1' in field.name %}(File 1){% else %}(File 2 - Optional) {% endif %}
                 {% else %}
@@ -157,8 +158,8 @@
 {% block javascript %}
     {% load static %}
     {# JQUERY FILE UPLOAD SCRIPTS #}
-    <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
-    <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
-    <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/jquery.fileupload.js' %}"></script>
+    <script src="{% static 'javascript/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+    <script src="{% static 'javascript/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+    <script src="{% static 'javascript/jquery-file-upload/jquery.fileupload.js' %}"></script>
 
 {% endblock javascript %}

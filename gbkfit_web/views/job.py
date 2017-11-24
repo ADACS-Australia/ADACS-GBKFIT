@@ -293,42 +293,45 @@ def act_on_request_method_edit(request, active_tab, id):
                 except:
                     form = FORMS_NEW[active_tab](request=request, id=id)
     else:
-        # Job is being submitted, write the json descriptor for this job
+        if 'previous' in request.POST:
+            active_tab = previous_tab(active_tab)
+        else:
+            # Job is being submitted, write the json descriptor for this job
 
-        job = Job.objects.get(id=id)
-
-        # Create the task json descriptor
-        task_json = {}
-        task_json['mode'] = 'fit'
-        task_json['dmodel'] = job.job_data_model.as_json()
-        task_json['datasets'] = job.job_data_set.as_array()
-        # PSF and LSF are optional.
-        try:
-            task_json['psf'] = job.job_psf.as_json()
-        except:
-            pass
-        try:
-            task_json['lsf'] = job.job_lsf.as_json()
-        except:
-            pass
-        task_json['gmodel'] = job.job_gmodel.as_json()
-        task_json['fitter'] = job.job_fitter.as_json()
-        task_json['params'] = job.job_parameter_set.as_array()
-
-        # Make sure the directory exists to write the json output
-        os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
-
-        # Write the input json file
-        with open(user_job_input_file_directory_path(job), 'w') as outfile:
-            json.dump(task_json, outfile)
-
-        if request.method == 'POST':
             job = Job.objects.get(id=id)
-            job.user = request.user
-            job.status = Job.SUBMITTED
-            job.submission_time = now()
-            job.save()
-            return Job.SUBMITTED, [], []
+
+            # Create the task json descriptor
+            task_json = {}
+            task_json['mode'] = 'fit'
+            task_json['dmodel'] = job.job_data_model.as_json()
+            task_json['datasets'] = job.job_data_set.as_array()
+            # PSF and LSF are optional.
+            try:
+                task_json['psf'] = job.job_psf.as_json()
+            except:
+                pass
+            try:
+                task_json['lsf'] = job.job_lsf.as_json()
+            except:
+                pass
+            task_json['gmodel'] = job.job_gmodel.as_json()
+            task_json['fitter'] = job.job_fitter.as_json()
+            task_json['params'] = job.job_parameter_set.as_array()
+
+            # Make sure the directory exists to write the json output
+            os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
+
+            # Write the input json file
+            with open(user_job_input_file_directory_path(job), 'w') as outfile:
+                json.dump(task_json, outfile)
+
+            if request.method == 'POST':
+                job = Job.objects.get(id=id)
+                job.user = request.user
+                job.status = Job.SUBMITTED
+                job.submission_time = now()
+                job.save()
+                return Job.SUBMITTED, [], []
 
     # OTHER TABS
     forms = []

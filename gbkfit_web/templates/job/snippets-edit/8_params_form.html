@@ -12,12 +12,13 @@
         <legend>{{ xo_fields.xo_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in xo_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -38,12 +39,13 @@
         <legend>{{ yo_fields.yo_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in yo_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -64,12 +66,13 @@
         <legend>{{ pa_fields.pa_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in pa_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -90,12 +93,13 @@
         <legend>{{ incl_fields.incl_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in incl_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -116,12 +120,13 @@
         <legend>{{ vsys_fields.vsys_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in vsys_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -142,12 +147,13 @@
         <legend>{{ vsig_fields.vsig_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in vsig_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -168,12 +174,13 @@
         <legend>{{ i0_fields.i0_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in i0_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -195,12 +202,13 @@
         <legend>{{ r0_fields.r0_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in r0_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -221,12 +229,13 @@
         <legend>{{ rt_fields.rt_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in rt_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -247,12 +256,13 @@
         <legend>{{ vt_fields.vt_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in vt_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -273,12 +283,13 @@
         <legend>{{ a_fields.a_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in a_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 
@@ -299,12 +310,13 @@
         <legend>{{ b_fields.b_fixed.name|cut:"_fixed" }}</legend>
         <div class="container-fluid field">
         {% for field in b_fields %}
-            <div class="col-md-6
+            <div class="col-md-6 field
+                {% if field.field.required %}required{% endif %}
                 {% if field.errors %}error alert alert-danger{% endif %}
                 div-{{ field.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ field.auto_id }}">
+                <label class="control-label" for="{{ field.auto_id }}">
                     {{ field.label }}
                 </label>
 

@@ -502,6 +502,12 @@ $(document).ready(function() {
 
     }
 
+    if ($("#id_gmodel_view").length === 0   ||
+        $("#id_fitter_view").length === 0) {
+
+        $("#li_params").addClass('disabled');
+    }
+
     // Confirm job deletion
     $('body').on('click', '.delete_job',
         function(e) {

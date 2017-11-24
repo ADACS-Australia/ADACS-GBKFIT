@@ -7,12 +7,13 @@
 
     <!-- 'type' -->
     <div class="container-fluid field
+        {% if fitter_form.fitter_type.field.required %}required{% endif %}
         {% if fitter_form.fitter_type.errors %}error alert alert-danger{% endif %}
         div-{{ fitter_form.fitter_type.name }}"
          >
 
         <!-- Label -->
-        <label class="col-md-4" for="{{ fitter_form.fitter_type.auto_id }}">
+        <label class="col-md-4 control-label" for="{{ fitter_form.fitter_type.auto_id }}">
             {{ fitter_form.fitter_type.label }}
         </label>
 
@@ -26,12 +27,13 @@
     <div class="div-mpfit">
         <!-- 'ftol', 'xtol', 'gtol', -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.ftol.field.required %}required{% endif %}
                 {% if fitter_form.ftol.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.ftol.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.ftol.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.ftol.auto_id }}">
                     {{ fitter_form.ftol.label }}
                 </label>
 
@@ -42,12 +44,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.xtol.field.required %}required{% endif %}
                 {% if fitter_form.xtol.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.xtol.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ fitter_form.xtol.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.xtol.auto_id }}">
                     {{ fitter_form.xtol.label }}
                 </label>
 
@@ -58,12 +61,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.gtol.field.required %}required{% endif %}
                 {% if fitter_form.gtol.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.gtol.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ fitter_form.gtol.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.gtol.auto_id }}">
                     {{ fitter_form.gtol.label }}
                 </label>
 
@@ -77,12 +81,13 @@
 
         <!-- 'epsfcn', 'stepfactor', 'covtol', -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.epsfcn.field.required %}required{% endif %}
                 {% if fitter_form.epsfcn.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.epsfcn.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ fitter_form.epsfcn.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.epsfcn.auto_id }}">
                     {{ fitter_form.epsfcn.label }}
                 </label>
 
@@ -93,12 +98,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.stepfactor.field.required %}required{% endif %}
                 {% if fitter_form.stepfactor.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.stepfactor.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.stepfactor.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.stepfactor.auto_id }}">
                     {{ fitter_form.stepfactor.label }}
                 </label>
 
@@ -109,12 +115,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.covtol.field.required %}required{% endif %}
                 {% if fitter_form.covtol.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.covtol.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.covtol.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.covtol.auto_id }}">
                     {{ fitter_form.covtol.label }}
                 </label>
 
@@ -128,12 +135,13 @@
 
         <!-- mpfit_maxiter', 'maxfev', 'nprint',  -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.mpfit_maxiter.field.required %}required{% endif %}
                 {% if fitter_form.mpfit_maxiter.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.mpfit_maxiter.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ fitter_form.mpfit_maxiter.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.mpfit_maxiter.auto_id }}">
                     {{ fitter_form.mpfit_maxiter.label }}
                 </label>
 
@@ -144,12 +152,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.maxfev.field.required %}required{% endif %}
                 {% if fitter_form.maxfev.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.maxfev.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.maxfev.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.maxfev.auto_id }}">
                     {{ fitter_form.maxfev.label }}
                 </label>
 
@@ -160,12 +169,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.nprint.field.required %}required{% endif %}
                 {% if fitter_form.nprint.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.nprint.name }}"
                 >
                 <!-- Label -->
-                <label for="{{ fitter_form.nprint.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.nprint.auto_id }}">
                     {{ fitter_form.nprint.label }}
                 </label>
 
@@ -179,12 +189,13 @@
 
         <!-- 'douserscale', 'nofinitecheck',  -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.douserscale.field.required %}required{% endif %}
                 {% if fitter_form.douserscale.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.douserscale.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.douserscale.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.douserscale.auto_id }}">
                     {{ fitter_form.douserscale.label }}
                 </label>
 
@@ -195,12 +206,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.nofinitecheck.field.required %}required{% endif %}
                 {% if fitter_form.nofinitecheck.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.nofinitecheck.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.nofinitecheck.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.nofinitecheck.auto_id }}">
                     {{ fitter_form.nofinitecheck.label }}
                 </label>
 
@@ -216,12 +228,13 @@
     <div class="div-multinest">
         <!-- 'efr', 'tol', 'ztol', -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.efr.field.required %}required{% endif %}
                 {% if fitter_form.efr.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.efr.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.efr.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.efr.auto_id }}">
                     {{ fitter_form.efr.label }}
                 </label>
 
@@ -232,12 +245,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.tol.field.required %}required{% endif %}
                 {% if fitter_form.tol.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.tol.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.tol.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.tol.auto_id }}">
                     {{ fitter_form.tol.label }}
                 </label>
 
@@ -248,12 +262,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.ztol.field.required %}required{% endif %}
                 {% if fitter_form.ztol.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.ztol.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.ztol.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.ztol.auto_id }}">
                     {{ fitter_form.ztol.label }}
                 </label>
 
@@ -267,12 +282,13 @@
 
         <!-- 'logzero', 'multinest_is', 'mmodal', -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.logzero.field.required %}required{% endif %}
                 {% if fitter_form.logzero.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.logzero.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.logzero.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.logzero.auto_id }}">
                     {{ fitter_form.logzero.label }}
                 </label>
 
@@ -283,12 +299,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.multinest_is.field.required %}required{% endif %}
                 {% if fitter_form.multinest_is.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.multinest_is.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.multinest_is.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.multinest_is.auto_id }}">
                     {{ fitter_form.multinest_is.label }}
                 </label>
 
@@ -299,12 +316,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.mmodal.field.required %}required{% endif %}
                 {% if fitter_form.mmodal.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.mmodal.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.mmodal.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.mmodal.auto_id }}">
                     {{ fitter_form.mmodal.label }}
                 </label>
 
@@ -318,12 +336,13 @@
 
         <!-- 'ceff', 'nlive', 'multinest_maxiter', -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.ceff.field.required %}required{% endif %}
                 {% if fitter_form.ceff.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.ceff.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.ceff.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.ceff.auto_id }}">
                     {{ fitter_form.ceff.label }}
                 </label>
 
@@ -334,12 +353,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.nlive.field.required %}required{% endif %}
                 {% if fitter_form.nlive.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.nlive.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.nlive.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.nlive.auto_id }}">
                     {{ fitter_form.nlive.label }}
                 </label>
 
@@ -350,12 +370,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.multinest_maxiter.field.required %}required{% endif %}
                 {% if fitter_form.multinest_maxiter.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.multinest_maxiter.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.multinest_maxiter.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.multinest_maxiter.auto_id }}">
                     {{ fitter_form.multinest_maxiter.label }}
                 </label>
 
@@ -369,12 +390,13 @@
 
         <!-- 'seed', 'outfile', -->
         <div class="container-fluid field">
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.seed.field.required %}required{% endif %}
                 {% if fitter_form.seed.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.seed.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.seed.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.seed.auto_id }}">
                     {{ fitter_form.seed.label }}
                 </label>
 
@@ -385,12 +407,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4
+            <div class="col-md-4 field
+                {% if fitter_form.outfile.field.required %}required{% endif %}
                 {% if fitter_form.outfile.errors %}error alert alert-danger{% endif %}
                 div-{{ fitter_form.outfile.name }}"
                  >
                 <!-- Label -->
-                <label for="{{ fitter_form.outfile.auto_id }}">
+                <label class="control-label" for="{{ fitter_form.outfile.auto_id }}">
                     {{ fitter_form.outfile.label }}
                 </label>
 

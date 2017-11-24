@@ -8,6 +8,7 @@
     {% for field in galaxy_model_form %}
 
         <div class="container-fluid field
+                    {% if field.field.required %}required{% endif %}
                     {% if 'epinat' in field.name or 'arctan' in field.name %}hidden{% endif %}
                     {% if 'boissier' in field.name or 'flat' in field.name %}hidden{% endif %}
 
@@ -16,7 +17,7 @@
                     ">
 
             <!-- Label -->
-            <label class="col-md-4" for="{{ field.auto_id }}">
+            <label class="col-md-4 control-label" for="{{ field.auto_id }}">
                 {{ field.label }}
             </label>
 

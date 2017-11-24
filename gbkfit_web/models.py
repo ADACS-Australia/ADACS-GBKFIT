@@ -184,7 +184,7 @@ class DataSet(models.Model):
     errorfile1 = models.FileField(upload_to=user_job_errorfile_directory_path, blank=True, null=True)
     maskfile1 = models.FileField(upload_to=user_job_maskfile_directory_path, blank=True, null=True)
 
-    dataset2_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=False, default=SIGMAP)
+    dataset2_type = models.CharField(max_length=10, choices=TYPE_CHOICES, blank=True, default=SIGMAP)
     datafile2 = models.FileField(upload_to=user_job_datafile_directory_path, blank=True, null=True)
     errorfile2 = models.FileField(upload_to=user_job_errorfile_directory_path, blank=True, null=True)
     maskfile2 = models.FileField(upload_to=user_job_maskfile_directory_path, blank=True, null=True)

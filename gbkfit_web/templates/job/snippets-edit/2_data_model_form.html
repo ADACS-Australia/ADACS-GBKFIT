@@ -7,12 +7,13 @@
 
     <!-- dmodel_type -->
     <div class="container-fluid field
+                {% if data_model_form.dmodel_type.field.required %}required{% endif %}
                 {% if data_model_form.dmodel_type.errors %}error alert alert-danger{% endif %}
                 div-{{ data_model_form.dmodel_type.name }}
                 ">
 
         <!-- Label -->
-        <label class="col-md-4" for="{{ data_model_form.dmodel_type.auto_id }}">
+        <label class="col-md-4 control-label" for="{{ data_model_form.dmodel_type.auto_id }}">
             {{ data_model_form.dmodel_type.label }}
         </label>
 
@@ -25,12 +26,13 @@
 
     <!-- 'method' -->
     <div class="container-fluid field hidden
+                {% if data_model_form.method.field.required %}required{% endif %}
                 {% if data_model_form.method.errors %}error alert alert-danger{% endif %}
                 div-{{ data_model_form.method.name }}
                 ">
         <div class="col-md-8">
             <!-- Label -->
-            <label for="{{ data_model_form.method.auto_id }}">
+            <label class="control-label" for="{{ data_model_form.method.auto_id }}">
                 {{ data_model_form.method.label }}
             </label>
 
@@ -44,12 +46,13 @@
 
     <!-- 'scale_x', 'scale_y', 'scale_z' -->
     <div class="container-fluid field">
-        <div class="col-md-4
+        <div class="col-md-4 field
+            {% if data_model_form.scale_x.field.required %}required{% endif %}
             {% if data_model_form.scale_x.errors %}error alert alert-danger{% endif %}
             div-{{ data_model_form.scale_x.name }}
             ">
             <!-- Label -->
-            <label for="{{ data_model_form.scale_x.auto_id }}">
+            <label class="control-label" for="{{ data_model_form.scale_x.auto_id }}">
                 {{ data_model_form.scale_x.label }}
             </label>
 
@@ -60,12 +63,13 @@
             </div>
         </div>
 
-        <div class="col-md-4
+        <div class="col-md-4 field
+            {% if data_model_form.scale_y.field.required %}required{% endif %}
             {% if data_model_form.scale_y.errors %}error alert alert-danger{% endif %}
             div-{{ data_model_form.scale_y.name }}
             ">
             <!-- Label -->
-            <label for="{{ data_model_form.scale_y.auto_id }}">
+            <label class="control-label" for="{{ data_model_form.scale_y.auto_id }}">
                 {{ data_model_form.scale_y.label }}
             </label>
 
@@ -76,12 +80,13 @@
             </div>
         </div>
 
-        <div class="col-md-4
+        <div class="col-md-4 field
+            {% if data_model_form.scale_z.field.required %}required{% endif %}
             {% if data_model_form.scale_z.errors %}error alert alert-danger{% endif %}
             div-{{ data_model_form.scale_z.name }}
             ">
             <!-- Label -->
-            <label for="{{ data_model_form.scale_z.auto_id }}">
+            <label class="control-label" for="{{ data_model_form.scale_z.auto_id }}">
                 {{ data_model_form.scale_z.label }}
             </label>
 
@@ -95,12 +100,13 @@
 
     <!-- 'step_x', 'step_y', 'step_z' -->
     <div class="container-fluid field">
-        <div class="col-md-4
+        <div class="col-md-4 field
+            {% if data_model_form.step_x.field.required %}required{% endif %}
             {% if data_model_form.step_x.errors %}error alert alert-danger{% endif %}
             div-{{ data_model_form.step_x.name }}
             ">
             <!-- Label -->
-            <label for="{{ data_model_form.step_x.auto_id }}">
+            <label class="control-label" for="{{ data_model_form.step_x.auto_id }}">
                 {{ data_model_form.step_x.label }}
             </label>
 
@@ -111,12 +117,13 @@
             </div>
         </div>
 
-        <div class="col-md-4
+        <div class="col-md-4 field
+            {% if data_model_form.step_y.field.required %}required{% endif %}
             {% if data_model_form.step_y.errors %}error alert alert-danger{% endif %}
             div-{{ data_model_form.step_y.name }}
             ">
             <!-- Label -->
-            <label for="{{ data_model_form.step_y.auto_id }}">
+            <label class="control-label" for="{{ data_model_form.step_y.auto_id }}">
                 {{ data_model_form.step_y.label }}
             </label>
 
@@ -127,12 +134,13 @@
             </div>
         </div>
 
-        <div class="col-md-4
+        <div class="col-md-4 field
+            {% if data_model_form.step_z.field.required %}required{% endif %}
             {% if data_model_form.step_z.errors %}error alert alert-danger{% endif %}
             div-{{ data_model_form.step_z.name }}
             ">
             <!-- Label -->
-            <label for="{{ data_model_form.step_z.auto_id }}">
+            <label class="control-label" for="{{ data_model_form.step_z.auto_id }}">
                 {{ data_model_form.step_z.label }}
             </label>
 
