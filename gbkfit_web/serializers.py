@@ -56,14 +56,14 @@ def save_job_results(job_id, json_file):
     result.save()
 
     # Save modes
-    mode_number=0
+    mode_number = 0
     for mode in json_file['modes']:
-        mode = Mode()
-        mode.mode_number = mode_number
-        mode.result = result
-        mode.chisqr = mode['chisqr']
-        mode.rchisqr = mode['rchisqr']
-        mode.save()
+        m = Mode()
+        m.mode_number = mode_number
+        m.result = result
+        m.chisqr = mode['chisqr']
+        m.rchisqr = mode['rchisqr']
+        m.save()
 
         # Save mode parameters
         params = ModeParameter()
@@ -75,7 +75,7 @@ def save_job_results(job_id, json_file):
             param.save()
 
         #increase mode number
-        mode_number+=1
+        mode_number += 1
 
 def save_job_tar(job_id, tar_file_path):
     result = Result.objects.get(job_id=job_id)
