@@ -147,18 +147,17 @@ def user_job_errorfile_directory_path(instance, filename):
 def user_job_maskfile_directory_path(instance, filename):
     return 'user_{0}/job_{1}/mask_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
-def user_job_input_file_directory_path(instance):
-    """
-    Not a model field instance handler
-    """
-    return MEDIA_ROOT + 'user_{0}/job_{1}/input_files/{2}'.format(instance.user.id, instance.id, "input.json")
-
 def user_job_results_file_directory_path_not_field(instance):
     """
     Not a model field instance handler
     """
-    return MEDIA_ROOT + 'user_{0}/job_{1}/result_files/{2}'.format(instance.user.id, instance.id, "input.json")
+    return MEDIA_ROOT + 'user_{0}/job_{1}/result_files/'.format(instance.user.id, instance.id)
 
+def user_job_input_file_directory_path(instance):
+    """
+    Not a model field instance handler
+    """
+    return user_job_results_file_directory_path_not_field(instance) + "input.json"
 
 def user_job_result_files_directory_path(instance, filename):
     return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
