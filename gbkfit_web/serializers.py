@@ -87,7 +87,7 @@ def save_job_tar(job_id, tar_file_path):
 def save_job_image(job_id, mode_number, image_file_path):
     result = Result.objects.get(job_id=job_id)
     filterargs = {'result__id': result.id, 'mode_number': mode_number}
-    mode = Mode.job.get(**filterargs)
+    mode = Mode.objects.get(**filterargs)
     mode_image = ModeImage()
     mode_image.mode_id = mode.id
     mode_image.image_file.name = image_file_path

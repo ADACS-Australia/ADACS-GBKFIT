@@ -10,7 +10,7 @@ from rest_framework import permissions
 from rest_framework.generics import GenericAPIView
 
 from gbkfit_web.models import Job, user_job_results_file_directory_path_not_field
-from gbkfit_web.serializers import save_job_results, save_job_tar
+from gbkfit_web.serializers import save_job_results, save_job_tar, save_job_image
 
 
 class WorkflowTokenPermission(permissions.BasePermission):
@@ -45,7 +45,7 @@ def job_completed(job):
 
     # Next get all mode image files from the results directory
     for file in glob.glob(os.path.join(user_job_results_file_directory_path_not_field(job), 'mode_*.png')):
-        save_job_image(job.id, os.path.join(user_job_results_file_directory_path_not_field(job), 'results.tar.gz'))
+        save_job_image(job.id, int(file.split('_')[1].split('.')[0]), file)
 
 
 class WorkFlowView(GenericAPIView):
