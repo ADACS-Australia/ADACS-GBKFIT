@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django import forms
+from django.contrib import messages
 
 from django.http import HttpResponse, JsonResponse
 from wsgiref.util import FileWrapper
@@ -28,7 +29,7 @@ from gbkfit_web.models import (
     user_job_input_file_directory_path
 )
 
-from gbkfit.settings.local import MAX_FILE_SIZE
+# from gbkfit.settings.local import MAX_FILE_SIZE
 
 from gbkfit_web.views.job_info import model_instance_to_iterable
 from gbkfit_web.utility.utils import set_dict_indices
@@ -210,13 +211,22 @@ def build_task_json(request):
     JOB CREATION/EDITING  SECTION
 
 """
-def save_form(form, request, active_tab):
-    # Dataset upload is now managed in ajax_edit_job_dataset, so we simply fetch previous/next.
+def save_form(form, request, active_tab, id=None):
     if active_tab == DATASET:
-        if 'next' in request.POST:
-            active_tab = next_tab(active_tab)
-        if 'previous' in request.POST:
-            active_tab = previous_tab(active_tab)
+        try:
+            dataset = DataSet.objects.get(job_id=id)
+            if dataset.datafile1 == None:
+                messages.error(request, "Data file 1 is required. Please upload one.")
+            else:
+                if 'next' in request.POST:
+                    active_tab = next_tab(active_tab)
+                if 'previous' in request.POST:
+                    active_tab = previous_tab(active_tab)
+        except:
+            # raise forms.ValidationError({'datafile1': ['Data file is required. Please upload one.']})
+            messages.error(request, "Data file 1 is required. Please upload one.")
+    if 'skip' in request.POST:
+        active_tab = next_tab(active_tab)
     elif form.is_valid():
         form.save()
         if 'next' in request.POST:
@@ -264,7 +274,7 @@ def act_on_request_method_edit(request, active_tab, id):
                         get_instance = True
 
 
-            active_tab = save_form(form, request, active_tab)
+            active_tab = save_form(form, request, active_tab, id)
             if get_instance:
                 if 'next' in request.POST:
                     instance = MODELS_EDIT[previous_tab(active_tab)].objects.get(job_id=id)
@@ -283,36 +293,45 @@ def act_on_request_method_edit(request, active_tab, id):
                 except:
                     form = FORMS_NEW[active_tab](request=request, id=id)
     else:
-        # Job is being submitted, write the json descriptor for this job
+        if 'previous' in request.POST:
+            active_tab = previous_tab(active_tab)
+        else:
+            # Job is being submitted, write the json descriptor for this job
 
-        job = Job.objects.get(id=id)
-
-        # Create the task json descriptor
-        task_json = dict(
-            mode='fit',
-            dmodel=job.job_data_model.as_json(),
-            datasets=job.job_data_set.as_array(),
-            psf=job.job_psf.as_json(),
-            lsf=job.job_lsf.as_json(),
-            gmodel=job.job_gmodel.as_json(),
-            fitter=job.job_fitter.as_json(),
-            params=job.job_parameter_set.as_array(),
-        )
-
-        # Make sure the directory exists to write the json output
-        os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
-
-        # Write the input json file
-        with open(user_job_input_file_directory_path(job), 'w') as outfile:
-            json.dump(task_json, outfile)
-
-        if request.method == 'POST':
             job = Job.objects.get(id=id)
-            job.user = request.user
-            job.status = Job.SUBMITTED
-            job.submission_time = now()
-            job.save()
-            return Job.SUBMITTED, [], []
+
+            # Create the task json descriptor
+            task_json = {}
+            task_json['mode'] = 'fit'
+            task_json['dmodel'] = job.job_data_model.as_json()
+            task_json['datasets'] = job.job_data_set.as_array()
+            # PSF and LSF are optional.
+            try:
+                task_json['psf'] = job.job_psf.as_json()
+            except:
+                pass
+            try:
+                task_json['lsf'] = job.job_lsf.as_json()
+            except:
+                pass
+            task_json['gmodel'] = job.job_gmodel.as_json()
+            task_json['fitter'] = job.job_fitter.as_json()
+            task_json['params'] = job.job_parameter_set.as_array()
+
+            # Make sure the directory exists to write the json output
+            os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
+
+            # Write the input json file
+            with open(user_job_input_file_directory_path(job), 'w') as outfile:
+                json.dump(task_json, outfile)
+
+            if request.method == 'POST':
+                job = Job.objects.get(id=id)
+                job.user = request.user
+                job.status = Job.SUBMITTED
+                job.submission_time = now()
+                job.save()
+                return Job.SUBMITTED, [], []
 
     # OTHER TABS
     forms = []
@@ -496,7 +515,7 @@ def edit_job_name(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -530,7 +549,7 @@ def edit_job_data_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -564,7 +583,7 @@ def edit_job_dataset(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -640,7 +659,7 @@ def edit_job_psf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -674,7 +693,7 @@ def edit_job_lsf(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -708,7 +727,7 @@ def edit_job_galaxy_model(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -742,7 +761,7 @@ def edit_job_fitter(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -776,7 +795,7 @@ def edit_job_params(request, id):
             'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
             'fitter_view': views[TABS_INDEXES[FITTER]],
             'params_view': views[TABS_INDEXES[PARAMS]],
-            'max_file_size': MAX_FILE_SIZE
+            # 'max_file_size': MAX_FILE_SIZE
         }
     )
 
@@ -811,7 +830,7 @@ def launch(request, id):
                 'galaxy_model_view': views[TABS_INDEXES[GMODEL]],
                 'fitter_view': views[TABS_INDEXES[FITTER]],
                 'params_view': views[TABS_INDEXES[PARAMS]],
-                'max_file_size': MAX_FILE_SIZE
+                # 'max_file_size': MAX_FILE_SIZE
             }
         )
     else:

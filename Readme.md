@@ -27,6 +27,12 @@ MEDIA_URL = '../media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 ```
 
+You should also specify where to which page a user should be redirected after login in:
+
+```python
+LOGIN_REDIRECT_URL='/jobs'
+```
+
 Specify if the GBKFIT was configured with CUDA or OpenMP:
 
 ```python

@@ -18,6 +18,7 @@ WIDGET = {
     'maskfile1': forms.FileInput(
         attrs={'class': "upload"},
     ),
+
     'dataset2_type': forms.Select(
         attrs={'class': 'form-control'},
     ),
@@ -37,6 +38,7 @@ LABELS = {
     'datafile1': _('Data file'),
     'errorfile1': _('Error file'),
     'maskfile1': _('Mask file'),
+
     'dataset2_type': _('Type'),
     'datafile2': _('Data file'),
     'errorfile2': _('Error file'),
@@ -165,6 +167,7 @@ class EditDataSetForm(forms.ModelForm):
         if dmodel_type != None:
             if dmodel_type in [DataModel.MMAPS_CUDA, DataModel.MMAPS_OMP, DataModel.MMAPS]:
                 self.fields['dataset1_type'].choices = DataSet.TYPE_CHOICES[:-1]
+                self.fields['dataset2_type'].choices = DataSet.TYPE_CHOICES[:-1]
 
     class Meta:
         model = DataSet
