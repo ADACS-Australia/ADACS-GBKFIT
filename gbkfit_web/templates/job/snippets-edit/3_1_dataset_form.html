@@ -1,6 +1,7 @@
 <form action="{% url 'job_dataset_edit' id=job_id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
+    {% include 'job/snippets/messages.html' %}
     {% include 'job/snippets/errors.html' %}
 
     {% include 'job/snippets/pager.html' %}
@@ -8,19 +9,23 @@
     {% for field in dataset_form %}
 
         <div class="container-fluid field
-                    {% if '2' in field.name %}hidden{% endif %}
+                    {% if field.field.required %}required{% endif %}
                     {% if field.errors %}error alert alert-danger{% endif %}
                     div-{{ field.name }}
                     ">
 
             <!-- Label -->
-            <label class="col-md-4" for="{{ field.auto_id }}">
-                {{ field.label }}
+            <label class="col-md-4 control-label" for="{{ field.auto_id }}">
+                {% if field.label == 'Type' %}
+                    {{ field.label }} {% if '1' in field.name %}(File 1){% else %}(File 2) {% endif %}
+                {% else %}
+                    {{ field.label }}
+                {% endif %}
             </label>
 
             <!-- Field -->
             <div class="col-md-12">
-                {% if field.name == 'dataset1_type' %}
+                {% if field.name in 'dataset1_type' or field.name == 'dataset2_type' %}
                     {{ field }}
                     {{ field.errors }}
                 {% else %}
@@ -57,10 +62,10 @@
                                         if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
                                             uploadErrors.push('Not an accepted file type. Requires FITS files (e.g. myfile.fits).');
                                         }
-                                        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > '{{ max_file_size }}') {
-                                            console.log('File size issue.');
-                                            uploadErrors.push('Filesize is too big');
-                                        }
+{#                                        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > '{{ max_file_size }}') {#}
+{#                                            console.log('File size issue.');#}
+{#                                            uploadErrors.push('Filesize is too big');#}
+{#                                        }#}
                                         if(uploadErrors.length > 0) {
                                             alert(uploadErrors.join("\n"));
                                         } else {
@@ -153,8 +158,8 @@
 {% block javascript %}
     {% load static %}
     {# JQUERY FILE UPLOAD SCRIPTS #}
-    <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
-    <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
-    <script src="{% static 'gbkfit_web/javascript/jquery-file-upload/jquery.fileupload.js' %}"></script>
+    <script src="{% static 'javascript/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+    <script src="{% static 'javascript/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+    <script src="{% static 'javascript/jquery-file-upload/jquery.fileupload.js' %}"></script>
 
 {% endblock javascript %}

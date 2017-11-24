@@ -17,8 +17,33 @@
 {% endblock page_header %}
 
 {% block content %}
+    <div class="container-fluid field
+                div-{{ field }}
+                col-md-12
+                ">
+
+        <input type="button" id="button_download" value="Download results">
+
+    </div>
+
     <div id="id_view">
         <legend>Job info</legend>
+        <div class="container-fluid field
+                div-{{ field }}
+                col-md-12
+                ">
+
+            <!-- Label -->
+            <label class="col-md-2">
+                Job ID
+            </label>
+
+            <!-- Field -->
+            <div class="bg-info col-md-10">
+                {{ job_id }}
+            </div>
+
+        </div>
         {% for field,value in job_view.fields.items %}
             <div class="container-fluid field
                 div-{{ field }}
@@ -38,7 +63,14 @@
             </div>
         {% endfor %}
 
-{#        <legend>Image</legend>#}
+        {% for index, mode in job_view.result.modes.items %}
+            {% if index == 0 %}
+                <legend>Best fit</legend>
+            {% else %}
+                <legend>Other fit (#{{ index }})</legend>
+            {% endif %}
+
+            {#        <legend>Image</legend>#}
 {#        {% for field,value in job_view.result.fields.items %}#}
 {#            <div class="container-fluid field#}
 {#                div-{{ field }}#}
@@ -58,30 +90,7 @@
 {#            </div>#}
 {#        {% endfor %}#}
 
-        <legend>Best fit</legend>
-        {% for field,value in job_view.result.fields.items %}
-            <div class="container-fluid field
-                div-{{ field }}
-                col-md-12
-                ">
-
-                <!-- Label -->
-                <label class="col-md-2">
-                    {{ value.0 }}
-                </label>
-
-                <!-- Field -->
-                <div class="bg-info col-md-10">
-                    {{ value.1 }}
-                </div>
-
-            </div>
-        {% endfor %}
-
-        {% for index, mode in job_view.result.modes.items %}
-            <legend>Modes</legend>
             <div class="container-fluid field col-md-12">
-                <legend>Mode {{ index }} </legend>
                 {% for field,value in mode.fields.items %}
                     <div class="container-fluid field
                         div-mode-{{ index }}
@@ -94,12 +103,28 @@
                         </label>
 
                         <!-- Field -->
-                        <div class="bg-info col-md-8">
+                        <div class="bg-info col-md-4">
                             {{ value.1 }}
                         </div>
 
                     </div>
                 {% endfor %}
+                <div class="container-fluid field
+                    div-{{ field }}
+                    col-md-12
+                    ">
+
+                    <!-- Label -->
+                    <label class="col-md-2">
+                        {{ job_view.result.fields.dof.0 }}
+                    </label>
+
+                    <!-- Field -->
+                    <div class="bg-info col-md-4">
+                        {{ job_view.result.fields.dof.1 }}
+                    </div>
+
+                </div>
                 <div class="container-fluid field
                         col-md-12
                         ">
@@ -128,6 +153,8 @@
             </div>
         {% endfor %}
 
+
+
         <div id="params_details">
             <legend>Summary inputs</legend>
             {% include 'job/snippets-view/8_params_form.html' %}
@@ -135,3 +162,26 @@
     </div>
 
 {% endblock content %}
+
+{% block javascript %}
+<script>
+    $('body').on('click', '#button_download',
+      function () {
+
+      $.ajax({
+        url: 'ajax/download_results',
+        data: {
+            csrfmiddlewaretoken: csrftoken,
+        },
+        dataType: 'json',
+        success: function (data) {
+          console.log('Okay, seems okay.');
+        },
+        error: function (data) {
+            console.log('Nope, not okay.');
+        }
+      });
+
+    });
+</script>
+{% endblock javascript %}

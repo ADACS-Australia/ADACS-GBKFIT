@@ -38,8 +38,8 @@ WIDGETS= {
             'xo_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'xo_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'xo_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'xo_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -64,8 +64,8 @@ WIDGETS= {
             'yo_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'yo_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'yo_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'yo_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -90,8 +90,8 @@ WIDGETS= {
             'pa_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'pa_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'pa_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'pa_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -116,8 +116,8 @@ WIDGETS= {
             'incl_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'incl_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'incl_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'incl_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -142,8 +142,8 @@ WIDGETS= {
             'vsys_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'vsys_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'vsys_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'vsys_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -168,8 +168,8 @@ WIDGETS= {
             'vsig_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'vsig_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'vsig_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'vsig_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -193,8 +193,8 @@ WIDGETS= {
             'i0_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'i0_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'i0_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'i0_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -219,8 +219,8 @@ WIDGETS= {
             'r0_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'r0_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'r0_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'r0_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -245,8 +245,8 @@ WIDGETS= {
             'rt_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'rt_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'rt_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'rt_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -271,8 +271,8 @@ WIDGETS= {
             'vt_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'vt_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'vt_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'vt_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -297,8 +297,8 @@ WIDGETS= {
             'a_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'a_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'a_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'a_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -323,8 +323,8 @@ WIDGETS= {
             'b_max': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
             ),
-            'b_wrap': forms.TextInput(
-                attrs={'class': 'form-control has-popover'},
+            'b_wrap': forms.CheckboxInput(
+               attrs={'class': 'has-popover'},
             ),
             'b_step': forms.TextInput(
                 attrs={'class': 'form-control has-popover'},
@@ -343,7 +343,7 @@ LABELS = {
     'xo_value': _('Value'),
     'xo_min': _('Minimum'),
     'xo_max': _('Maximum'),
-    'xo_wrap': _('Wraparound'),
+    'xo_wrap': _('Wrap around'),
     'xo_step': _('Step'),
     'xo_relstep':_('Relative step'),
     'xo_side':_('Derivative sidedness'),
@@ -353,7 +353,7 @@ LABELS = {
     'yo_value': _('Value'),
     'yo_min': _('Minimum'),
     'yo_max': _('Maximum'),
-    'yo_wrap': _('Wraparound'),
+    'yo_wrap': _('Wrap around'),
     'yo_step': _('Step'),
     'yo_relstep':_('Relative step'),
     'yo_side':_('Derivative sidedness'),
@@ -363,7 +363,7 @@ LABELS = {
     'pa_value': _('Value'),
     'pa_min': _('Minimum'),
     'pa_max': _('Maximum'),
-    'pa_wrap': _('Wraparound'),
+    'pa_wrap': _('Wrap around'),
     'pa_step': _('Step'),
     'pa_relstep':_('Relative step'),
     'pa_side':_('Derivative sidedness'),
@@ -373,7 +373,7 @@ LABELS = {
     'incl_value': _('Value'),
     'incl_min': _('Minimum'),
     'incl_max': _('Maximum'),
-    'incl_wrap': _('Wraparound'),
+    'incl_wrap': _('Wrap around'),
     'incl_step': _('Step'),
     'incl_relstep':_('Relative step'),
     'incl_side':_('Derivative sidedness'),
@@ -383,7 +383,7 @@ LABELS = {
     'vsys_value': _('Value'),
     'vsys_min': _('Minimum'),
     'vsys_max': _('Maximum'),
-    'vsys_wrap': _('Wraparound'),
+    'vsys_wrap': _('Wrap around'),
     'vsys_step': _('Step'),
     'vsys_relstep':_('Relative step'),
     'vsys_side':_('Derivative sidedness'),
@@ -393,7 +393,7 @@ LABELS = {
     'vsig_value': _('Value'),
     'vsig_min': _('Minimum'),
     'vsig_max': _('Maximum'),
-    'vsig_wrap': _('Wraparound'),
+    'vsig_wrap': _('Wrap around'),
     'vsig_step': _('Step'),
     'vsig_relstep':_('Relative step'),
     'vsig_side':_('Derivative sidedness'),
@@ -402,7 +402,7 @@ LABELS = {
     'i0_value': _('Value'),
     'i0_min': _('Minimum'),
     'i0_max': _('Maximum'),
-    'i0_wrap': _('Wraparound'),
+    'i0_wrap': _('Wrap around'),
     'i0_step': _('Step'),
     'i0_relstep':_('Relative step'),
     'i0_side':_('Derivative sidedness'),
@@ -412,7 +412,7 @@ LABELS = {
     'r0_value': _('Value'),
     'r0_min': _('Minimum'),
     'r0_max': _('Maximum'),
-    'r0_wrap': _('Wraparound'),
+    'r0_wrap': _('Wrap around'),
     'r0_step': _('Step'),
     'r0_relstep':_('Relative step'),
     'r0_side':_('Derivative sidedness'),
@@ -422,7 +422,7 @@ LABELS = {
     'rt_value': _('Value'),
     'rt_min': _('Minimum'),
     'rt_max': _('Maximum'),
-    'rt_wrap': _('Wraparound'),
+    'rt_wrap': _('Wrap around'),
     'rt_step': _('Step'),
     'rt_relstep':_('Relative step'),
     'rt_side':_('Derivative sidedness'),
@@ -432,7 +432,7 @@ LABELS = {
     'vt_value': _('Value'),
     'vt_min': _('Minimum'),
     'vt_max': _('Maximum'),
-    'vt_wrap': _('Wraparound'),
+    'vt_wrap': _('Wrap around'),
     'vt_step': _('Step'),
     'vt_relstep':_('Relative step'),
     'vt_side':_('Derivative sidedness'),
@@ -442,7 +442,7 @@ LABELS = {
     'a_value': _('Value'),
     'a_min': _('Minimum'),
     'a_max': _('Maximum'),
-    'a_wrap': _('Wraparound'),
+    'a_wrap': _('Wrap around'),
     'a_step': _('Step'),
     'a_relstep':_('Relative step'),
     'a_side':_('Derivative sidedness'),
@@ -452,7 +452,7 @@ LABELS = {
     'b_value': _('Value'),
     'b_min': _('Minimum'),
     'b_max': _('Maximum'),
-    'b_wrap': _('Wraparound'),
+    'b_wrap': _('Wrap around'),
     'b_step': _('Step'),
     'b_relstep':_('Relative step'),
     'b_side':_('Derivative sidedness'),
@@ -464,7 +464,7 @@ HELP_TEXTS = {
     'xo_value': _(''),
     'xo_min': _(''),
     'xo_max': _(''),
-    'xo_wrap': _('Is wraparound parameter?'),
+    'xo_wrap': _('Is Wrap around parameter?'),
     'xo_step': _(''),
     'xo_relstep': _('Relative step size for finite difference.'),
     'xo_side': _('Sidedness of finite difference derivative.'),
@@ -474,7 +474,7 @@ HELP_TEXTS = {
     'yo_value': _(''),
     'yo_min': _(''),
     'yo_max': _(''),
-    'yo_wrap': _('Is wraparound parameter?'),
+    'yo_wrap': _('Is Wrap around parameter?'),
     'yo_step': _(''),
     'yo_relstep': _('Relative step size for finite difference.'),
     'yo_side': _('Sidedness of finite difference derivative.'),
@@ -484,7 +484,7 @@ HELP_TEXTS = {
     'pa_value': _(''),
     'pa_min': _(''),
     'pa_max': _(''),
-    'pa_wrap': _('Is wraparound parameter?'),
+    'pa_wrap': _('Is Wrap around parameter?'),
     'pa_step': _(''),
     'pa_relstep': _('Relative step size for finite difference.'),
     'pa_side': _('Sidedness of finite difference derivative.'),
@@ -494,7 +494,7 @@ HELP_TEXTS = {
     'incl_value': _(''),
     'incl_min': _(''),
     'incl_max': _(''),
-    'incl_wrap': _('Is wraparound parameter?'),
+    'incl_wrap': _('Is Wrap around parameter?'),
     'incl_step': _(''),
     'incl_relstep': _('Relative step size for finite difference.'),
     'incl_side': _('Sidedness of finite difference derivative.'),
@@ -504,7 +504,7 @@ HELP_TEXTS = {
     'vsys_value': _(''),
     'vsys_min': _(''),
     'vsys_max': _(''),
-    'vsys_wrap': _('Is wraparound parameter?'),
+    'vsys_wrap': _('Is Wrap around parameter?'),
     'vsys_step': _(''),
     'vsys_relstep': _('Relative step size for finite difference.'),
     'vsys_side': _('Sidedness of finite difference derivative.'),
@@ -514,7 +514,7 @@ HELP_TEXTS = {
     'vsig_value': _(''),
     'vsig_min': _(''),
     'vsig_max': _(''),
-    'vsig_wrap': _('Is wraparound parameter?'),
+    'vsig_wrap': _('Is Wrap around parameter?'),
     'vsig_step': _(''),
     'vsig_relstep': _('Relative step size for finite difference.'),
     'vsig_side': _('Sidedness of finite difference derivative.'),
@@ -523,7 +523,7 @@ HELP_TEXTS = {
     'i0_value': _(''),
     'i0_min': _(''),
     'i0_max': _(''),
-    'i0_wrap': _('Is wraparound parameter?'),
+    'i0_wrap': _('Is Wrap around parameter?'),
     'i0_step': _(''),
     'i0_relstep': _('Relative step size for finite difference.'),
     'i0_side': _('Sidedness of finite difference derivative.'),
@@ -533,7 +533,7 @@ HELP_TEXTS = {
     'r0_value': _(''),
     'r0_min': _(''),
     'r0_max': _(''),
-    'r0_wrap': _('Is wraparound parameter?'),
+    'r0_wrap': _('Is Wrap around parameter?'),
     'r0_step': _(''),
     'r0_relstep': _('Relative step size for finite difference.'),
     'r0_side': _('Sidedness of finite difference derivative.'),
@@ -543,7 +543,7 @@ HELP_TEXTS = {
     'rt_value': _(''),
     'rt_min': _(''),
     'rt_max': _(''),
-    'rt_wrap': _('Is wraparound parameter?'),
+    'rt_wrap': _('Is Wrap around parameter?'),
     'rt_step': _(''),
     'rt_relstep': _('Relative step size for finite difference.'),
     'rt_side': _('Sidedness of finite difference derivative.'),
@@ -553,7 +553,7 @@ HELP_TEXTS = {
     'vt_value': _(''),
     'vt_min': _(''),
     'vt_max': _(''),
-    'vt_wrap': _('Is wraparound parameter?'),
+    'vt_wrap': _('Is Wrap around parameter?'),
     'vt_step': _(''),
     'vt_relstep': _('Relative step size for finite difference.'),
     'vt_side': _('Sidedness of finite difference derivative.'),
@@ -563,7 +563,7 @@ HELP_TEXTS = {
     'a_value': _(''),
     'a_min': _(''),
     'a_max': _(''),
-    'a_wrap': _('Is wraparound parameter?'),
+    'a_wrap': _('Is Wrap around parameter?'),
     'a_step': _(''),
     'a_relstep': _('Relative step size for finite difference.'),
     'a_side': _('Sidedness of finite difference derivative.'),
@@ -573,7 +573,7 @@ HELP_TEXTS = {
     'b_value': _(''),
     'b_min': _(''),
     'b_max': _(''),
-    'b_wrap': _('Is wraparound parameter?'),
+    'b_wrap': _('Is Wrap around parameter?'),
     'b_step': _(''),
     'b_relstep': _('Relative step size for finite difference.'),
     'b_side': _('Sidedness of finite difference derivative.'),

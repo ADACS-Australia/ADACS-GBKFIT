@@ -73,6 +73,9 @@ class JobListView(ListView):
 
     model = Job
 
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
     def get_context_data(self, **kwargs):
         context = super(JobListView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
@@ -341,7 +344,7 @@ def filter_fitter_fields(fields, object):
 def filter_params_fields(fields, object, galaxy_model, fitter):
     object = add_fields_to_object(object, fields)
 
-    if fitter.fields['fitter_type'] == Fitter_model.MPFIT:
+    if fitter.fields['fitter_type'][1] == Fitter_model.MPFIT:
         """
         Doesn't use:
             - wrap
@@ -351,7 +354,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
                 if 'wrap' in field:
                     if field in fields: fields.remove(field)
 
-    if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
+    if fitter.fields['fitter_type'][1] == Fitter_model.MULTINEST:
         """
         Doesn't use:
             - step 
@@ -360,7 +363,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
         """
         for fields_list in ParamsMeta.FIELDS_LISTS:
             for field in fields_list:
-                if field in ['step', 'relstep', 'side']:
+                if 'step' in field or 'relstep' in field or 'side' in field:
                     if field in fields:
                         fields.remove(field)
 
@@ -377,7 +380,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
                         if field in fields:
                             fields.remove(field)
 
-    if galaxy_model.fields['vel_profile'] != GalaxyModel.EPINAT:
+    if galaxy_model.fields['vel_profile'][1] != GalaxyModel.EPINAT:
         for field in ParamsMeta.A_FIELDS:
             if field in fields:
                 fields.remove(field)

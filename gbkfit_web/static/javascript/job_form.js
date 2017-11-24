@@ -490,15 +490,22 @@ $(document).ready(function() {
     // Disable launch button if not all models are saved
     if ($("#id_dmodel_view").length === 0       ||
             $("#id_dataset_view").length === 0  ||
-            $("#id_psf_view").length === 0      ||
-            $("#id_lsf_view").length === 0      ||
+//            $("#id_psf_view").length === 0      ||
+//            $("#id_lsf_view").length === 0      ||
             $("#id_gmodel_view").length === 0   ||
             $("#id_fitter_view").length === 0   ||
             $("#id_params_view").length === 0)      {
 
-        if (document.getElementById("id_launch_job"))
-            document.getElementById("id_launch_job").disabled = true;
+        if ($("input.launch_job_button"))
+            $("input.launch_job_button").attr("disabled", true);
 
+
+    }
+
+    if ($("#id_gmodel_view").length === 0   ||
+        $("#id_fitter_view").length === 0) {
+
+        $("#li_params").addClass('disabled');
     }
 
     // Confirm job deletion

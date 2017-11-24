@@ -32,6 +32,12 @@ The secret key used to authenticate the workflow with the UI API
 WORKFLOW_SECRET = 'some really long string with $YMb0l$'
 ```
 
+You should also specify where to which page a user should be redirected after login in:
+
+```python
+LOGIN_REDIRECT_URL='/jobs'
+```
+
 Specify if the GBKFIT was configured with CUDA or OpenMP:
 
 ```python
