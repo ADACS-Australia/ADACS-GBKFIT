@@ -53,8 +53,7 @@ def save_job_results(job_id, json_file):
     result = Result()
     result.job_id = job.id
     result.dof = json_file['dof']
-    if result.is_valid():
-        result = result.save()
+    result.save()
 
     # Save modes
     mode_number=0
@@ -64,8 +63,7 @@ def save_job_results(job_id, json_file):
         mode.result = result
         mode.chisqr = mode['chisqr']
         mode.rchisqr = mode['rchisqr']
-        if mode.is_valid():
-            mode = mode.save()
+        mode.save()
 
         # Save mode parameters
         params = ModeParameter()
@@ -74,29 +72,26 @@ def save_job_results(job_id, json_file):
             params.name = param['name']
             param.value = param['value']
             param.error = param['error']
-            if param.is_valid():
-                param.save()
+            param.save()
 
         #increase mode number
         mode_number+=1
 
-def save_job_tar(job_id, tar_file_path, tar_file_name):
+def save_job_tar(job_id, tar_file_path):
     result = Result.objects.get(job_id=job_id)
     result_file = ResultFile()
     result_file.result_id = result.id
-    result_file.tar_file = File(open(check_path(tar_file_path) + tar_file_name, 'rb'))
-    if result_file.is_valid():
-        result_file.save()
+    result_file.tar_file.name = tar_file_path
+    result_file.save()
 
-def save_job_tar(job_id, mode_number, image_file_path, image_file_name):
+def save_job_image(job_id, mode_number, image_file_path):
     result = Result.objects.get(job_id=job_id)
     filterargs = {'result__id': result.id, 'mode_number': mode_number}
-    mode = Result.job.filter(**filterargs)[0]
+    mode = Mode.job.get(**filterargs)
     mode_image = ModeImage()
-    mode_image.mode = result.id
-    mode_image.image_file = ImageFile(open(check_path(image_file_path) + image_file_name, 'rb'))
-    if mode_image.is_valid():
-        mode_image.save()
+    mode_image.mode_id = mode.id
+    mode_image.image_file.name = image_file_path
+    mode_image.save()
 
 ####
 # Begining of Job serializers

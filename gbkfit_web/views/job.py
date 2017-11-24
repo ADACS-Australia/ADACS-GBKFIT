@@ -866,11 +866,14 @@ def results(request, id):
     job = model_instance_to_iterable(Job.objects.get(id=id), model=START)
     job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
 
-    filterargs = {'result__id': job.result.id, 'filetype': ResultFile.IMAGE_FILE}
+    filterargs = {'result__id': job.result.id,
+                  #'filetype': ResultFile.IMAGE_FILE
+                  }
     job.result.image_field = model_instance_to_iterable(ResultFile.objects.filter(**filterargs), model=RESULT_FILE)
 
     job.result.modes = {}
     i=0
+    print (Mode.objects.filter(result__id = job.result.id))
     for mode in Mode.objects.filter(result__id = job.result.id):
         job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
         job.result.modes[i].params = {}
