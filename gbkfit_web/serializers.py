@@ -67,8 +67,8 @@ def save_job_results(job_id, json_file):
 
         # Save mode parameters
         params = ModeParameter()
-        params.mode = mode
-        for param in mode['params']:
+        params.mode = m
+        for param in mode['parameters']:
             params.name = param['name']
             param.value = param['value']
             param.error = param['error']
