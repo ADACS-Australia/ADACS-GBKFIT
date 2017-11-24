@@ -12,3 +12,6 @@ admin.site.register(models.DataSet)
 admin.site.register(models.Verification)
 admin.site.register(models.ModeImage)
 admin.site.register(models.ResultFile)
+admin.site.register(models.DataSet)
+
+
