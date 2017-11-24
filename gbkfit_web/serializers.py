@@ -66,15 +66,15 @@ def save_job_results(job_id, json_file):
         m.save()
 
         # Save mode parameters
-        params = ModeParameter()
-        params.mode = m
         for param in mode['parameters']:
-            params.name = param['name']
-            param.value = param['value']
-            param.error = param['error']
-            param.save()
+            p = ModeParameter()
+            p.mode = m
+            p.name = param['name']
+            p.value = param['value']
+            p.error = param['error']
+            p.save()
 
-        #increase mode number
+        # Increase mode number
         mode_number += 1
 
 def save_job_tar(job_id, tar_file_path):
