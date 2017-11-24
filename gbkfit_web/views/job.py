@@ -592,11 +592,6 @@ def ajax_edit_job_dataset(request, id):
 
     filetype = request.POST['filetype']
 
-    # if request.FILES['datafile1']:
-    #     form = FORMS_NEW[DATASET](request.POST, request.FILES, request=request, id=id)
-    # else:
-    #     form = FORMS_NEW[DATASET](request=request, id=id)
-
     try:
         dataset = DataSet.objects.get(job_id=id)
         if 'datafile1' in request.FILES:

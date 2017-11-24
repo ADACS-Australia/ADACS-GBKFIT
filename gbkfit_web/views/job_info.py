@@ -164,7 +164,8 @@ def get_meta(model, views, object):
         }
 
     if model == DATASET:
-        fields = ['dataset1_type', 'datafile1', 'errorfile1', 'maskfile1']
+        fields = ['dataset1_type', 'datafile1', 'errorfile1', 'maskfile1',
+                  'dataset2_type', 'datafile2', 'errorfile2', 'maskfile2',]
         labels = {
             'dataset1_type': _('Type'),
             'datafile1': _('Data file'),
