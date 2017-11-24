@@ -605,6 +605,12 @@ def ajax_edit_job_dataset(request, id):
             dataset.errorfile1 = request.FILES['errorfile1']
         if 'maskfile1' in request.FILES:
             dataset.maskfile1 = request.FILES['maskfile1']
+        if 'datafile2' in request.FILES:
+            dataset.datafile2 = request.FILES['datafile2']
+        if 'errorfile2' in request.FILES:
+            dataset.errorfile2 = request.FILES['errorfile2']
+        if 'maskfile2' in request.FILES:
+            dataset.maskfile2 = request.FILES['maskfile2']
     except:
         dataset = DataSet()
         dataset.job = job
@@ -614,6 +620,12 @@ def ajax_edit_job_dataset(request, id):
             dataset.errorfile1 = request.FILES['errorfile1']
         if 'maskfile1' in request.FILES:
             dataset.maskfile1 = request.FILES['maskfile1']
+        if 'datafile2' in request.FILES:
+            dataset.datafile2 = request.FILES['datafile2']
+        if 'errorfile2' in request.FILES:
+            dataset.errorfile2 = request.FILES['errorfile2']
+        if 'maskfile2' in request.FILES:
+            dataset.maskfile2 = request.FILES['maskfile2']
 
     try:
         data_file = dataset.save()
@@ -623,6 +635,12 @@ def ajax_edit_job_dataset(request, id):
             data = {'is_valid': True, 'name': basename(dataset.errorfile1.name)}
         if filetype == 'maskfile1':
             data = {'is_valid': True, 'name': basename(dataset.maskfile1.name)}
+        if filetype == 'datafile2':
+            data = {'is_valid': True, 'name': basename(dataset.datafile2.name)}
+        if filetype == 'errorfile2':
+            data = {'is_valid': True, 'name': basename(dataset.errorfile2.name)}
+        if filetype == 'maskfile2':
+            data = {'is_valid': True, 'name': basename(dataset.maskfile2.name)}
     except:
         data = {'is_valid': False}
 
