@@ -915,7 +915,7 @@ def download_results_tar(request, id):
     result = Result.objects.get(job_id = id)
 
     filterargs = {'result__id': result.id}
-    tar_file = ResultFile.objects.get(**filterargs)
+    tar_file = ResultFile.objects.get(**filterargs).tar_file
     # filename = 'job_{}_results.tar'.format(job.id)
     content = FileWrapper(tar_file.file)
     response = HttpResponse(content, content_type='application/gzip')
