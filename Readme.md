@@ -23,8 +23,13 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-MEDIA_URL = '../media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+MEDIA_URL = '/media/'   # The media URL
+MEDIA_ROOT = '/data/'   # The location on disk, set this to the location of the shared mounted filesystem
+```
+
+The secret key used to authenticate the workflow with the UI API
+```python
+WORKFLOW_SECRET = 'some really long string with $YMb0l$'
 ```
 
 You should also specify where to which page a user should be redirected after login in:

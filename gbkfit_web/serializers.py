@@ -56,26 +56,26 @@ def save_job_results(job_id, json_file):
     result.save()
 
     # Save modes
-    mode_number=0
+    mode_number = 0
     for mode in json_file['modes']:
-        mode = Mode()
-        mode.mode_number = mode_number
-        mode.result = result
-        mode.chisqr = mode['chisqr']
-        mode.rchisqr = mode['rchisqr']
-        mode.save()
+        m = Mode()
+        m.mode_number = mode_number
+        m.result = result
+        m.chisqr = mode['chisqr']
+        m.rchisqr = mode['rchisqr']
+        m.save()
 
         # Save mode parameters
-        params = ModeParameter()
-        params.mode = mode
-        for param in mode['params']:
-            params.name = param['name']
-            param.value = param['value']
-            param.error = param['error']
-            param.save()
+        for param in mode['parameters']:
+            p = ModeParameter()
+            p.mode = m
+            p.name = param['name']
+            p.value = param['value']
+            p.error = param['error']
+            p.save()
 
-        #increase mode number
-        mode_number+=1
+        # Increase mode number
+        mode_number += 1
 
 def save_job_tar(job_id, tar_file_path):
     result = Result.objects.get(job_id=job_id)
@@ -87,7 +87,7 @@ def save_job_tar(job_id, tar_file_path):
 def save_job_image(job_id, mode_number, image_file_path):
     result = Result.objects.get(job_id=job_id)
     filterargs = {'result__id': result.id, 'mode_number': mode_number}
-    mode = Mode.job.get(**filterargs)
+    mode = Mode.objects.get(**filterargs)
     mode_image = ModeImage()
     mode_image.mode_id = mode.id
     mode_image.image_file.name = image_file_path

@@ -10,3 +10,7 @@ admin.site.register(models.Job)
 admin.site.register(models.User)
 admin.site.register(models.DataSet)
 admin.site.register(models.Verification)
+admin.site.register(models.ModeImage)
+admin.site.register(models.ResultFile)
+
+
