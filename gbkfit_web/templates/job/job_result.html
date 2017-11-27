@@ -17,14 +17,6 @@
 {% endblock page_header %}
 
 {% block content %}
-    <div class="container-fluid field
-                div-{{ field }}
-                col-md-12
-                ">
-
-        <input type="button" id="button_download" value="Download results">
-
-    </div>
 
     <div id="id_view">
         <legend>Job info</legend>
@@ -44,6 +36,7 @@
             </div>
 
         </div>
+
         {% for field,value in job_view.fields.items %}
             <div class="container-fluid field
                 div-{{ field }}
@@ -62,6 +55,8 @@
 
             </div>
         {% endfor %}
+
+        {% include 'job/snippets/download_button.html' %}
 
         {% for index, mode in job_view.result.modes.items %}
             {% if index == 0 %}
@@ -161,11 +156,13 @@
         </div>
     </div>
 
+    {% include 'job/snippets/download_button.html' %}
+
 {% endblock content %}
 
 {% block javascript %}
 <script>
-    $('body').on('click', '#button_download',
+    $('body').on('click', '.button_download',
       function () {
 
       $.ajax({

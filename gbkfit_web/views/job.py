@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import json
 from os.path import basename
 
+import os
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
@@ -26,8 +27,7 @@ from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params,
     Result, Mode, ModeParameter, ResultFile,
-    user_job_input_file_directory_path
-)
+    user_job_input_file_directory_path)
 
 # from gbkfit.settings.local import MAX_FILE_SIZE
 
@@ -296,37 +296,36 @@ def act_on_request_method_edit(request, active_tab, id):
         if 'previous' in request.POST:
             active_tab = previous_tab(active_tab)
         else:
-            # Job is being submitted, write the json descriptor for this job
-
-            job = Job.objects.get(id=id)
-
-            # Create the task json descriptor
-            task_json = {}
-            task_json['mode'] = 'fit'
-            task_json['dmodel'] = job.job_data_model.as_json()
-            task_json['datasets'] = job.job_data_set.as_array()
-            # PSF and LSF are optional.
-            try:
-                task_json['psf'] = job.job_psf.as_json()
-            except:
-                pass
-            try:
-                task_json['lsf'] = job.job_lsf.as_json()
-            except:
-                pass
-            task_json['gmodel'] = job.job_gmodel.as_json()
-            task_json['fitter'] = job.job_fitter.as_json()
-            task_json['params'] = job.job_parameter_set.as_array()
-
-            # Make sure the directory exists to write the json output
-            os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
-
-            # Write the input json file
-            with open(user_job_input_file_directory_path(job), 'w') as outfile:
-                json.dump(task_json, outfile)
-
             if request.method == 'POST':
+                # Job is being submitted, write the json descriptor for this job
                 job = Job.objects.get(id=id)
+
+                # Create the task json descriptor
+                task_json = {}
+                task_json['mode'] = 'fit'
+                task_json['dmodel'] = job.job_data_model.as_json()
+                task_json['datasets'] = job.job_data_set.as_array()
+                # PSF and LSF are optional.
+                try:
+                    task_json['psf'] = job.job_psf.as_json()
+                except:
+                    pass
+                try:
+                    task_json['lsf'] = job.job_lsf.as_json()
+                except:
+                    pass
+                task_json['gmodel'] = job.job_gmodel.as_json()
+                task_json['fitter'] = job.job_fitter.as_json()
+                task_json['params'] = job.job_parameter_set.as_array()
+
+                # Make sure the directory exists to write the json output
+                os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
+
+                # Write the input json file
+                with open(user_job_input_file_directory_path(job), 'w') as outfile:
+                    json.dump(task_json, outfile)
+
+                # Now actually update the job as submitted
                 job.user = request.user
                 job.status = Job.SUBMITTED
                 job.submission_time = now()
@@ -593,11 +592,6 @@ def ajax_edit_job_dataset(request, id):
 
     filetype = request.POST['filetype']
 
-    # if request.FILES['datafile1']:
-    #     form = FORMS_NEW[DATASET](request.POST, request.FILES, request=request, id=id)
-    # else:
-    #     form = FORMS_NEW[DATASET](request=request, id=id)
-
     try:
         dataset = DataSet.objects.get(job_id=id)
         if 'datafile1' in request.FILES:
@@ -606,6 +600,12 @@ def ajax_edit_job_dataset(request, id):
             dataset.errorfile1 = request.FILES['errorfile1']
         if 'maskfile1' in request.FILES:
             dataset.maskfile1 = request.FILES['maskfile1']
+        if 'datafile2' in request.FILES:
+            dataset.datafile2 = request.FILES['datafile2']
+        if 'errorfile2' in request.FILES:
+            dataset.errorfile2 = request.FILES['errorfile2']
+        if 'maskfile2' in request.FILES:
+            dataset.maskfile2 = request.FILES['maskfile2']
     except:
         dataset = DataSet()
         dataset.job = job
@@ -615,6 +615,12 @@ def ajax_edit_job_dataset(request, id):
             dataset.errorfile1 = request.FILES['errorfile1']
         if 'maskfile1' in request.FILES:
             dataset.maskfile1 = request.FILES['maskfile1']
+        if 'datafile2' in request.FILES:
+            dataset.datafile2 = request.FILES['datafile2']
+        if 'errorfile2' in request.FILES:
+            dataset.errorfile2 = request.FILES['errorfile2']
+        if 'maskfile2' in request.FILES:
+            dataset.maskfile2 = request.FILES['maskfile2']
 
     try:
         data_file = dataset.save()
@@ -624,6 +630,12 @@ def ajax_edit_job_dataset(request, id):
             data = {'is_valid': True, 'name': basename(dataset.errorfile1.name)}
         if filetype == 'maskfile1':
             data = {'is_valid': True, 'name': basename(dataset.maskfile1.name)}
+        if filetype == 'datafile2':
+            data = {'is_valid': True, 'name': basename(dataset.datafile2.name)}
+        if filetype == 'errorfile2':
+            data = {'is_valid': True, 'name': basename(dataset.errorfile2.name)}
+        if filetype == 'maskfile2':
+            data = {'is_valid': True, 'name': basename(dataset.maskfile2.name)}
     except:
         data = {'is_valid': False}
 
@@ -867,11 +879,14 @@ def results(request, id):
     job = model_instance_to_iterable(Job.objects.get(id=id), model=START)
     job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
 
-    filterargs = {'result__id': job.result.id, 'filetype': ResultFile.IMAGE_FILE}
+    filterargs = {'result__id': job.result.id,
+                  #'filetype': ResultFile.IMAGE_FILE
+                  }
     job.result.image_field = model_instance_to_iterable(ResultFile.objects.filter(**filterargs), model=RESULT_FILE)
 
     job.result.modes = {}
     i=0
+    print (Mode.objects.filter(result__id = job.result.id))
     for mode in Mode.objects.filter(result__id = job.result.id):
         job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
         job.result.modes[i].params = {}
@@ -899,8 +914,8 @@ def download_results_tar(request, id):
     # job = Job.objects.get(id=id)
     result = Result.objects.get(job_id = id)
 
-    filterargs = {'result__id': result.id, 'filetype': ResultFile.TAR_FILE}
-    tar_file = ResultFile.objects.filter(**filterargs)
+    filterargs = {'result__id': result.id}
+    tar_file = ResultFile.objects.get(**filterargs).tar_file
     # filename = 'job_{}_results.tar'.format(job.id)
     content = FileWrapper(tar_file.file)
     response = HttpResponse(content, content_type='application/gzip')

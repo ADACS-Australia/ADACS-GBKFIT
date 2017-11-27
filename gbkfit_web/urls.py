@@ -5,12 +5,15 @@ from django.contrib.auth.decorators import login_required
 from gbkfit_web.views import account, index, job, verify, job_info
 from rest_framework import routers, serializers, viewsets
 
-
 urlpatterns = [
     url(r'^$', index.index, name='index'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    url(r'^jobs/(?P<pk>\d+)/$', login_required(job_info.JobDetailView.as_view(template_name='job/job_detail.html')), name='job_detail'),
+    # Workflow API
+    url(r'^api/', include('gbkfit_web.workflow.urls', namespace='workflow')),
+
+    url(r'^jobs/(?P<pk>\d+)/$', login_required(job_info.JobDetailView.as_view(template_name='job/job_detail.html')),
+        name='job_detail'),
     url(r'^jobs/$', login_required(job_info.JobListView.as_view(template_name='job/job_list.html')), name='job_list'),
     url(r'^jobs/(?P<id>\d+)/delete', login_required(job_info.delete_job), name='job_delete'),
 
@@ -36,8 +39,8 @@ urlpatterns = [
     url(r'^verify/$', verify.verify, name='verify'),
 
     url(r'^accounts/login/$',
-            auth_views.LoginView.as_view(redirect_authenticated_user=True,
-                                         template_name='accounts/login.html'), name='login'),
+        auth_views.LoginView.as_view(redirect_authenticated_user=True,
+                                     template_name='accounts/login.html'), name='login'),
     url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^accounts/profile/$', account.profile, name='profile'),
     url(r'^accounts/password/$', account.change_password, name='change_password'),
