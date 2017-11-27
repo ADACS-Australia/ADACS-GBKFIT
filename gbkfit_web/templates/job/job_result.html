@@ -65,28 +65,11 @@
                 <legend>Other fit (#{{ index }})</legend>
             {% endif %}
 
-            {#        <legend>Image</legend>#}
-{#        {% for field,value in job_view.result.fields.items %}#}
-{#            <div class="container-fluid field#}
-{#                div-{{ field }}#}
-{#                col-md-12#}
-{#                ">#}
-{##}
-{#                <!-- Label -->#}
-{#                <label class="col-md-2">#}
-{#                    {{ value.0 }}#}
-{#                </label>#}
-{##}
-{#                <!-- Field -->#}
-{#                <div class="bg-info col-md-8">#}
-{#                    {{ value.1 }}#}
-{#                </div>#}
-{##}
-{#            </div>#}
-{#        {% endfor %}#}
-
             <div class="container-fluid field col-md-12">
+                <img src="{{ mode.mode_image.image_file.url }}">
+
                 {% for field,value in mode.fields.items %}
+
                     <div class="container-fluid field
                         div-mode-{{ index }}
                         col-md-12-
@@ -160,25 +143,25 @@
 
 {% endblock content %}
 
-{% block javascript %}
-<script>
-    $('body').on('click', '.button_download',
-      function () {
-
-      $.ajax({
-        url: 'ajax/download_results',
-        data: {
-            csrfmiddlewaretoken: csrftoken,
-        },
-        dataType: 'json',
-        success: function (data) {
-          console.log('Okay, seems okay.');
-        },
-        error: function (data) {
-            console.log('Nope, not okay.');
-        }
-      });
-
-    });
-</script>
-{% endblock javascript %}
+{#{% block javascript %}#}
+{#<script>#}
+{#    $('body').on('click', '.button_download',#}
+{#      function () {#}
+{##}
+{#      $.ajax({#}
+{#        url: 'ajax/download_results',#}
+{#        data: {#}
+{#            csrfmiddlewaretoken: csrftoken,#}
+{#        },#}
+{#        dataType: 'json',#}
+{#        success: function (data) {#}
+{#          console.log('Okay, seems okay.');#}
+{#        },#}
+{#        error: function (data) {#}
+{#            console.log('Nope, not okay.');#}
+{#        }#}
+{#      });#}
+{##}
+{#    });#}
+{#</script>#}
+{#{% endblock javascript %}#}

@@ -26,7 +26,7 @@ from gbkfit_web.forms.job.params import ParamsForm, EditParamsForm
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params,
-    Result, Mode, ModeParameter, ResultFile,
+    Result, Mode, ModeParameter, ModeImage, ResultFile,
     user_job_input_file_directory_path)
 
 # from gbkfit.settings.local import MAX_FILE_SIZE
@@ -879,21 +879,25 @@ def results(request, id):
     job = model_instance_to_iterable(Job.objects.get(id=id), model=START)
     job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
 
-    filterargs = {'result__id': job.result.id,
-                  #'filetype': ResultFile.IMAGE_FILE
-                  }
-    job.result.image_field = model_instance_to_iterable(ResultFile.objects.filter(**filterargs), model=RESULT_FILE)
-
     job.result.modes = {}
     i=0
     print (Mode.objects.filter(result__id = job.result.id))
     for mode in Mode.objects.filter(result__id = job.result.id):
         job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
+
+        # Gather the parameters of this mode
         job.result.modes[i].params = {}
         j=0
         for params in ModeParameter.objects.filter(mode__id=job.result.modes[i].id):
             job.result.modes[i].params[j] = model_instance_to_iterable(params, model=MODE_PARAMS)
             j+=1
+
+        # Gather the image of this mode
+        job.result.modes[i].mode_image = model_instance_to_iterable(ModeImage.objects.get(
+                                                                                mode_id=job.result.modes[i].id),
+                                                                                model=RESULT_FILE
+        )
+
         i+=1
 
     return render(
@@ -908,15 +912,11 @@ def results(request, id):
 
 @login_required
 def download_results_tar(request, id):
-
-    print ("job_id", id)
-
-    # job = Job.objects.get(id=id)
     result = Result.objects.get(job_id = id)
 
-    filterargs = {'result__id': result.id}
-    tar_file = ResultFile.objects.get(**filterargs).tar_file
-    # filename = 'job_{}_results.tar'.format(job.id)
+    tar_file = ResultFile.objects.get(result_id=result.id).tar_file
+    print (tar_file.file)
+
     content = FileWrapper(tar_file.file)
     response = HttpResponse(content, content_type='application/gzip')
     response['Content-Length'] = tar_file.size
