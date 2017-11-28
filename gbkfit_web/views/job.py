@@ -211,6 +211,13 @@ def build_task_json(request):
     JOB CREATION/EDITING  SECTION
 
 """
+def check_permission_save(form, request, active_tab, id):
+    job = Job.objects.get(id=id)
+    if job.user_id == request.user.id:
+        active_tab = save_form(form, request, active_tab, id)
+
+    return active_tab
+
 def save_form(form, request, active_tab, id=None):
     if active_tab == DATASET:
         try:
@@ -274,7 +281,7 @@ def act_on_request_method_edit(request, active_tab, id):
                         get_instance = True
 
 
-            active_tab = save_form(form, request, active_tab, id)
+            active_tab = check_permission_save(form, request, active_tab, id)
             if get_instance:
                 if 'next' in request.POST:
                     instance = MODELS_EDIT[previous_tab(active_tab)].objects.get(job_id=id)
@@ -300,37 +307,39 @@ def act_on_request_method_edit(request, active_tab, id):
                 # Job is being submitted, write the json descriptor for this job
                 job = Job.objects.get(id=id)
 
-                # Create the task json descriptor
-                task_json = {}
-                task_json['mode'] = 'fit'
-                task_json['dmodel'] = job.job_data_model.as_json()
-                task_json['datasets'] = job.job_data_set.as_array()
-                # PSF and LSF are optional.
-                try:
-                    task_json['psf'] = job.job_psf.as_json()
-                except:
-                    pass
-                try:
-                    task_json['lsf'] = job.job_lsf.as_json()
-                except:
-                    pass
-                task_json['gmodel'] = job.job_gmodel.as_json()
-                task_json['fitter'] = job.job_fitter.as_json()
-                task_json['params'] = job.job_parameter_set.as_array()
+                # Check write permission
+                if job.user_id == request.user.id:
+                    # Create the task json descriptor
+                    task_json = {}
+                    task_json['mode'] = 'fit'
+                    task_json['dmodel'] = job.job_data_model.as_json()
+                    task_json['datasets'] = job.job_data_set.as_array()
+                    # PSF and LSF are optional.
+                    try:
+                        task_json['psf'] = job.job_psf.as_json()
+                    except:
+                        pass
+                    try:
+                        task_json['lsf'] = job.job_lsf.as_json()
+                    except:
+                        pass
+                    task_json['gmodel'] = job.job_gmodel.as_json()
+                    task_json['fitter'] = job.job_fitter.as_json()
+                    task_json['params'] = job.job_parameter_set.as_array()
 
-                # Make sure the directory exists to write the json output
-                os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
+                    # Make sure the directory exists to write the json output
+                    os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
 
-                # Write the input json file
-                with open(user_job_input_file_directory_path(job), 'w') as outfile:
-                    json.dump(task_json, outfile)
+                    # Write the input json file
+                    with open(user_job_input_file_directory_path(job), 'w') as outfile:
+                        json.dump(task_json, outfile)
 
-                # Now actually update the job as submitted
-                job.user = request.user
-                job.status = Job.SUBMITTED
-                job.submission_time = now()
-                job.save()
-                return Job.SUBMITTED, [], []
+                    # Now actually update the job as submitted
+                    job.user = request.user
+                    job.status = Job.SUBMITTED
+                    job.submission_time = now()
+                    job.save()
+                    return Job.SUBMITTED, [], []
 
     # OTHER TABS
     forms = []
@@ -950,68 +959,70 @@ def job_overview(request, id):
 def job_duplicate(request, id):
 
     job = Job.objects.get(id = id)
-    job.pk = None
-    # TODO: Need a mechanism to ensure name unique constraint.
-    job.name = job.name + '_copy'
-    job.submission_time = None
-    job.status = Job.DRAFT
-    job.save()
+    # Check write permission
+    if job.user_id == request.user.id:
+        job.pk = None
+        # TODO: Need a mechanism to ensure name unique constraint.
+        job.name = job.name + '_copy'
+        job.submission_time = None
+        job.status = Job.DRAFT
+        job.save()
 
-    # Other models may not be existing. In such a case, pass.
-    try:
-        dmodel = DataModel.objects.get(job_id=id)
-        dmodel.pk = None
-        dmodel.job_id = job.id
-        dmodel.save()
-    except:
-        pass
+        # Other models may not be existing. In such a case, pass.
+        try:
+            dmodel = DataModel.objects.get(job_id=id)
+            dmodel.pk = None
+            dmodel.job_id = job.id
+            dmodel.save()
+        except:
+            pass
 
-    try:
-        dataset = DataSet.objects.get(job_id=id)
-        dataset.pk = None
-        dataset.job_id = job.id
-        dataset.save()
-    except:
-        pass
+        try:
+            dataset = DataSet.objects.get(job_id=id)
+            dataset.pk = None
+            dataset.job_id = job.id
+            dataset.save()
+        except:
+            pass
 
-    try:
-        psf = PSF_model.objects.get(job_id=id)
-        psf.pk = None
-        psf.job_id = job.id
-        psf.save()
-    except:
-        pass
+        try:
+            psf = PSF_model.objects.get(job_id=id)
+            psf.pk = None
+            psf.job_id = job.id
+            psf.save()
+        except:
+            pass
 
-    try:
-        lsf = LSF_model.objects.get(job_id=id)
-        lsf.pk = None
-        lsf.job_id = job.id
-        lsf.save()
-    except:
-        pass
+        try:
+            lsf = LSF_model.objects.get(job_id=id)
+            lsf.pk = None
+            lsf.job_id = job.id
+            lsf.save()
+        except:
+            pass
 
-    try:
-        gmodel = GalaxyModel.objects.get(job_id=id)
-        gmodel.pk = None
-        gmodel.job_id = job.id
-        gmodel.save()
-    except:
-        pass
+        try:
+            gmodel = GalaxyModel.objects.get(job_id=id)
+            gmodel.pk = None
+            gmodel.job_id = job.id
+            gmodel.save()
+        except:
+            pass
 
-    try:
-        fitter = Fitter_model.objects.get(job_id=id)
-        fitter.pk = None
-        fitter.job_id = job.id
-        fitter.save()
-    except:
-        pass
+        try:
+            fitter = Fitter_model.objects.get(job_id=id)
+            fitter.pk = None
+            fitter.job_id = job.id
+            fitter.save()
+        except:
+            pass
 
-    try:
-        params = Params.objects.get(job_id=id)
-        params.pk = None
-        params.job_id = job.id
-        params.save()
-    except:
-        pass
+        try:
+            params = Params.objects.get(job_id=id)
+            params.pk = None
+            params.job_id = job.id
+            params.save()
+        except:
+            pass
 
     return redirect('job_name_edit', id=job.id)
