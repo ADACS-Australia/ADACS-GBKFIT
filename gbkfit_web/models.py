@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import uuid
 import django.contrib.auth.models as auth_models
+import os
 from django.db import models
 from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -204,29 +205,29 @@ class DataSet(models.Model):
         # 1st batch of files
         file1_dict = {}
         file1_dict['type'] = self.dataset1_type
-        file1_dict['data'] = self.datafile1.url
+        file1_dict['data'] = os.path.join(MEDIA_ROOT, self.datafile1.name)
         try:
-            file1_dict['error'] = self.errorfile1.url
+            file1_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile1.name)
         except:
             pass
         try:
-            file1_dict['mask'] = self.maskfile1.url
+            file1_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile1.name)
         except:
             pass
 
         # 2nd batch of files
         file2_dict = {}
         try:
-            file2_dict['data'] = self.datafile2.url
+            file2_dict['data'] = os.path.join(MEDIA_ROOT, self.datafile2.name)
             file2_dict['type'] = self.dataset1_type
         except:
             pass
         try:
-            file2_dict['error'] = self.errorfile2.url
+            file2_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile2.name)
         except:
             pass
         try:
-            file2_dict['mask'] = self.maskfile2.url
+            file2_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile2.name)
         except:
             pass
 
