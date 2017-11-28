@@ -52,6 +52,14 @@ class User(auth_models.AbstractUser):
     country = CountryField(blank_label='Select Country', null=False, blank=False)
     scientific_interests = models.TextField(verbose_name='Scientific Interests', blank=True, null=True)
 
+    IS_ADMIN = 'admin'
+    IS_USER = 'user'
+    ROLE_CHOICES = [
+        (IS_ADMIN, IS_ADMIN),
+        (IS_USER, IS_USER),
+    ]
+    role = models.CharField(max_length=5, choices=ROLE_CHOICES, default=IS_USER, blank=False)
+
     UNVERIFIED = 'Unverified'
     VERIFIED = 'Verified'
     CONFIRMED = 'Confirmed'
@@ -81,6 +89,7 @@ class User(auth_models.AbstractUser):
                 last_name=self.last_name,
             ),
         )
+
 
 class Job(models.Model):
     user = models.ForeignKey(User, related_name='user_job')
