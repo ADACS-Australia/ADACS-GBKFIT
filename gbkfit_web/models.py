@@ -209,6 +209,11 @@ class DataSet(models.Model):
     errorfile2 = models.FileField(upload_to=user_job_errorfile_directory_path, blank=True, null=True)
     maskfile2 = models.FileField(upload_to=user_job_maskfile_directory_path, blank=True, null=True)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
     # TODO: This will need a bit of work to enable any number of files...
     def as_array(self):
         # 1st batch of files
@@ -311,6 +316,11 @@ class DataModel(models.Model):
     step_x = models.FloatField(blank=False, null=False, default=1.)
     step_y = models.FloatField(blank=False, null=False, default=1.)
     step_z = models.FloatField(blank=False, null=False, default=1.)
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
@@ -415,6 +425,11 @@ class PSF(models.Model):
         if len(errors) > 0: # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
     def save(self, *args, **kwargs):
         PSF.full_clean(self)
         super(PSF, self).save(*args, **kwargs)
@@ -469,6 +484,11 @@ class LSF(models.Model):
     fwhm = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     # If Moffat, need to figure out how to require the following field.
     beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
@@ -576,6 +596,11 @@ class GalaxyModel(models.Model):
     ]
     vel_profile = models.CharField(max_length=11, choices=vel_profile_TYPE_CHOICES, blank=False, default=ARCTAN)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
     def as_json(self):
         return dict(
             type="gbkfit.gmodel." + self.gmodel_type + '_' + OMP_OR_CUDA,
@@ -635,6 +660,11 @@ class Fitter(models.Model):
     multinest_maxiter = models.IntegerField(blank=True, null=True, default=-1)
     seed = models.IntegerField(blank=False, null=False, default=1 )
     outfile = models.BooleanField(blank=True, default=1)
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
@@ -891,6 +921,11 @@ class ParameterSet(models.Model):
     b_step = models.FloatField(blank=True, null=True, default=0.)
     b_relstep = models.FloatField(blank=True, null=True, default=0.)
     b_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
@@ -1817,6 +1852,11 @@ class JobResults(models.Model):
 
     json = models.IntegerField(blank=False)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
 class Result(models.Model):
     """
             Result class
@@ -1827,6 +1867,11 @@ class Result(models.Model):
     job = models.OneToOneField(Job, related_name='job_result')
 
     dof = models.IntegerField(blank=False)
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
 class Mode(models.Model):
     """
@@ -1839,6 +1884,11 @@ class Mode(models.Model):
     mode_number = models.IntegerField(blank=False, default=0)
     chisqr = models.FloatField(blank=False)
     rchisqr = models.FloatField(blank=False)
+
+    class Meta:
+        unique_together = (
+            ('result', 'id'),
+        )
 
 class ModeParameter(models.Model):
     """
@@ -1853,6 +1903,11 @@ class ModeParameter(models.Model):
     value = models.FloatField(blank=False)
     error = models.FloatField(blank=False)
 
+    class Meta:
+        unique_together = (
+            ('mode', 'id'),
+        )
+
 def user_job_result_files_directory_path(instance, filename):
     return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
@@ -1866,6 +1921,11 @@ class ModeImage(models.Model):
     mode = models.ForeignKey(Mode, related_name='mode_mode_image', on_delete=models.CASCADE)
     image_file = models.ImageField(upload_to=user_job_result_files_directory_path)
 
+    class Meta:
+        unique_together = (
+            ('mode', 'id'),
+        )
+
 class ResultFile(models.Model):
     """
             ResultFile class
@@ -1875,6 +1935,11 @@ class ResultFile(models.Model):
         """
     result = models.OneToOneField(Result, related_name='result_file_mode')
     tar_file = models.FileField(upload_to=user_job_result_files_directory_path, null=True)
+
+    class Meta:
+        unique_together = (
+            ('result', 'id'),
+        )
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
