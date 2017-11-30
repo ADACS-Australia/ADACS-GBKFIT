@@ -371,15 +371,19 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
     for fields_list in ParamsMeta.FIELDS_LISTS:
         for field in fields_list:
             prefix = field.split('_')[0]
-            if object.fields[prefix + '_fixed'] == 'True':
-                if 'value' not in field:
-                    if field in fields:
-                        fields.remove(field)
-            else:
-                if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
-                    if 'value' in field:
+            try:
+                if object.fields[prefix + '_fixed'] == 'True':
+                    if 'value' not in field:
                         if field in fields:
                             fields.remove(field)
+                else:
+                    if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
+                        if 'value' in field:
+                            if field in fields:
+                                fields.remove(field)
+            except KeyError as e:
+                pass
+
 
     if galaxy_model.fields['vel_profile'][1] != GalaxyModel.EPINAT:
         for field in ParamsMeta.A_FIELDS:
