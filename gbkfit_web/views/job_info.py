@@ -371,15 +371,19 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
     for fields_list in ParamsMeta.FIELDS_LISTS:
         for field in fields_list:
             prefix = field.split('_')[0]
-            if object.fields[prefix + '_fixed'] == 'True':
-                if 'value' not in field:
-                    if field in fields:
-                        fields.remove(field)
-            else:
-                if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
-                    if 'value' in field:
+            try:
+                if object.fields[prefix + '_fixed'] == 'True':
+                    if 'value' not in field:
                         if field in fields:
                             fields.remove(field)
+                else:
+                    if fitter.fields['fitter_type'] == Fitter_model.MULTINEST:
+                        if 'value' in field:
+                            if field in fields:
+                                fields.remove(field)
+            except KeyError as e:
+                pass
+
 
     if galaxy_model.fields['vel_profile'][1] != GalaxyModel.EPINAT:
         for field in ParamsMeta.A_FIELDS:
@@ -394,7 +398,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
 class ParamsMeta:
     XO_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side', ]
     YO_FIELDS = ['yo_fixed', 'yo_value', 'yo_min', 'yo_max', 'yo_wrap', 'yo_step', 'yo_relstep', 'yo_side', ]
-    PA_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side', ]
+    PA_FIELDS = ['pa_fixed', 'pa_value', 'pa_min', 'pa_max', 'pa_wrap', 'pa_step', 'pa_relstep', 'pa_side', ]
     INCL_FIELDS = ['incl_fixed', 'incl_value', 'incl_min', 'incl_max', 'incl_wrap', 'incl_step', 'incl_relstep',
                    'incl_side', ]
     VSYS_FIELDS = ['vsys_fixed', 'vsys_value', 'vsys_min', 'vsys_max', 'vsys_wrap', 'vsys_step', 'vsys_relstep',

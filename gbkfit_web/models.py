@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import uuid
 import django.contrib.auth.models as auth_models
+import os
 from django.db import models
 from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -12,7 +13,7 @@ from gbkfit.settings.local import MEDIA_ROOT, OMP_OR_CUDA
 # TODO: replace FileField with ContentTypeRestrictedFileField to manage file size restriction.
 # from gbkfit_web.utility.format_checker import ContentTypeRestrictedFileField
 
-MINIMUM_POSITIVE_NON_ZERO_FLOAT = 0.000001
+MINIMUM_POSITIVE_NON_ZERO_FLOAT = 1e-90
 
 class User(auth_models.AbstractUser):
     def __init__(self, *args, **kwargs):
@@ -51,6 +52,14 @@ class User(auth_models.AbstractUser):
     country = CountryField(blank_label='Select Country', null=False, blank=False)
     scientific_interests = models.TextField(verbose_name='Scientific Interests', blank=True, null=True)
 
+    IS_ADMIN = 'admin'
+    IS_USER = 'user'
+    ROLE_CHOICES = [
+        (IS_ADMIN, IS_ADMIN),
+        (IS_USER, IS_USER),
+    ]
+    role = models.CharField(max_length=5, choices=ROLE_CHOICES, default=IS_USER, blank=False)
+
     UNVERIFIED = 'Unverified'
     VERIFIED = 'Verified'
     CONFIRMED = 'Confirmed'
@@ -80,6 +89,7 @@ class User(auth_models.AbstractUser):
                 last_name=self.last_name,
             ),
         )
+
 
 class Job(models.Model):
     user = models.ForeignKey(User, related_name='user_job')
@@ -199,34 +209,39 @@ class DataSet(models.Model):
     errorfile2 = models.FileField(upload_to=user_job_errorfile_directory_path, blank=True, null=True)
     maskfile2 = models.FileField(upload_to=user_job_maskfile_directory_path, blank=True, null=True)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
     # TODO: This will need a bit of work to enable any number of files...
     def as_array(self):
         # 1st batch of files
         file1_dict = {}
         file1_dict['type'] = self.dataset1_type
-        file1_dict['data'] = self.datafile1.url
+        file1_dict['data'] = os.path.join(MEDIA_ROOT, self.datafile1.name)
         try:
-            file1_dict['error'] = self.errorfile1.url
+            file1_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile1.name)
         except:
             pass
         try:
-            file1_dict['mask'] = self.maskfile1.url
+            file1_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile1.name)
         except:
             pass
 
         # 2nd batch of files
         file2_dict = {}
         try:
-            file2_dict['data'] = self.datafile2.url
+            file2_dict['data'] = os.path.join(MEDIA_ROOT, self.datafile2.name)
             file2_dict['type'] = self.dataset1_type
         except:
             pass
         try:
-            file2_dict['error'] = self.errorfile2.url
+            file2_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile2.name)
         except:
             pass
         try:
-            file2_dict['mask'] = self.maskfile2.url
+            file2_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile2.name)
         except:
             pass
 
@@ -301,6 +316,11 @@ class DataModel(models.Model):
     step_x = models.FloatField(blank=False, null=False, default=1.)
     step_y = models.FloatField(blank=False, null=False, default=1.)
     step_z = models.FloatField(blank=False, null=False, default=1.)
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
@@ -405,6 +425,11 @@ class PSF(models.Model):
         if len(errors) > 0: # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
     def save(self, *args, **kwargs):
         PSF.full_clean(self)
         super(PSF, self).save(*args, **kwargs)
@@ -459,6 +484,11 @@ class LSF(models.Model):
     fwhm = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     # If Moffat, need to figure out how to require the following field.
     beta = models.FloatField(blank=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
@@ -566,6 +596,11 @@ class GalaxyModel(models.Model):
     ]
     vel_profile = models.CharField(max_length=11, choices=vel_profile_TYPE_CHOICES, blank=False, default=ARCTAN)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
     def as_json(self):
         return dict(
             type="gbkfit.gmodel." + self.gmodel_type + '_' + OMP_OR_CUDA,
@@ -601,30 +636,35 @@ class Fitter(models.Model):
     ]
 
     # MPFIT properties
-    ftol = models.FloatField(blank=False, null=False, default=1, validators=[MinValueValidator(0. )])
-    xtol = models.FloatField(blank=False, null=False, default=1, validators=[MinValueValidator(0. )])
-    gtol = models.FloatField(blank=False, null=False, default=1, validators=[MinValueValidator(0. )])
-    epsfcn = models.FloatField(blank=False, null=False, default=1, validators=[MinValueValidator(0. )])
-    stepfactor = models.FloatField(blank=False, null=False, default=1, validators=[MinValueValidator(0. )])
-    covtol = models.FloatField(blank=False, null=False, default=1, validators=[MinValueValidator(0. )])
-    mpfit_maxiter = models.PositiveIntegerField(blank=False, null=False, default=1)
-    maxfev = models.PositiveIntegerField(blank=False, null=False, default=1)
-    nprint = models.BooleanField(blank=False, null=False, default=1)
-    douserscale = models.BooleanField(blank=False, null=False, default=1)
-    nofinitecheck = models.BooleanField(blank=False, null=False, default=1)
+    ftol = models.FloatField(blank=False, null=False, default=1e-10, validators=[MinValueValidator(0. )])
+    xtol = models.FloatField(blank=False, null=False, default=1e-10, validators=[MinValueValidator(0. )])
+    gtol = models.FloatField(blank=False, null=False, default=1e-10, validators=[MinValueValidator(0. )])
+    epsfcn = models.FloatField(blank=False, null=False, default=1e-90, validators=[MinValueValidator(0. )])
+    stepfactor = models.FloatField(blank=False, null=False, default=100, validators=[MinValueValidator(0. )])
+    covtol = models.FloatField(blank=False, null=False, default=1e-14, validators=[MinValueValidator(0. )])
+    mpfit_maxiter = models.PositiveIntegerField(blank=False, null=False, default=200)
+    maxfev = models.PositiveIntegerField(blank=False, null=False, default=0)
+    nprint = models.BooleanField(blank=False, null=False, default=0)
+    douserscale = models.BooleanField(blank=False, null=False, default=0)
+    nofinitecheck = models.BooleanField(blank=False, null=False, default=0)
 
     # Multinest properties
     multinest_is = models.BooleanField(blank=True, default=True)
     mmodal = models.BooleanField(blank=True, default=0)
-    nlive = models.PositiveIntegerField(blank=False, null=False, default=1, validators=[MinValueValidator(1)])
-    tol = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
-    efr = models.FloatField(blank=False, null=False, default=1., validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    nlive = models.PositiveIntegerField(blank=False, null=False, default=50, validators=[MinValueValidator(1)])
+    tol = models.FloatField(blank=False, null=False, default=0.3, validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    efr = models.FloatField(blank=False, null=False, default=0.8, validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
     ceff = models.BooleanField(blank=True, default=0)
-    ztol = models.FloatField(blank=True, null=True, validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
-    logzero = models.FloatField(blank=True, null=True, validators=[MinValueValidator(MINIMUM_POSITIVE_NON_ZERO_FLOAT)])
+    ztol = models.FloatField(blank=True, null=True, default=-1e90)
+    logzero = models.FloatField(blank=True, null=True, default=-1e90)
     multinest_maxiter = models.IntegerField(blank=True, null=True, default=-1)
     seed = models.IntegerField(blank=False, null=False, default=1 )
     outfile = models.BooleanField(blank=True, default=1)
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
@@ -677,14 +717,14 @@ class Fitter(models.Model):
                                                    ['Multinest, efr: Accepted values: any positive non-zero value.']}))
 
             if self.ztol != None and self.ztol != None:
-                if self.ztol < 0:
+                if self.ztol == 0:
                     errors.append(ValidationError({'ztol':
-                                                       ['Multinest, ztol: Accepted values: any positive non-zero value.']}))
+                                                       ['Multinest, ztol: Accepted values: any non-zero value.']}))
 
             if self.logzero != None and self.logzero != None:
-                if self.logzero < 0:
+                if self.logzero == 0:
                     errors.append(ValidationError({'logzero':
-                                                       ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
+                                                       ['Multinest, logzero: Accepted values: any non-zero value.']}))
 
             if self.outfile != None and self.outfile < 0:
                 errors.append(ValidationError({'logzero':
@@ -766,8 +806,8 @@ class ParameterSet(models.Model):
     xo_min = models.FloatField(blank=True, null=True, default=1)
     xo_max = models.FloatField(blank=True, null=True, default=1)
     xo_wrap = models.NullBooleanField(blank=True, default=0)
-    xo_step = models.FloatField(blank=True, null=True, default=0.)
-    xo_relstep = models.FloatField(blank=True, null=True, default=0.)
+    xo_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    xo_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     xo_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # yo
@@ -776,8 +816,8 @@ class ParameterSet(models.Model):
     yo_min = models.FloatField(blank=True, null=True, default=1)
     yo_max = models.FloatField(blank=True, null=True, default=1)
     yo_wrap = models.NullBooleanField(blank=True, default=0)
-    yo_step = models.FloatField(blank=True, null=True, default=0.)
-    yo_relstep = models.FloatField(blank=True, null=True, default=0.)
+    yo_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    yo_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     yo_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # pa
@@ -786,8 +826,8 @@ class ParameterSet(models.Model):
     pa_min = models.FloatField(blank=True, null=True, default=1)
     pa_max = models.FloatField(blank=True, null=True, default=1)
     pa_wrap = models.NullBooleanField(blank=True, default=0)
-    pa_step = models.FloatField(blank=True, null=True, default=0.)
-    pa_relstep = models.FloatField(blank=True, null=True, default=0.)
+    pa_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    pa_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     pa_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # incl
@@ -796,8 +836,8 @@ class ParameterSet(models.Model):
     incl_min = models.FloatField(blank=True, null=True, default=1)
     incl_max = models.FloatField(blank=True, null=True, default=1)
     incl_wrap = models.NullBooleanField(blank=True, default=0)
-    incl_step = models.FloatField(blank=True, null=True, default=0.)
-    incl_relstep = models.FloatField(blank=True, null=True, default=0.)
+    incl_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    incl_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     incl_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # vsys
@@ -806,8 +846,8 @@ class ParameterSet(models.Model):
     vsys_min = models.FloatField(blank=True, null=True, default=1)
     vsys_max = models.FloatField(blank=True, null=True, default=1)
     vsys_wrap = models.NullBooleanField(blank=True, default=0)
-    vsys_step = models.FloatField(blank=True, null=True, default=0.)
-    vsys_relstep = models.FloatField(blank=True, null=True, default=0.)
+    vsys_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    vsys_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     vsys_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # vsig
@@ -826,8 +866,8 @@ class ParameterSet(models.Model):
     i0_min = models.FloatField(blank=True, null=True, default=1)
     i0_max = models.FloatField(blank=True, null=True, default=1)
     i0_wrap = models.NullBooleanField(blank=True, default=0)
-    i0_step = models.FloatField(blank=True, null=True, default=0.)
-    i0_relstep = models.FloatField(blank=True, null=True, default=0.)
+    i0_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    i0_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     i0_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # r0
@@ -836,8 +876,8 @@ class ParameterSet(models.Model):
     r0_min = models.FloatField(blank=True, null=True, default=1)
     r0_max = models.FloatField(blank=True, null=True, default=1)
     r0_wrap = models.NullBooleanField(blank=True, default=0)
-    r0_step = models.FloatField(blank=True, null=True, default=0.)
-    r0_relstep = models.FloatField(blank=True, null=True, default=0.)
+    r0_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    r0_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     r0_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # CASE-BASED
@@ -848,8 +888,8 @@ class ParameterSet(models.Model):
     rt_min = models.FloatField(blank=True, null=True, default=1)
     rt_max = models.FloatField(blank=True, null=True, default=1)
     rt_wrap = models.NullBooleanField(blank=True, default=0)
-    rt_step = models.FloatField(blank=True, null=True, default=0.)
-    rt_relstep = models.FloatField(blank=True, null=True, default=0.)
+    rt_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    rt_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     rt_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # vt
@@ -858,8 +898,8 @@ class ParameterSet(models.Model):
     vt_min = models.FloatField(blank=True, null=True, default=1)
     vt_max = models.FloatField(blank=True, null=True, default=1)
     vt_wrap = models.NullBooleanField(blank=True, default=0)
-    vt_step = models.FloatField(blank=True, null=True, default=0.)
-    vt_relstep = models.FloatField(blank=True, null=True, default=0.)
+    vt_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    vt_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     vt_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # a
@@ -868,8 +908,8 @@ class ParameterSet(models.Model):
     a_min = models.FloatField(blank=True, null=True, default=1)
     a_max = models.FloatField(blank=True, null=True, default=1)
     a_wrap = models.NullBooleanField(blank=True, default=0)
-    a_step = models.FloatField(blank=True, null=True, default=0.)
-    a_relstep = models.FloatField(blank=True, null=True, default=0.)
+    a_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    a_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     a_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
 
     # b
@@ -878,121 +918,305 @@ class ParameterSet(models.Model):
     b_min = models.FloatField(blank=True, null=True, default=1)
     b_max = models.FloatField(blank=True, null=True, default=1)
     b_wrap = models.NullBooleanField(blank=True, default=0)
-    b_step = models.FloatField(blank=True, null=True, default=0.)
-    b_relstep = models.FloatField(blank=True, null=True, default=0.)
+    b_step = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
+    b_relstep = models.FloatField(blank=True, null=True, default=0., validators=[MinValueValidator(0)])
     b_side = models.PositiveIntegerField(blank=True, null=True, default=0, validators=[MaxValueValidator(3)])
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
     def clean(self):
         errors = []
         # xo
         if self.xo_fixed == 0:
-
-            if self.xo_min > self.xo_max:
-                errors.append(ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.xo_value < self.xo_min or self.xo_value > self.xo_max:
-                errors.append(ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
+            if self.xo_min == None:
+                errors.append(
+                    ValidationError({'xo_min': ['xo: Minimum cannot be empty.']}))
+            else:
+                if self.xo_max == None:
+                    errors.append(
+                        ValidationError({'xo_max': ['xo: Maximum cannot be empty.']}))
+                else:
+                    if self.xo_min > self.xo_max:
+                        errors.append(
+                            ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.xo_value == None:
+                        errors.append(
+                            ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
+                    elif self.xo_value < self.xo_min or self.xo_value > self.xo_max:
+                        errors.append(
+                            ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.xo_value == None:
+                errors.append(
+                    ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
 
         # yo
         if self.yo_fixed == 0:
-            if self.yo_min > self.yo_max:
-                errors.append(ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.yo_value < self.yo_min or self.yo_value > self.yo_max:
-                errors.append(ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
+            if self.yo_min == None:
+                errors.append(
+                    ValidationError({'yo_min': ['yo: Minimum cannot be empty.']}))
+            else:
+                if self.yo_max == None:
+                    errors.append(
+                        ValidationError({'yo_max': ['yo: Maximum cannot be empty.']}))
+                else:
+                    if self.yo_min > self.yo_max:
+                        errors.append(
+                            ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.yo_value == None:
+                        errors.append(
+                            ValidationError({'yo_value': ['yo: Value cannot be empty.']}))
+                    elif self.yo_value < self.yo_min or self.yo_value > self.yo_max:
+                        errors.append(
+                            ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.yo_value == None:
+                errors.append(
+                    ValidationError({'yo_value': ['yo: Value cannot be empty.']}))
 
         # pa
         if self.pa_fixed == 0:
-            if self.pa_min > self.pa_max:
-                errors.append(ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.pa_value < self.pa_min or self.pa_value > self.pa_max:
-                errors.append(ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
+            if self.pa_min == None:
+                errors.append(
+                    ValidationError({'pa_min': ['pa: Minimum cannot be empty.']}))
+            else:
+                if self.pa_max == None:
+                    errors.append(
+                        ValidationError({'pa_max': ['pa: Maximum cannot be empty.']}))
+                else:
+                    if self.pa_min > self.pa_max:
+                        errors.append(
+                            ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.pa_value == None:
+                        errors.append(
+                            ValidationError({'pa_value': ['pa: Value cannot be empty.']}))
+                    elif self.pa_value < self.pa_min or self.pa_value > self.pa_max:
+                        errors.append(
+                            ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.pa_value == None:
+                errors.append(
+                    ValidationError({'pa_value': ['pa: Value cannot be empty.']}))
 
         # incl
         if self.incl_fixed == 0:
-            if self.incl_min > self.incl_max:
-                errors.append(ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.incl_value < self.incl_min or self.incl_value > self.incl_max:
-                errors.append(ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
+            if self.incl_min == None:
+                errors.append(
+                    ValidationError({'incl_min': ['incl: Minimum cannot be empty.']}))
+            else:
+                if self.incl_max == None:
+                    errors.append(
+                        ValidationError({'incl_max': ['incl: Maximum cannot be empty.']}))
+                else:
+                    if self.incl_min > self.incl_max:
+                        errors.append(
+                            ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.incl_value == None:
+                        errors.append(
+                            ValidationError({'incl_value': ['incl: Value cannot be empty.']}))
+                    elif self.incl_value < self.incl_min or self.incl_value > self.incl_max:
+                        errors.append(
+                            ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.incl_value == None:
+                errors.append(
+                    ValidationError({'incl_value': ['incl: Value cannot be empty.']}))
 
         # vsys
         if self.vsys_fixed == 0:
-            if self.vsys_min > self.vsys_max:
-                errors.append(ValidationError(
-                    {'vsys_min': ['vsys: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.vsys_value < self.vsys_min or self.vsys_value > self.vsys_max:
-                errors.append(ValidationError(
-                    {'vsys_value': ['vsys: Value must be within range set by minimum and maximum.']}))
+            if self.vsys_min == None:
+                errors.append(
+                    ValidationError({'vsys_min': ['vsys: Minimum cannot be empty.']}))
+            else:
+                if self.vsys_max == None:
+                    errors.append(
+                        ValidationError({'vsys_max': ['vsys: Maximum cannot be empty.']}))
+                else:
+                    if self.vsys_min > self.vsys_max:
+                        errors.append(
+                            ValidationError({'vsys_min': ['vsys: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.vsys_value == None:
+                        errors.append(
+                            ValidationError({'vsys_value': ['vsys: Value cannot be empty.']}))
+                    elif self.vsys_value < self.vsys_min or self.vsys_value > self.vsys_max:
+                        errors.append(
+                            ValidationError({'vsys_value': ['vsys: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.vsys_value == None:
+                errors.append(
+                    ValidationError({'vsys_value': ['vsys: Value cannot be empty.']}))
 
         # vsig
         if self.vsig_fixed == 0:
-            if self.vsig_min > self.vsig_max:
-                errors.append(ValidationError(
-                    {'vsig_min': ['vsig: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.vsig_value < self.vsig_min or self.vsig_value > self.vsig_max:
-                errors.append(ValidationError(
-                    {'vsig_value': ['vsig: Value must be within range set by minimum and maximum.']}))
+            if self.vsig_min == None:
+                errors.append(
+                    ValidationError({'vsig_min': ['vsig: Minimum cannot be empty.']}))
+            else:
+                if self.vsig_max == None:
+                    errors.append(
+                        ValidationError({'vsig_max': ['vsig: Maximum cannot be empty.']}))
+                else:
+                    if self.vsig_min > self.vsig_max:
+                        errors.append(
+                            ValidationError({'vsig_min': ['vsig: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.vsig_value == None:
+                        errors.append(
+                            ValidationError({'vsig_value': ['vsig: Value cannot be empty.']}))
+                    elif self.vsig_value < self.vsig_min or self.vsig_value > self.vsig_max:
+                        errors.append(
+                            ValidationError({'vsig_value': ['vsig: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.vsig_value == None:
+                errors.append(
+                    ValidationError({'vsig_value': ['vsig: Value cannot be empty.']}))
 
         # i0
         if self.i0_fixed == 0:
-            if self.i0_min > self.i0_max:
+            if self.i0_min == None:
                 errors.append(
-                    ValidationError({'i0_min': ['i0: Minimum must be smaller than or equal to the maximum.']}))
-            elif self.i0_value < self.i0_min or self.i0_value > self.i0_max:
-                errors.append(ValidationError(
-                    {'i0_value': ['i0: Value must be within range set by minimum and maximum.']}))
+                    ValidationError({'i0_min': ['i0: Minimum cannot be empty.']}))
+            else:
+                if self.i0_max == None:
+                    errors.append(
+                        ValidationError({'i0_max': ['i0: Maximum cannot be empty.']}))
+                else:
+                    if self.i0_min > self.i0_max:
+                        errors.append(
+                            ValidationError({'i0_min': ['i0: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.i0_value == None:
+                        errors.append(
+                            ValidationError({'i0_value': ['i0: Value cannot be empty.']}))
+                    elif self.i0_value < self.i0_min or self.i0_value > self.i0_max:
+                        errors.append(
+                            ValidationError({'i0_value': ['i0: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.i0_value == None:
+                errors.append(
+                    ValidationError({'i0_value': ['i0: Value cannot be empty.']}))
 
         # r0
         if self.r0_fixed == 0:
-            if self.r0_min > self.r0_max:
+            if self.r0_min == None:
                 errors.append(
-                    ValidationError({'r0_min': ['r0: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.r0_value < self.r0_min or self.r0_value > self.r0_max:
-                errors.append(ValidationError(
-                    {'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
+                    ValidationError({'r0_min': ['r0: Minimum cannot be empty.']}))
+            else:
+                if self.r0_max == None:
+                    errors.append(
+                        ValidationError({'r0_max': ['r0: Maximum cannot be empty.']}))
+                else:
+                    if self.r0_min > self.r0_max:
+                        errors.append(
+                            ValidationError({'r0_min': ['r0: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.r0_value == None:
+                        errors.append(
+                            ValidationError({'r0_value': ['r0: Value cannot be empty.']}))
+                    elif self.r0_value < self.r0_min or self.r0_value > self.r0_max:
+                        errors.append(
+                            ValidationError({'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.xo_value == None:
+                errors.append(
+                    ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
 
         # rt
         if self.rt_fixed == 0:
-            if self.rt_min > self.rt_max:
-                errors.append(ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.rt_value < self.rt_min or self.rt_value > self.rt_max:
-                errors.append(ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
+            if self.rt_min == None:
+                errors.append(
+                    ValidationError({'rt_min': ['rt: Minimum cannot be empty.']}))
+            else:
+                if self.rt_max == None:
+                    errors.append(
+                        ValidationError({'rt_max': ['rt: Maximum cannot be empty.']}))
+                else:
+                    if self.rt_min > self.rt_max:
+                        errors.append(
+                            ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.rt_value == None:
+                        errors.append(
+                            ValidationError({'rt_value': ['rt: Value cannot be empty.']}))
+                    elif self.rt_value < self.rt_min or self.rt_value > self.rt_max:
+                        errors.append(
+                            ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.rt_value == None:
+                errors.append(
+                    ValidationError({'rt_value': ['rt: Value cannot be empty.']}))
 
         # vt
         if self.vt_fixed == 0:
-            if self.vt_min > self.vt_max:
-                errors.append(ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
-
-            elif self.vt_value < self.vt_min or self.vt_value > self.vt_max:
-                errors.append(ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
+            if self.vt_min == None:
+                errors.append(
+                    ValidationError({'vt_min': ['vt: Minimum cannot be empty.']}))
+            else:
+                if self.vt_max == None:
+                    errors.append(
+                        ValidationError({'vt_max': ['vt: Maximum cannot be empty.']}))
+                else:
+                    if self.vt_min > self.vt_max:
+                        errors.append(
+                            ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.vt_value == None:
+                        errors.append(
+                            ValidationError({'vt_value': ['vt: Value cannot be empty.']}))
+                    elif self.vt_value < self.vt_min or self.vt_value > self.vt_max:
+                        errors.append(
+                            ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.vt_value == None:
+                errors.append(
+                    ValidationError({'vt_value': ['vt: Value cannot be empty.']}))
+        
 
         # a
         if self.a_fixed == 0:
-            if self.a_min != None:
-                if self.a_min > self.a_max:
+            if self.a_min == None:
+                errors.append(
+                    ValidationError({'a_min': ['a: Minimum cannot be empty.']}))
+            else:
+                if self.a_max == None:
                     errors.append(
-                        ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
-
-                elif self.a_value < self.a_min or self.a_value > self.a_max:
-                    errors.append(
-                        ValidationError({'a_value': ['a: Value must be within range set by minimum and maximum.']}))
+                        ValidationError({'a_max': ['a: Maximum cannot be empty.']}))
+                else:
+                    if self.a_min > self.a_max:
+                        errors.append(
+                            ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.a_value == None:
+                        errors.append(
+                            ValidationError({'a_value': ['a: Value cannot be empty.']}))
+                    elif self.a_value < self.a_min or self.a_value > self.a_max:
+                        errors.append(
+                            ValidationError({'a_value': ['a: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.a_value == None:
+                errors.append(
+                    ValidationError({'a_value': ['a: Value cannot be empty.']}))
 
         # b
         if self.b_fixed == 0:
-            if self.b_min != None:
-                if self.b_min > self.b_max:
+            if self.b_min == None:
+                errors.append(
+                    ValidationError({'b_min': ['b: Minimum cannot be empty.']}))
+            else:
+                if self.b_max == None:
                     errors.append(
-                        ValidationError({'b_min': ['b: Minimum must be smaller than or equal to the maximum.']}))
-
-                elif self.b_value < self.b_min or self.b_value > self.b_max:
-                    errors.append(
-                        ValidationError({'b_value': ['b: Value must be within range set by minimum and maximum.']}))
+                        ValidationError({'b_max': ['b: Maximum cannot be empty.']}))
+                else:
+                    if self.b_min > self.b_max:
+                        errors.append(
+                            ValidationError({'b_min': ['b: Minimum must be smaller than or equal to the maximum.']}))
+                    elif self.b_value == None:
+                        errors.append(
+                            ValidationError({'b_value': ['b: Value cannot be empty.']}))
+                    elif self.b_value < self.b_min or self.b_value > self.b_max:
+                        errors.append(
+                            ValidationError({'b_value': ['b: Value must be within range set by minimum and maximum.']}))
+        else:
+            if self.b_value == None:
+                errors.append(
+                    ValidationError({'b_value': ['b: Value cannot be empty.']}))
 
         if len(errors) > 0: # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
@@ -1807,6 +2031,11 @@ class JobResults(models.Model):
 
     json = models.IntegerField(blank=False)
 
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
+
 class Result(models.Model):
     """
             Result class
@@ -1817,6 +2046,11 @@ class Result(models.Model):
     job = models.OneToOneField(Job, related_name='job_result')
 
     dof = models.IntegerField(blank=False)
+
+    class Meta:
+        unique_together = (
+            ('job', 'id'),
+        )
 
 class Mode(models.Model):
     """
@@ -1829,6 +2063,11 @@ class Mode(models.Model):
     mode_number = models.IntegerField(blank=False, default=0)
     chisqr = models.FloatField(blank=False)
     rchisqr = models.FloatField(blank=False)
+
+    class Meta:
+        unique_together = (
+            ('result', 'id'),
+        )
 
 class ModeParameter(models.Model):
     """
@@ -1843,6 +2082,11 @@ class ModeParameter(models.Model):
     value = models.FloatField(blank=False)
     error = models.FloatField(blank=False)
 
+    class Meta:
+        unique_together = (
+            ('mode', 'id'),
+        )
+
 def user_job_result_files_directory_path(instance, filename):
     return 'user_{0}/job_{1}/result_files/{2}'.format(instance.job.user_id, instance.job.id, filename)
 
@@ -1856,6 +2100,11 @@ class ModeImage(models.Model):
     mode = models.ForeignKey(Mode, related_name='mode_mode_image', on_delete=models.CASCADE)
     image_file = models.ImageField(upload_to=user_job_result_files_directory_path)
 
+    class Meta:
+        unique_together = (
+            ('mode', 'id'),
+        )
+
 class ResultFile(models.Model):
     """
             ResultFile class
@@ -1865,6 +2114,11 @@ class ResultFile(models.Model):
         """
     result = models.OneToOneField(Result, related_name='result_file_mode')
     tar_file = models.FileField(upload_to=user_job_result_files_directory_path, null=True)
+
+    class Meta:
+        unique_together = (
+            ('result', 'id'),
+        )
 
 class Verification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
