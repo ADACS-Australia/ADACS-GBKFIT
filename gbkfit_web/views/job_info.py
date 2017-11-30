@@ -398,7 +398,7 @@ def filter_params_fields(fields, object, galaxy_model, fitter):
 class ParamsMeta:
     XO_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side', ]
     YO_FIELDS = ['yo_fixed', 'yo_value', 'yo_min', 'yo_max', 'yo_wrap', 'yo_step', 'yo_relstep', 'yo_side', ]
-    PA_FIELDS = ['xo_fixed', 'xo_value', 'xo_min', 'xo_max', 'xo_wrap', 'xo_step', 'xo_relstep', 'xo_side', ]
+    PA_FIELDS = ['pa_fixed', 'pa_value', 'pa_min', 'pa_max', 'pa_wrap', 'pa_step', 'pa_relstep', 'pa_side', ]
     INCL_FIELDS = ['incl_fixed', 'incl_value', 'incl_min', 'incl_max', 'incl_wrap', 'incl_step', 'incl_relstep',
                    'incl_side', ]
     VSYS_FIELDS = ['vsys_fixed', 'vsys_value', 'vsys_min', 'vsys_max', 'vsys_wrap', 'vsys_step', 'vsys_relstep',
