@@ -673,62 +673,62 @@ class Fitter(models.Model):
         if self.fitter_type == self.MPFIT:
             if self.ftol != None and self.ftol < 0:
                 errors.append(ValidationError({'ftol':
-                                                   ['mpfit, ftol: Accepted values: any positive value.']}))
+                                                   ['mpfit, Chi-square criterium: Accepted values: any positive value.']}))
 
             if self.xtol != None and self.xtol < 0:
                 errors.append(ValidationError({'xtol':
-                                                   ['mpfit, xtol: Accepted values: any positive value.']}))
+                                                   ['mpfit, Parameter criterium: Accepted values: any positive value.']}))
 
             if self.gtol != None and self.gtol < 0:
                 errors.append(ValidationError({'gtol':
-                                                   ['mpfit, gtol: Accepted values: any positive value.']}))
+                                                   ['mpfit, Orthogonality criterium: Accepted values: any positive value.']}))
 
             if self.epsfcn != None and self.epsfcn < 0:
                 errors.append(ValidationError({'epsfcn':
-                                                   ['mpfit, epsfcn: Accepted values: any positive value.']}))
+                                                   ['mpfit, Derivative step size: Accepted values: any positive value.']}))
 
             if self.stepfactor != None and self.stepfactor < 0:
                 errors.append(ValidationError({'stepfactor':
-                                                   ['mpfit, stepfactor: Accepted values: any positive value.']}))
+                                                   ['mpfit, Initial step bound: Accepted values: any positive value.']}))
 
             if self.covtol != None and self.covtol < 0:
                 errors.append(ValidationError({'covtol':
-                                                   ['mpfit, covtol: Accepted values: any positive value.']}))
+                                                   ['mpfit, Covariance tolerance: Accepted values: any positive value.']}))
 
             if self.mpfit_maxiter != None and self.mpfit_maxiter < 0:
                 errors.append(ValidationError({'maxiter':
-                                                   ['mpfit, maxiter: Accepted values: any positive value.']}))
+                                                   ['mpfit, Maximum iterations: Accepted values: any positive value.']}))
 
             if self.maxfev != None and self.maxfev < 0:
                 errors.append(ValidationError({'maxfev':
-                                                   ['mpfit, maxfev: Accepted values: any positive value.']}))
+                                                   ['mpfit, Maximum function evaluations: Accepted values: any positive value.']}))
 
         if self.fitter_type == self.MULTINEST:
             if self.nlive != None and self.nlive < 0:
                 errors.append(ValidationError({'nlive':
-                                                   ['Multinest, nlive: Accepted values: any positive non-zero integer value.']}))
+                                                   ['Multinest, Live points: Accepted values: any positive non-zero integer value.']}))
 
             if self.tol != None and self.tol < 0:
                 errors.append(ValidationError({'tol':
-                                                   ['Multinest, tol: Accepted values: any positive non-zero value.']}))
+                                                   ['Multinest, Evidence tolerance factor: Accepted values: any positive non-zero value.']}))
 
             if self.efr != None and self.efr < 0:
                 errors.append(ValidationError({'efr':
-                                                   ['Multinest, efr: Accepted values: any positive non-zero value.']}))
+                                                   ['Multinest, Sampling efficiency: Accepted values: any positive non-zero value.']}))
 
             if self.ztol != None and self.ztol != None:
                 if self.ztol == 0:
                     errors.append(ValidationError({'ztol':
-                                                       ['Multinest, ztol: Accepted values: any non-zero value.']}))
+                                                       ['Multinest, Null log-evidence: Accepted values: any non-zero value.']}))
 
             if self.logzero != None and self.logzero != None:
                 if self.logzero == 0:
                     errors.append(ValidationError({'logzero':
-                                                       ['Multinest, logzero: Accepted values: any non-zero value.']}))
+                                                       ['Multinest, Log-zero: Accepted values: any non-zero value.']}))
 
             if self.outfile != None and self.outfile < 0:
                 errors.append(ValidationError({'logzero':
-                                                   ['Multinest, logzero: Accepted values: any positive non-zero value.']}))
+                                                   ['Multinest, Output to file: Accepted values: any positive non-zero value.']}))
 
         if len(errors) > 0: # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
