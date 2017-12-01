@@ -7,9 +7,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./src:/src
-      - ./config/nginx:/etc/nginx/conf.d
-      - ./src/gbkfit_web/static:/static
+      - ./code:/code
+      - ./:/etc/nginx/conf.d
+      - ./gbkfit_web/static:/static
     depends_on:
       - web
   db:
@@ -21,13 +21,13 @@ services:
       MYSQL_USER: django
       MYSQL_PASSWORD: test-docker_#1
   web:
-    build: .
+    build: ./
     container_name: dg01
-    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && gunicorn gbkfit.wsgi -b 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn gbkfit.wsgi -b 0.0.0.0:8000"
     ports:
       - "8000"
     volumes:
-      - ./src:/src
-      - ./src/gbkfit_web/static:/static
+      - ./:/code
+      - ./gbkfit_web/static:/static
     depends_on:
       - db
