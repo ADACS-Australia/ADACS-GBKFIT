@@ -584,7 +584,24 @@ class ParamsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.id = kwargs.pop('id', None)
+        self.job_id = kwargs.pop('id', None)
+
+        if self.job_id:
+            try:
+                self.request.session['params'] = ParameterSet.objects.get(job_id=self.job_id).as_array()
+            except:
+                pass
+
+            try:
+                vel_profile = GalaxyModel.objects.get(job_id=self.job_id).vel_profile
+            except:
+                pass
+
+            try:
+                fitter_type = Fitter.objects.get(job_id=self.job_id).fitter_type
+            except:
+                pass
+
         super(ParamsForm, self).__init__(*args, **kwargs)
 
         for field in self.fields:
@@ -594,6 +611,51 @@ class ParamsForm(forms.ModelForm):
                 self.fields[field].widget.attrs.update(
                     {'data-content': help_text, 'data-placement': 'top',
                      'data-container': 'body'})
+
+        if vel_profile != None:
+            if vel_profile != GalaxyModel.EPINAT:
+                for field in A_FIELDS:
+                    if field in self.fields: del self.fields[field]
+                for field in B_FIELDS:
+                    if field in self.fields: del self.fields[field]
+
+        if fitter_type != None:
+            if fitter_type == Fitter.MPFIT:
+                """
+                Uses:
+                    - fixed 
+                    - value 
+                    - min 
+                    - max 
+                    - step 
+                    - relstep 
+                    - side
+
+                Doesn't use:
+                    - wrap
+                """
+                for fields_list in FIELDS_LISTS:
+                    for field in fields_list:
+                        if 'wrap' in field:
+                            if field in self.fields: del self.fields[field]
+
+            if fitter_type == Fitter.MULTINEST:
+                """
+                Uses:
+                    - fixed
+                    - min
+                    - max
+                    - wrap
+                    - value
+                Doesn't use:
+                    - step 
+                    - relstep 
+                    - side
+                """
+                for fields_list in FIELDS_LISTS:
+                    for field in fields_list:
+                        if 'step' in field or 'relstep' in field or 'side' in field:
+                            if field in self.fields: del self.fields[field]
 
     class Meta:
         model = ParameterSet
@@ -606,119 +668,215 @@ class ParamsForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job = Job.objects.get(id=self.id)
+        job = Job.objects.get(id=self.job_id)
 
-        ParameterSet.objects.create(
-            job=job,
+        if ('a_fixed' in self.request.POST):
+            ParameterSet.objects.create(
+                job=job,
 
-            xo_fixed=data.get('xo_fixed'),
-            xo_value=data.get('xo_value'),
-            xo_min=data.get('xo_min'),
-            xo_max=data.get('xo_max'),
-            xo_wrap=data.get('xo_wrap'),
-            xo_step=data.get('xo_step'),
-            xo_relstep=data.get('xo_relstep'),
-            xo_side=data.get('xo_side'),
+                xo_fixed=data.get('xo_fixed'),
+                xo_value=data.get('xo_value'),
+                xo_min=data.get('xo_min'),
+                xo_max=data.get('xo_max'),
+                xo_wrap=data.get('xo_wrap'),
+                xo_step=data.get('xo_step'),
+                xo_relstep=data.get('xo_relstep'),
+                xo_side=data.get('xo_side'),
 
-            yo_fixed=data.get('yo_fixed'),
-            yo_value=data.get('yo_value'),
-            yo_min=data.get('yo_min'),
-            yo_max=data.get('yo_max'),
-            yo_wrap=data.get('yo_wrap'),
-            yo_step=data.get('yo_step'),
-            yo_relstep=data.get('yo_relstep'),
-            yo_side=data.get('yo_side'),
+                yo_fixed=data.get('yo_fixed'),
+                yo_value=data.get('yo_value'),
+                yo_min=data.get('yo_min'),
+                yo_max=data.get('yo_max'),
+                yo_wrap=data.get('yo_wrap'),
+                yo_step=data.get('yo_step'),
+                yo_relstep=data.get('yo_relstep'),
+                yo_side=data.get('yo_side'),
 
-            pa_fixed=data.get('pa_fixed'),
-            pa_value=data.get('pa_value'),
-            pa_min=data.get('pa_min'),
-            pa_max=data.get('pa_max'),
-            pa_wrap=data.get('pa_wrap'),
-            pa_step=data.get('pa_step'),
-            pa_relstep=data.get('pa_relstep'),
-            pa_side=data.get('pa_side'),
+                pa_fixed=data.get('pa_fixed'),
+                pa_value=data.get('pa_value'),
+                pa_min=data.get('pa_min'),
+                pa_max=data.get('pa_max'),
+                pa_wrap=data.get('pa_wrap'),
+                pa_step=data.get('pa_step'),
+                pa_relstep=data.get('pa_relstep'),
+                pa_side=data.get('pa_side'),
 
-            incl_fixed=data.get('incl_fixed'),
-            incl_value=data.get('incl_value'),
-            incl_min=data.get('incl_min'),
-            incl_max=data.get('incl_max'),
-            incl_wrap=data.get('incl_wrap'),
-            incl_step=data.get('incl_step'),
-            incl_relstep=data.get('incl_relstep'),
-            incl_side=data.get('incl_side'),
+                incl_fixed=data.get('incl_fixed'),
+                incl_value=data.get('incl_value'),
+                incl_min=data.get('incl_min'),
+                incl_max=data.get('incl_max'),
+                incl_wrap=data.get('incl_wrap'),
+                incl_step=data.get('incl_step'),
+                incl_relstep=data.get('incl_relstep'),
+                incl_side=data.get('incl_side'),
 
-            vsys_fixed=data.get('vsys_fixed'),
-            vsys_value=data.get('vsys_value'),
-            vsys_min=data.get('vsys_min'),
-            vsys_max=data.get('vsys_max'),
-            vsys_wrap=data.get('vsys_wrap'),
-            vsys_step=data.get('vsys_step'),
-            vsys_relstep=data.get('vsys_relstep'),
-            vsys_side=data.get('vsys_side'),
+                vsys_fixed=data.get('vsys_fixed'),
+                vsys_value=data.get('vsys_value'),
+                vsys_min=data.get('vsys_min'),
+                vsys_max=data.get('vsys_max'),
+                vsys_wrap=data.get('vsys_wrap'),
+                vsys_step=data.get('vsys_step'),
+                vsys_relstep=data.get('vsys_relstep'),
+                vsys_side=data.get('vsys_side'),
 
-            vsig_fixed=data.get('vsig_fixed'),
-            vsig_value=data.get('vsig_value'),
-            vsig_min=data.get('vsig_min'),
-            vsig_max=data.get('vsig_max'),
-            vsig_wrap=data.get('vsig_wrap'),
-            vsig_step=data.get('vsig_step'),
-            vsig_relstep=data.get('vsig_relstep'),
-            vsig_side=data.get('vsig_side'),
+                vsig_fixed=data.get('vsig_fixed'),
+                vsig_value=data.get('vsig_value'),
+                vsig_min=data.get('vsig_min'),
+                vsig_max=data.get('vsig_max'),
+                vsig_wrap=data.get('vsig_wrap'),
+                vsig_step=data.get('vsig_step'),
+                vsig_relstep=data.get('vsig_relstep'),
+                vsig_side=data.get('vsig_side'),
 
-            i0_fixed=data.get('i0_fixed'),
-            i0_value=data.get('i0_value'),
-            i0_min=data.get('i0_min'),
-            i0_max=data.get('i0_max'),
-            i0_wrap=data.get('i0_wrap'),
-            i0_step=data.get('i0_step'),
-            i0_relstep=data.get('i0_relstep'),
-            i0_side=data.get('i0_side'),
+                i0_fixed=data.get('i0_fixed'),
+                i0_value=data.get('i0_value'),
+                i0_min=data.get('i0_min'),
+                i0_max=data.get('i0_max'),
+                i0_wrap=data.get('i0_wrap'),
+                i0_step=data.get('i0_step'),
+                i0_relstep=data.get('i0_relstep'),
+                i0_side=data.get('i0_side'),
 
-            r0_fixed=data.get('r0_fixed'),
-            r0_value=data.get('r0_value'),
-            r0_min=data.get('r0_min'),
-            r0_max=data.get('r0_max'),
-            r0_wrap=data.get('r0_wrap'),
-            r0_step=data.get('r0_step'),
-            r0_relstep=data.get('r0_relstep'),
-            r0_side=data.get('r0_side'),
+                r0_fixed=data.get('r0_fixed'),
+                r0_value=data.get('r0_value'),
+                r0_min=data.get('r0_min'),
+                r0_max=data.get('r0_max'),
+                r0_wrap=data.get('r0_wrap'),
+                r0_step=data.get('r0_step'),
+                r0_relstep=data.get('r0_relstep'),
+                r0_side=data.get('r0_side'),
 
-            rt_fixed=data.get('rt_fixed'),
-            rt_value=data.get('rt_value'),
-            rt_min=data.get('rt_min'),
-            rt_max=data.get('rt_max'),
-            rt_wrap=data.get('rt_wrap'),
-            rt_step=data.get('rt_step'),
-            rt_relstep=data.get('rt_relstep'),
-            rt_side=data.get('rt_side'),
+                rt_fixed=data.get('rt_fixed'),
+                rt_value=data.get('rt_value'),
+                rt_min=data.get('rt_min'),
+                rt_max=data.get('rt_max'),
+                rt_wrap=data.get('rt_wrap'),
+                rt_step=data.get('rt_step'),
+                rt_relstep=data.get('rt_relstep'),
+                rt_side=data.get('rt_side'),
 
-            vt_fixed=data.get('vt_fixed'),
-            vt_value=data.get('vt_value'),
-            vt_min=data.get('vt_min'),
-            vt_max=data.get('vt_max'),
-            vt_wrap=data.get('vt_wrap'),
-            vt_step=data.get('vt_step'),
-            vt_relstep=data.get('vt_relstep'),
-            vt_side=data.get('vt_side'),
+                vt_fixed=data.get('vt_fixed'),
+                vt_value=data.get('vt_value'),
+                vt_min=data.get('vt_min'),
+                vt_max=data.get('vt_max'),
+                vt_wrap=data.get('vt_wrap'),
+                vt_step=data.get('vt_step'),
+                vt_relstep=data.get('vt_relstep'),
+                vt_side=data.get('vt_side'),
 
-            a_fixed=data.get('a_fixed'),
-            a_value=data.get('a_value'),
-            a_min=data.get('a_min'),
-            a_max=data.get('a_max'),
-            a_wrap=data.get('a_wrap'),
-            a_step=data.get('a_step'),
-            a_relstep=data.get('a_relstep'),
-            a_side=data.get('a_side'),
+                a_fixed=data.get('a_fixed'),
+                a_value=data.get('a_value'),
+                a_min=data.get('a_min'),
+                a_max=data.get('a_max'),
+                a_wrap=data.get('a_wrap'),
+                a_step=data.get('a_step'),
+                a_relstep=data.get('a_relstep'),
+                a_side=data.get('a_side'),
 
-            b_fixed=data.get('b_fixed'),
-            b_value=data.get('b_value'),
-            b_min=data.get('b_min'),
-            b_max=data.get('b_max'),
-            b_wrap=data.get('b_wrap'),
-            b_step=data.get('b_step'),
-            b_relstep=data.get('b_relstep'),
-            b_side=data.get('b_side'),
-        )
+                b_fixed=data.get('b_fixed'),
+                b_value=data.get('b_value'),
+                b_min=data.get('b_min'),
+                b_max=data.get('b_max'),
+                b_wrap=data.get('b_wrap'),
+                b_step=data.get('b_step'),
+                b_relstep=data.get('b_relstep'),
+                b_side=data.get('b_side'),
+            )
+        else:
+            ParameterSet.objects.create(
+                job=job,
+
+                xo_fixed=data.get('xo_fixed'),
+                xo_value=data.get('xo_value'),
+                xo_min=data.get('xo_min'),
+                xo_max=data.get('xo_max'),
+                xo_wrap=data.get('xo_wrap'),
+                xo_step=data.get('xo_step'),
+                xo_relstep=data.get('xo_relstep'),
+                xo_side=data.get('xo_side'),
+
+                yo_fixed=data.get('yo_fixed'),
+                yo_value=data.get('yo_value'),
+                yo_min=data.get('yo_min'),
+                yo_max=data.get('yo_max'),
+                yo_wrap=data.get('yo_wrap'),
+                yo_step=data.get('yo_step'),
+                yo_relstep=data.get('yo_relstep'),
+                yo_side=data.get('yo_side'),
+
+                pa_fixed=data.get('pa_fixed'),
+                pa_value=data.get('pa_value'),
+                pa_min=data.get('pa_min'),
+                pa_max=data.get('pa_max'),
+                pa_wrap=data.get('pa_wrap'),
+                pa_step=data.get('pa_step'),
+                pa_relstep=data.get('pa_relstep'),
+                pa_side=data.get('pa_side'),
+
+                incl_fixed=data.get('incl_fixed'),
+                incl_value=data.get('incl_value'),
+                incl_min=data.get('incl_min'),
+                incl_max=data.get('incl_max'),
+                incl_wrap=data.get('incl_wrap'),
+                incl_step=data.get('incl_step'),
+                incl_relstep=data.get('incl_relstep'),
+                incl_side=data.get('incl_side'),
+
+                vsys_fixed=data.get('vsys_fixed'),
+                vsys_value=data.get('vsys_value'),
+                vsys_min=data.get('vsys_min'),
+                vsys_max=data.get('vsys_max'),
+                vsys_wrap=data.get('vsys_wrap'),
+                vsys_step=data.get('vsys_step'),
+                vsys_relstep=data.get('vsys_relstep'),
+                vsys_side=data.get('vsys_side'),
+
+                vsig_fixed=data.get('vsig_fixed'),
+                vsig_value=data.get('vsig_value'),
+                vsig_min=data.get('vsig_min'),
+                vsig_max=data.get('vsig_max'),
+                vsig_wrap=data.get('vsig_wrap'),
+                vsig_step=data.get('vsig_step'),
+                vsig_relstep=data.get('vsig_relstep'),
+                vsig_side=data.get('vsig_side'),
+
+                i0_fixed=data.get('i0_fixed'),
+                i0_value=data.get('i0_value'),
+                i0_min=data.get('i0_min'),
+                i0_max=data.get('i0_max'),
+                i0_wrap=data.get('i0_wrap'),
+                i0_step=data.get('i0_step'),
+                i0_relstep=data.get('i0_relstep'),
+                i0_side=data.get('i0_side'),
+
+                r0_fixed=data.get('r0_fixed'),
+                r0_value=data.get('r0_value'),
+                r0_min=data.get('r0_min'),
+                r0_max=data.get('r0_max'),
+                r0_wrap=data.get('r0_wrap'),
+                r0_step=data.get('r0_step'),
+                r0_relstep=data.get('r0_relstep'),
+                r0_side=data.get('r0_side'),
+
+                rt_fixed=data.get('rt_fixed'),
+                rt_value=data.get('rt_value'),
+                rt_min=data.get('rt_min'),
+                rt_max=data.get('rt_max'),
+                rt_wrap=data.get('rt_wrap'),
+                rt_step=data.get('rt_step'),
+                rt_relstep=data.get('rt_relstep'),
+                rt_side=data.get('rt_side'),
+
+                vt_fixed=data.get('vt_fixed'),
+                vt_value=data.get('vt_value'),
+                vt_min=data.get('vt_min'),
+                vt_max=data.get('vt_max'),
+                vt_wrap=data.get('vt_wrap'),
+                vt_step=data.get('vt_step'),
+                vt_relstep=data.get('vt_relstep'),
+                vt_side=data.get('vt_side'),
+
+            )
 
         self.request.session['params'] = self.as_array(data)
 
