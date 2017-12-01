@@ -190,6 +190,11 @@ Welcome page
    color:red;
 }
 
+.mode_image {
+    width:100%;
+    height:auto;
+}
+
 /********************************************/
 /*                                          */
 /*                 Job-Tabs                 */
