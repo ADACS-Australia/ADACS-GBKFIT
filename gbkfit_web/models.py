@@ -1117,9 +1117,9 @@ class ParameterSet(models.Model):
                         errors.append(
                             ValidationError({'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
         else:
-            if self.xo_value == None:
+            if self.r0_value == None:
                 errors.append(
-                    ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
+                    ValidationError({'r0_value': ['r0: Value cannot be empty.']}))
 
         # rt
         if self.rt_fixed == 0:
