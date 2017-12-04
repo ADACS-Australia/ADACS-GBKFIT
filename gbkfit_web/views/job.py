@@ -936,7 +936,7 @@ def download_results_tar(request, id):
 @login_required
 def get_results_image(request, id, mode):
     result = Result.objects.get(job_id=id)
-    mode = Mode.objects.get(result_id=id, mode_number=mode)
+    mode = Mode.objects.get(result_id=result.id, mode_number=mode)
     mode_image = ModeImage.objects.get(mode_id=mode.id)
     return HttpResponse(mode_image.image_file, content_type='image/png')
 
