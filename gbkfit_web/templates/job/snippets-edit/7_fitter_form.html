@@ -3,7 +3,11 @@
 
     {% include 'job/snippets/errors.html' %}
 
-    {% include 'job/snippets/pager.html' %}
+    {% if galaxy_model_view %}
+        {% include 'job/snippets/pager.html' %}
+    {% else %}
+        {% include 'job/snippets/pager-next-disabled.html' %}
+    {% endif %}
 
     <!-- 'type' -->
     <div class="container-fluid field
@@ -426,6 +430,10 @@
         </div>
     </div>
 
-    {% include 'job/snippets/pager.html' %}
+    {% if galaxy_model_view %}
+        {% include 'job/snippets/pager.html' %}
+    {% else %}
+        {% include 'job/snippets/pager-next-disabled.html' %}
+    {% endif %}
 </form>
 
