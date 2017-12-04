@@ -30,6 +30,7 @@ urlpatterns = [
 
     url(r'^job/(?P<id>\d+)/results', job.results, name='job_results'),
     url('^job/(?P<id>\d+)/download_results', job.download_results_tar, name='download_results'),
+    url('^job/(?P<id>\d+)/get_image/(?P<mode>\d+)', job.get_results_image, name='get_image'),
     url(r'^new_job/(?P<id>\d+)/ajax_dataset$', job.ajax_edit_job_dataset, name='basic_upload'),
 
     url(r'^job/(?P<id>\d+)/overview', job.job_overview, name='job_overview'),
