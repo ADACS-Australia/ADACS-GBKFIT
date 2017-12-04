@@ -890,7 +890,7 @@ def results(request, id):
 
     job.result.modes = {}
     i=0
-    print (Mode.objects.filter(result__id = job.result.id))
+
     for mode in Mode.objects.filter(result__id = job.result.id):
         job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
 
@@ -931,6 +931,15 @@ def download_results_tar(request, id):
     response['Content-Length'] = tar_file.size
     response['Content-Disposition'] = 'attachment; filename=%s' % tar_file.name
     return response
+
+@login_required
+def get_results_image(request, id, mode):
+    result = Result.objects.get(job_id = id)
+    mode = Mode.objects.filter(result_id=id, mode_number=mode)
+    mode_image = ModeImage.objects.get(mode_id=mode.id)
+
+    image_data = open(mode_image.file.name, "rb").read()
+    return HttpResponse(image_data, content_type="image/png")
 
 @login_required
 def job_overview(request, id):
