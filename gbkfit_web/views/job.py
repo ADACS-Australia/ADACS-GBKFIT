@@ -33,6 +33,7 @@ from gbkfit_web.models import (
 
 from gbkfit_web.views.job_info import model_instance_to_iterable
 from gbkfit_web.utility.utils import set_dict_indices
+from gbkfit.settings.local import MEDIA_ROOT, MEDIA_URL
 
 
 """
@@ -934,12 +935,10 @@ def download_results_tar(request, id):
 
 @login_required
 def get_results_image(request, id, mode):
-    result = Result.objects.get(job_id = id)
-    mode = Mode.objects.filter(result_id=id, mode_number=mode)
+    result = Result.objects.get(job_id=id)
+    mode = Mode.objects.get(result_id=id, mode_number=mode)
     mode_image = ModeImage.objects.get(mode_id=mode.id)
-
-    image_data = open(mode_image.file.name, "rb").read()
-    return HttpResponse(image_data, content_type="image/png")
+    return HttpResponse(mode_image.image_file, content_type='image/png')
 
 @login_required
 def job_overview(request, id):

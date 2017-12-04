@@ -67,15 +67,15 @@
 
             <div class="container-fluid field col-md-12">
 {#                <img src="{{ mode.mode_image.image_file.url }}" class="mode_image">#}
-                <img src='' id="mode_image_{{ mode }}">
+                <img src='' id="mode_image_{{ index }}" class="mode_image">
                 <script>
                     var url = 'IMAGE_URL';
                     $.ajax({
-                        url : 'get_results_image/' + {{ index }},
+                        url : 'get_image/' + {{ index }},
                         cache: true,
                         processData : false,
                     }).always(function(){
-                        $("#mode_image_{{ index }}").attr("src", 'get_results_image/' + {{ index }}).fadeIn();
+                        $("#mode_image_{{ index }}").attr("src", 'get_image/' + {{ index }}).fadeIn();
                     });
                 </script>
 
