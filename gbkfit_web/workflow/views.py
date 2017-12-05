@@ -46,7 +46,7 @@ def job_completed(job):
     # Next get all mode image files from the results directory
     for filetype in [DataSet.VELMAP, DataSet.SIGMAP, DataSet.FLXMAP, DataSet.FLXCUBE]:
         for file in glob.glob(os.path.join(user_job_results_file_directory_path_not_field(job), 'mode_*_'+ filetype +'.png')):
-            save_job_image(job.id, int(file.split('_')[-1].split('.')[0]), filetype, file[len(settings.MEDIA_ROOT):])
+            save_job_image(job.id, int(file.split('_')[-2]), filetype, file[len(settings.MEDIA_ROOT):])
 
 
 class WorkFlowView(GenericAPIView):
