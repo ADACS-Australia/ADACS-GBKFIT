@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from rest_framework import permissions
 from rest_framework.generics import GenericAPIView
 
-from gbkfit_web.models import Job, user_job_results_file_directory_path_not_field
+from gbkfit_web.models import Job, DataSet, user_job_results_file_directory_path_not_field
 from gbkfit_web.serializers import save_job_results, save_job_tar, save_job_image
 
 
@@ -44,8 +44,9 @@ def job_completed(job):
     save_job_tar(job.id, os.path.join(user_job_results_file_directory_path_not_field(job), 'results.tar.gz')[len(settings.MEDIA_ROOT):])
 
     # Next get all mode image files from the results directory
-    for file in glob.glob(os.path.join(user_job_results_file_directory_path_not_field(job), 'mode_*.png')):
-        save_job_image(job.id, int(file.split('_')[-1].split('.')[0]), file[len(settings.MEDIA_ROOT):])
+    for filetype in [DataSet.VELMAP, DataSet.SIGMAP, DataSet.FLXMAP, DataSet.FLXCUBE]:
+        for file in glob.glob(os.path.join(user_job_results_file_directory_path_not_field(job), 'mode_*_'+ filetype +'.png')):
+            save_job_image(job.id, int(file.split('_')[-1].split('.')[0]), filetype, file[len(settings.MEDIA_ROOT):])
 
 
 class WorkFlowView(GenericAPIView):
