@@ -68,6 +68,20 @@
             <div class="container-fluid field col-md-12">
 {#                <img src="{{ mode.mode_image.image_file.url }}" class="mode_image">#}
                 {% for index_image, image in mode.mode_image.items %}
+                    <legend>
+                        {% if image.image_type == 'velmap' %}
+                            Velocity map
+                        {% endif %}
+                        {% if image.image_type == 'sigmap' %}
+                            Velocity dispersion map
+                        {% endif %}
+                        {% if image.image_type == 'flxmap' %}
+                            Flux map
+                        {% endif %}
+                        {% if image.image_type == 'flxcube' %}
+                            Velocity map (spectral cube)
+                        {% endif %}
+                    </legend>
                     <img src='' id="mode_image_{{ index }}_{{ image.image_type }}" class="mode_image">
                     <script>
                         var url = 'IMAGE_URL';
@@ -80,7 +94,7 @@
                         });
                     </script>
                 {% endfor %}
-
+                <legend>Results</legend>
                 {% for field,value in mode.fields.items %}
 
                     <div class="container-fluid field
