@@ -80,6 +80,7 @@ def save_job_results(job_id, json_file):
 def save_job_tar_error(job_id, tar_file_path):
     result = Result()
     result.job_id = job_id
+    result.dof = 0
     result.save()
 
     result = Result.objects.get(job_id=job_id)
