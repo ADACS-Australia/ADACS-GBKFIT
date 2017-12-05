@@ -226,6 +226,10 @@ def save_form(form, request, active_tab, id=None):
             if dataset.datafile1 == None:
                 messages.error(request, "Data file 1 is required. Please upload one.")
             else:
+                dataset.dataset1_type = request.POST['dataset1_type']
+                dataset.dataset2_type = request.POST['dataset2_type']
+                dataset.save()
+
                 if 'next' in request.POST:
                     active_tab = next_tab(active_tab)
                 if 'previous' in request.POST:
