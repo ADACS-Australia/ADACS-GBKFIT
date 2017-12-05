@@ -67,17 +67,19 @@
 
             <div class="container-fluid field col-md-12">
 {#                <img src="{{ mode.mode_image.image_file.url }}" class="mode_image">#}
-                <img src='' id="mode_image_{{ index }}" class="mode_image">
-                <script>
-                    var url = 'IMAGE_URL';
-                    $.ajax({
-                        url : 'get_image/' + {{ index }} + '/' + {{ mode.mode_image.image_type }},
-                        cache: true,
-                        processData : false,
-                    }).always(function(){
-                        $("#mode_image_{{ index }}").attr("src", 'get_image/' + {{ index }} + '/' + {{ mode.mode_image.image_type }}).fadeIn();
-                    });
-                </script>
+                {% for index_image, image in mode.mode_image.items %}
+                    <img src='' id="mode_image_{{ index }}_{{ image.image_type }}" class="mode_image">
+                    <script>
+                        var url = 'IMAGE_URL';
+                        $.ajax({
+                            url : 'get_image/{{ index }}/{{ image.image_type }}',
+                            cache: true,
+                            processData : false,
+                        }).always(function(){
+                            $("#mode_image_{{ index }}_{{ image.image_type }}").attr("src", 'get_image/{{ index }}/{{ image.image_type }}').fadeIn();
+                        });
+                    </script>
+                {% endfor %}
 
                 {% for field,value in mode.fields.items %}
 

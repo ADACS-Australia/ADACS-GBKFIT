@@ -903,7 +903,8 @@ def results(request, id):
             j+=1
 
         # Gather the image of this mode
-        j = 0
+        job.result.modes[i].mode_image = {}
+        j=0
         for mode_image in ModeImage.objects.filter(mode_id=job.result.modes[i].id):
             job.result.modes[i].mode_image[j] = model_instance_to_iterable(mode_image, model=RESULT_FILE)
             j+=1
