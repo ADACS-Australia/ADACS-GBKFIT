@@ -221,27 +221,32 @@ class DataSet(models.Model):
         file1_dict['type'] = self.dataset1_type
         file1_dict['data'] = os.path.join(MEDIA_ROOT, self.datafile1.name)
         try:
-            file1_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile1.name)
+            if self.errorfile1.name != '':
+                file1_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile1.name)
         except:
             pass
         try:
-            file1_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile1.name)
+            if self.maskfile1.name != '':
+                file1_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile1.name)
         except:
             pass
 
         # 2nd batch of files
         file2_dict = {}
         try:
-            file2_dict['data'] = os.path.join(MEDIA_ROOT, self.datafile2.name)
-            file2_dict['type'] = self.dataset2_type
+            if self.datafile2.name != '':
+                file2_dict['data'] = os.path.join(MEDIA_ROOT, self.datafile2.name)
+                file2_dict['type'] = self.dataset2_type
         except:
             pass
         try:
-            file2_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile2.name)
+            if file2_dict['data'] != '' and self.errorfile2.name != '':
+                file2_dict['error'] = os.path.join(MEDIA_ROOT, self.errorfile2.name)
         except:
             pass
         try:
-            file2_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile2.name)
+            if file2_dict['data'] != '' and self.maskfile2.name != '':
+                file2_dict['mask'] = os.path.join(MEDIA_ROOT, self.maskfile2.name)
         except:
             pass
 
