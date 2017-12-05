@@ -77,6 +77,17 @@ def save_job_results(job_id, json_file):
         # Increase mode number
         mode_number += 1
 
+def save_job_tar_error(job_id, tar_file_path):
+    result = Result()
+    result.job_id = job_id
+    result.save()
+
+    result = Result.objects.get(job_id=job_id)
+    result_file = ResultFile()
+    result_file.result_id = result.id
+    result_file.tar_file.name = tar_file_path
+    result_file.save()
+
 def save_job_tar(job_id, tar_file_path):
     result = Result.objects.get(job_id=job_id)
     result_file = ResultFile()

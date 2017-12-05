@@ -10,7 +10,7 @@ from rest_framework import permissions
 from rest_framework.generics import GenericAPIView
 
 from gbkfit_web.models import Job, DataSet, user_job_results_file_directory_path_not_field
-from gbkfit_web.serializers import save_job_results, save_job_tar, save_job_image
+from gbkfit_web.serializers import save_job_results, save_job_tar, save_job_tar_error, save_job_image
 
 
 class WorkflowTokenPermission(permissions.BasePermission):
@@ -48,6 +48,16 @@ def job_completed(job):
         for file in glob.glob(os.path.join(user_job_results_file_directory_path_not_field(job), 'mode_*_'+ filetype +'.png')):
             save_job_image(job.id, int(file.split('_')[-2]), filetype, file[len(settings.MEDIA_ROOT):])
 
+
+def job_crashed(job):
+    """
+    Called when a job has crashed to handle creating the results instances in the database
+    :param job: The job instance being marked error
+    :return:
+    """
+
+    # Save the job's error tar file
+    save_job_tar_error(job.id, os.path.join(user_job_results_file_directory_path_not_field(job), 'results.tar.gz')[len(settings.MEDIA_ROOT):])
 
 class WorkFlowView(GenericAPIView):
     permission_classes = (WorkflowTokenPermission,)
@@ -89,6 +99,11 @@ class WorkFlowView(GenericAPIView):
         if request.data['status'] == "COMPLETED":
             # Process the completed job and add the results to the database
             job_completed(job)
+
+        # Check if the job is being marked complete
+        if request.data['status'] == "ERROR":
+            # Add the log to the database
+            job_crashed(job)
 
         # Create a response
         data = {
