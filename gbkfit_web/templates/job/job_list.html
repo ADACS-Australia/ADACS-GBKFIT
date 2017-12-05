@@ -59,6 +59,12 @@
                                   data-content="Job results" data-placement="top" data-container="body" />
                         </a>
                     {% endif %}
+                    {% if job.status == job.ERROR %}
+                        <a href="{% url 'download_results' id=job.id %}">
+                            <span class="glyphicon glyphicon-download-alt has-popover"
+                                      data-content="Download job logs" data-placement="top" data-container="body" />
+                        </a>
+                    {% endif %}
                 </td>
             </tr>
         {% empty %}
