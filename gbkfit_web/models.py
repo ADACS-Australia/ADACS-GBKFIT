@@ -1966,6 +1966,7 @@ class ModeImage(models.Model):
         """
     mode = models.ForeignKey(Mode, related_name='mode_mode_image', on_delete=models.CASCADE)
     image_file = models.ImageField(upload_to=user_job_result_files_directory_path)
+    image_type = models.CharField(max_length=10, blank=False, default=DataSet.VELMAP)
 
     class Meta:
         unique_together = (

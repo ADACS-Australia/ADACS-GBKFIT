@@ -71,11 +71,11 @@
                 <script>
                     var url = 'IMAGE_URL';
                     $.ajax({
-                        url : 'get_image/' + {{ index }},
+                        url : 'get_image/' + {{ index }} + '/' + {{ mode.mode_image.image_type }},
                         cache: true,
                         processData : false,
                     }).always(function(){
-                        $("#mode_image_{{ index }}").attr("src", 'get_image/' + {{ index }}).fadeIn();
+                        $("#mode_image_{{ index }}").attr("src", 'get_image/' + {{ index }} + '/' + {{ mode.mode_image.image_type }}).fadeIn();
                     });
                 </script>
 
