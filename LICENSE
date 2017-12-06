@@ -1,6 +1,12 @@
-MIT License
+This code was developed as part of the Astronomy Data and Computing Services
+(ADACS; https://adacs.org.au) 2017B Software Support program.
 
-Copyright (c) 2017 GBKFIT-Cloud
+Written by: Dany Vohl, Lewis Lakerink, Shibli Saleheen
+Date:       December 2017
+
+It is distributed under the MIT (Expat) License (see https://opensource.org/):
+
+Copyright (c) 2017 Astronomy Data and Computing Services (ADACS)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
