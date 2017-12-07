@@ -935,293 +935,512 @@ class ParameterSet(models.Model):
     def clean(self):
         errors = []
         # xo
-        if self.xo_fixed == 0:
-            if self.xo_min == None:
-                errors.append(
-                    ValidationError({'xo_min': ['xo: Minimum cannot be empty.']}))
-            else:
-                if self.xo_max == None:
+
+        fitter = Fitter.objects.get(job_id = self.job.id)
+
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.xo_fixed == 0:
+                if self.xo_min == None:
                     errors.append(
-                        ValidationError({'xo_max': ['xo: Maximum cannot be empty.']}))
+                        ValidationError({'xo_min': ['xo: Minimum cannot be empty.']}))
                 else:
-                    if self.xo_min > self.xo_max:
+                    if self.xo_max == None:
                         errors.append(
-                            ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.xo_value == None:
-                        errors.append(
-                            ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
-                    elif self.xo_value < self.xo_min or self.xo_value > self.xo_max:
-                        errors.append(
-                            ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'xo_max': ['xo: Maximum cannot be empty.']}))
+                    else:
+                        if self.xo_min > self.xo_max:
+                            errors.append(
+                                ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.xo_value == None:
+                            errors.append(
+                                ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
+                        elif self.xo_value < self.xo_min or self.xo_value > self.xo_max:
+                            errors.append(
+                                ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.xo_value == None:
+                    errors.append(
+                        ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
         else:
-            if self.xo_value == None:
-                errors.append(
-                    ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
+            if self.xo_fixed == 0:
+                if self.xo_min == None:
+                    errors.append(
+                        ValidationError({'xo_min': ['xo: Minimum cannot be empty.']}))
+                else:
+                    if self.xo_max == None:
+                        errors.append(
+                            ValidationError({'xo_max': ['xo: Maximum cannot be empty.']}))
+                    else:
+                        if self.xo_min > self.xo_max:
+                            errors.append(
+                                ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.xo_value == None:
+                    errors.append(
+                        ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
 
         # yo
-        if self.yo_fixed == 0:
-            if self.yo_min == None:
-                errors.append(
-                    ValidationError({'yo_min': ['yo: Minimum cannot be empty.']}))
-            else:
-                if self.yo_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.yo_fixed == 0:
+                if self.yo_min == None:
                     errors.append(
-                        ValidationError({'yo_max': ['yo: Maximum cannot be empty.']}))
+                        ValidationError({'yo_min': ['yo: Minimum cannot be empty.']}))
                 else:
-                    if self.yo_min > self.yo_max:
+                    if self.yo_max == None:
                         errors.append(
-                            ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.yo_value == None:
-                        errors.append(
-                            ValidationError({'yo_value': ['yo: Value cannot be empty.']}))
-                    elif self.yo_value < self.yo_min or self.yo_value > self.yo_max:
-                        errors.append(
-                            ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'yo_max': ['yo: Maximum cannot be empty.']}))
+                    else:
+                        if self.yo_min > self.yo_max:
+                            errors.append(
+                                ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.yo_value == None:
+                            errors.append(
+                                ValidationError({'yo_value': ['yo: Value cannot be empty.']}))
+                        elif self.yo_value < self.yo_min or self.yo_value > self.yo_max:
+                            errors.append(
+                                ValidationError({'yo_value': ['yo: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.yo_value == None:
+                    errors.append(
+                        ValidationError({'yo_value': ['yo: Value cannot be empty.']}))
         else:
-            if self.yo_value == None:
-                errors.append(
-                    ValidationError({'yo_value': ['yo: Value cannot be empty.']}))
+            if self.yo_fixed == 0:
+                if self.yo_min == None:
+                    errors.append(
+                        ValidationError({'yo_min': ['yo: Minimum cannot be empty.']}))
+                else:
+                    if self.yo_max == None:
+                        errors.append(
+                            ValidationError({'yo_max': ['yo: Maximum cannot be empty.']}))
+                    else:
+                        if self.yo_min > self.yo_max:
+                            errors.append(
+                                ValidationError({'yo_min': ['yo: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.yo_value == None:
+                    errors.append(
+                        ValidationError({'yo_value': ['yo: Value cannot be empty.']}))
 
         # pa
-        if self.pa_fixed == 0:
-            if self.pa_min == None:
-                errors.append(
-                    ValidationError({'pa_min': ['pa: Minimum cannot be empty.']}))
-            else:
-                if self.pa_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.pa_fixed == 0:
+                if self.pa_min == None:
                     errors.append(
-                        ValidationError({'pa_max': ['pa: Maximum cannot be empty.']}))
+                        ValidationError({'pa_min': ['pa: Minimum cannot be empty.']}))
                 else:
-                    if self.pa_min > self.pa_max:
+                    if self.pa_max == None:
                         errors.append(
-                            ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.pa_value == None:
-                        errors.append(
-                            ValidationError({'pa_value': ['pa: Value cannot be empty.']}))
-                    elif self.pa_value < self.pa_min or self.pa_value > self.pa_max:
-                        errors.append(
-                            ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'pa_max': ['pa: Maximum cannot be empty.']}))
+                    else:
+                        if self.pa_min > self.pa_max:
+                            errors.append(
+                                ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.pa_value == None:
+                            errors.append(
+                                ValidationError({'pa_value': ['pa: Value cannot be empty.']}))
+                        elif self.pa_value < self.pa_min or self.pa_value > self.pa_max:
+                            errors.append(
+                                ValidationError({'pa_value': ['pa: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.pa_value == None:
+                    errors.append(
+                        ValidationError({'pa_value': ['pa: Value cannot be empty.']}))
         else:
-            if self.pa_value == None:
-                errors.append(
-                    ValidationError({'pa_value': ['pa: Value cannot be empty.']}))
+            if self.pa_fixed == 0:
+                if self.pa_min == None:
+                    errors.append(
+                        ValidationError({'pa_min': ['pa: Minimum cannot be empty.']}))
+                else:
+                    if self.pa_max == None:
+                        errors.append(
+                            ValidationError({'pa_max': ['pa: Maximum cannot be empty.']}))
+                    else:
+                        if self.pa_min > self.pa_max:
+                            errors.append(
+                                ValidationError({'pa_min': ['pa: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.pa_value == None:
+                    errors.append(
+                        ValidationError({'pa_value': ['pa: Value cannot be empty.']}))
 
         # incl
-        if self.incl_fixed == 0:
-            if self.incl_min == None:
-                errors.append(
-                    ValidationError({'incl_min': ['incl: Minimum cannot be empty.']}))
-            else:
-                if self.incl_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.incl_fixed == 0:
+                if self.incl_min == None:
                     errors.append(
-                        ValidationError({'incl_max': ['incl: Maximum cannot be empty.']}))
+                        ValidationError({'incl_min': ['incl: Minimum cannot be empty.']}))
                 else:
-                    if self.incl_min > self.incl_max:
+                    if self.incl_max == None:
                         errors.append(
-                            ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.incl_value == None:
-                        errors.append(
-                            ValidationError({'incl_value': ['incl: Value cannot be empty.']}))
-                    elif self.incl_value < self.incl_min or self.incl_value > self.incl_max:
-                        errors.append(
-                            ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'incl_max': ['incl: Maximum cannot be empty.']}))
+                    else:
+                        if self.incl_min > self.incl_max:
+                            errors.append(
+                                ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.incl_value == None:
+                            errors.append(
+                                ValidationError({'incl_value': ['incl: Value cannot be empty.']}))
+                        elif self.incl_value < self.incl_min or self.incl_value > self.incl_max:
+                            errors.append(
+                                ValidationError({'incl_value': ['incl: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.incl_value == None:
+                    errors.append(
+                        ValidationError({'incl_value': ['incl: Value cannot be empty.']}))
         else:
-            if self.incl_value == None:
-                errors.append(
-                    ValidationError({'incl_value': ['incl: Value cannot be empty.']}))
+            if self.incl_fixed == 0:
+                if self.incl_min == None:
+                    errors.append(
+                        ValidationError({'incl_min': ['incl: Minimum cannot be empty.']}))
+                else:
+                    if self.incl_max == None:
+                        errors.append(
+                            ValidationError({'incl_max': ['incl: Maximum cannot be empty.']}))
+                    else:
+                        if self.incl_min > self.incl_max:
+                            errors.append(
+                                ValidationError({'incl_min': ['incl: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.incl_value == None:
+                    errors.append(
+                        ValidationError({'incl_value': ['incl: Value cannot be empty.']}))
 
         # vsys
-        if self.vsys_fixed == 0:
-            if self.vsys_min == None:
-                errors.append(
-                    ValidationError({'vsys_min': ['vsys: Minimum cannot be empty.']}))
-            else:
-                if self.vsys_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.vsys_fixed == 0:
+                if self.vsys_min == None:
                     errors.append(
-                        ValidationError({'vsys_max': ['vsys: Maximum cannot be empty.']}))
+                        ValidationError({'vsys_min': ['vsys: Minimum cannot be empty.']}))
                 else:
-                    if self.vsys_min > self.vsys_max:
+                    if self.vsys_max == None:
                         errors.append(
-                            ValidationError({'vsys_min': ['vsys: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.vsys_value == None:
-                        errors.append(
-                            ValidationError({'vsys_value': ['vsys: Value cannot be empty.']}))
-                    elif self.vsys_value < self.vsys_min or self.vsys_value > self.vsys_max:
-                        errors.append(
-                            ValidationError({'vsys_value': ['vsys: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'vsys_max': ['vsys: Maximum cannot be empty.']}))
+                    else:
+                        if self.vsys_min > self.vsys_max:
+                            errors.append(
+                                ValidationError({'vsys_min': ['vsys: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.vsys_value == None:
+                            errors.append(
+                                ValidationError({'vsys_value': ['vsys: Value cannot be empty.']}))
+                        elif self.vsys_value < self.vsys_min or self.vsys_value > self.vsys_max:
+                            errors.append(
+                                ValidationError({'vsys_value': ['vsys: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.vsys_value == None:
+                    errors.append(
+                        ValidationError({'vsys_value': ['vsys: Value cannot be empty.']}))
         else:
-            if self.vsys_value == None:
-                errors.append(
-                    ValidationError({'vsys_value': ['vsys: Value cannot be empty.']}))
+            if self.vsys_fixed == 0:
+                if self.vsys_min == None:
+                    errors.append(
+                        ValidationError({'vsys_min': ['vsys: Minimum cannot be empty.']}))
+                else:
+                    if self.vsys_max == None:
+                        errors.append(
+                            ValidationError({'vsys_max': ['vsys: Maximum cannot be empty.']}))
+                    else:
+                        if self.vsys_min > self.vsys_max:
+                            errors.append(
+                                ValidationError({'vsys_min': ['vsys: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.vsys_value == None:
+                    errors.append(
+                        ValidationError({'vsys_value': ['vsys: Value cannot be empty.']}))
 
         # vsig
-        if self.vsig_fixed == 0:
-            if self.vsig_min == None:
-                errors.append(
-                    ValidationError({'vsig_min': ['vsig: Minimum cannot be empty.']}))
-            else:
-                if self.vsig_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.vsig_fixed == 0:
+                if self.vsig_min == None:
                     errors.append(
-                        ValidationError({'vsig_max': ['vsig: Maximum cannot be empty.']}))
+                        ValidationError({'vsig_min': ['vsig: Minimum cannot be empty.']}))
                 else:
-                    if self.vsig_min > self.vsig_max:
+                    if self.vsig_max == None:
                         errors.append(
-                            ValidationError({'vsig_min': ['vsig: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.vsig_value == None:
-                        errors.append(
-                            ValidationError({'vsig_value': ['vsig: Value cannot be empty.']}))
-                    elif self.vsig_value < self.vsig_min or self.vsig_value > self.vsig_max:
-                        errors.append(
-                            ValidationError({'vsig_value': ['vsig: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'vsig_max': ['vsig: Maximum cannot be empty.']}))
+                    else:
+                        if self.vsig_min > self.vsig_max:
+                            errors.append(
+                                ValidationError({'vsig_min': ['vsig: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.vsig_value == None:
+                            errors.append(
+                                ValidationError({'vsig_value': ['vsig: Value cannot be empty.']}))
+                        elif self.vsig_value < self.vsig_min or self.vsig_value > self.vsig_max:
+                            errors.append(
+                                ValidationError({'vsig_value': ['vsig: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.vsig_value == None:
+                    errors.append(
+                        ValidationError({'vsig_value': ['vsig: Value cannot be empty.']}))
         else:
-            if self.vsig_value == None:
-                errors.append(
-                    ValidationError({'vsig_value': ['vsig: Value cannot be empty.']}))
+            if self.vsig_fixed == 0:
+                if self.vsig_min == None:
+                    errors.append(
+                        ValidationError({'vsig_min': ['vsig: Minimum cannot be empty.']}))
+                else:
+                    if self.vsig_max == None:
+                        errors.append(
+                            ValidationError({'vsig_max': ['vsig: Maximum cannot be empty.']}))
+                    else:
+                        if self.vsig_min > self.vsig_max:
+                            errors.append(
+                                ValidationError({'vsig_min': ['vsig: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.vsig_value == None:
+                    errors.append(
+                        ValidationError({'vsig_value': ['vsig: Value cannot be empty.']}))
 
         # i0
-        if self.i0_fixed == 0:
-            if self.i0_min == None:
-                errors.append(
-                    ValidationError({'i0_min': ['i0: Minimum cannot be empty.']}))
-            else:
-                if self.i0_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.i0_fixed == 0:
+                if self.i0_min == None:
                     errors.append(
-                        ValidationError({'i0_max': ['i0: Maximum cannot be empty.']}))
+                        ValidationError({'i0_min': ['i0: Minimum cannot be empty.']}))
                 else:
-                    if self.i0_min > self.i0_max:
+                    if self.i0_max == None:
                         errors.append(
-                            ValidationError({'i0_min': ['i0: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.i0_value == None:
-                        errors.append(
-                            ValidationError({'i0_value': ['i0: Value cannot be empty.']}))
-                    elif self.i0_value < self.i0_min or self.i0_value > self.i0_max:
-                        errors.append(
-                            ValidationError({'i0_value': ['i0: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'i0_max': ['i0: Maximum cannot be empty.']}))
+                    else:
+                        if self.i0_min > self.i0_max:
+                            errors.append(
+                                ValidationError({'i0_min': ['i0: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.i0_value == None:
+                            errors.append(
+                                ValidationError({'i0_value': ['i0: Value cannot be empty.']}))
+                        elif self.i0_value < self.i0_min or self.i0_value > self.i0_max:
+                            errors.append(
+                                ValidationError({'i0_value': ['i0: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.i0_value == None:
+                    errors.append(
+                        ValidationError({'i0_value': ['i0: Value cannot be empty.']}))
         else:
-            if self.i0_value == None:
-                errors.append(
-                    ValidationError({'i0_value': ['i0: Value cannot be empty.']}))
+            if self.i0_fixed == 0:
+                if self.i0_min == None:
+                    errors.append(
+                        ValidationError({'i0_min': ['i0: Minimum cannot be empty.']}))
+                else:
+                    if self.i0_max == None:
+                        errors.append(
+                            ValidationError({'i0_max': ['i0: Maximum cannot be empty.']}))
+                    else:
+                        if self.i0_min > self.i0_max:
+                            errors.append(
+                                ValidationError({'i0_min': ['i0: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.i0_value == None:
+                    errors.append(
+                        ValidationError({'i0_value': ['i0: Value cannot be empty.']}))
 
         # r0
-        if self.r0_fixed == 0:
-            if self.r0_min == None:
-                errors.append(
-                    ValidationError({'r0_min': ['r0: Minimum cannot be empty.']}))
-            else:
-                if self.r0_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.r0_fixed == 0:
+                if self.r0_min == None:
                     errors.append(
-                        ValidationError({'r0_max': ['r0: Maximum cannot be empty.']}))
+                        ValidationError({'r0_min': ['r0: Minimum cannot be empty.']}))
                 else:
-                    if self.r0_min > self.r0_max:
+                    if self.r0_max == None:
                         errors.append(
-                            ValidationError({'r0_min': ['r0: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.r0_value == None:
-                        errors.append(
-                            ValidationError({'r0_value': ['r0: Value cannot be empty.']}))
-                    elif self.r0_value < self.r0_min or self.r0_value > self.r0_max:
-                        errors.append(
-                            ValidationError({'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'r0_max': ['r0: Maximum cannot be empty.']}))
+                    else:
+                        if self.r0_min > self.r0_max:
+                            errors.append(
+                                ValidationError({'r0_min': ['r0: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.r0_value == None:
+                            errors.append(
+                                ValidationError({'r0_value': ['r0: Value cannot be empty.']}))
+                        elif self.r0_value < self.r0_min or self.r0_value > self.r0_max:
+                            errors.append(
+                                ValidationError({'r0_value': ['r0: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.r0_value == None:
+                    errors.append(
+                        ValidationError({'r0_value': ['r0: Value cannot be empty.']}))
         else:
-            if self.r0_value == None:
-                errors.append(
-                    ValidationError({'r0_value': ['r0: Value cannot be empty.']}))
+            if self.r0_fixed == 0:
+                if self.r0_min == None:
+                    errors.append(
+                        ValidationError({'r0_min': ['r0: Minimum cannot be empty.']}))
+                else:
+                    if self.r0_max == None:
+                        errors.append(
+                            ValidationError({'r0_max': ['r0: Maximum cannot be empty.']}))
+                    else:
+                        if self.r0_min > self.r0_max:
+                            errors.append(
+                                ValidationError({'r0_min': ['r0: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.r0_value == None:
+                    errors.append(
+                        ValidationError({'r0_value': ['r0: Value cannot be empty.']}))
 
         # rt
-        if self.rt_fixed == 0:
-            if self.rt_min == None:
-                errors.append(
-                    ValidationError({'rt_min': ['rt: Minimum cannot be empty.']}))
-            else:
-                if self.rt_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.rt_fixed == 0:
+                if self.rt_min == None:
                     errors.append(
-                        ValidationError({'rt_max': ['rt: Maximum cannot be empty.']}))
+                        ValidationError({'rt_min': ['rt: Minimum cannot be empty.']}))
                 else:
-                    if self.rt_min > self.rt_max:
+                    if self.rt_max == None:
                         errors.append(
-                            ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.rt_value == None:
-                        errors.append(
-                            ValidationError({'rt_value': ['rt: Value cannot be empty.']}))
-                    elif self.rt_value < self.rt_min or self.rt_value > self.rt_max:
-                        errors.append(
-                            ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'rt_max': ['rt: Maximum cannot be empty.']}))
+                    else:
+                        if self.rt_min > self.rt_max:
+                            errors.append(
+                                ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.rt_value == None:
+                            errors.append(
+                                ValidationError({'rt_value': ['rt: Value cannot be empty.']}))
+                        elif self.rt_value < self.rt_min or self.rt_value > self.rt_max:
+                            errors.append(
+                                ValidationError({'rt_value': ['rt: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.rt_value == None:
+                    errors.append(
+                        ValidationError({'rt_value': ['rt: Value cannot be empty.']}))
         else:
-            if self.rt_value == None:
-                errors.append(
-                    ValidationError({'rt_value': ['rt: Value cannot be empty.']}))
+            if self.rt_fixed == 0:
+                if self.rt_min == None:
+                    errors.append(
+                        ValidationError({'rt_min': ['rt: Minimum cannot be empty.']}))
+                else:
+                    if self.rt_max == None:
+                        errors.append(
+                            ValidationError({'rt_max': ['rt: Maximum cannot be empty.']}))
+                    else:
+                        if self.rt_min > self.rt_max:
+                            errors.append(
+                                ValidationError({'rt_min': ['rt: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.rt_value == None:
+                    errors.append(
+                        ValidationError({'rt_value': ['rt: Value cannot be empty.']}))
 
         # vt
-        if self.vt_fixed == 0:
-            if self.vt_min == None:
-                errors.append(
-                    ValidationError({'vt_min': ['vt: Minimum cannot be empty.']}))
-            else:
-                if self.vt_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.vt_fixed == 0:
+                if self.vt_min == None:
                     errors.append(
-                        ValidationError({'vt_max': ['vt: Maximum cannot be empty.']}))
+                        ValidationError({'vt_min': ['vt: Minimum cannot be empty.']}))
                 else:
-                    if self.vt_min > self.vt_max:
+                    if self.vt_max == None:
                         errors.append(
-                            ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.vt_value == None:
-                        errors.append(
-                            ValidationError({'vt_value': ['vt: Value cannot be empty.']}))
-                    elif self.vt_value < self.vt_min or self.vt_value > self.vt_max:
-                        errors.append(
-                            ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'vt_max': ['vt: Maximum cannot be empty.']}))
+                    else:
+                        if self.vt_min > self.vt_max:
+                            errors.append(
+                                ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.vt_value == None:
+                            errors.append(
+                                ValidationError({'vt_value': ['vt: Value cannot be empty.']}))
+                        elif self.vt_value < self.vt_min or self.vt_value > self.vt_max:
+                            errors.append(
+                                ValidationError({'vt_value': ['vt: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.vt_value == None:
+                    errors.append(
+                        ValidationError({'vt_value': ['vt: Value cannot be empty.']}))
         else:
-            if self.vt_value == None:
-                errors.append(
-                    ValidationError({'vt_value': ['vt: Value cannot be empty.']}))
+            if self.vt_fixed == 0:
+                if self.vt_min == None:
+                    errors.append(
+                        ValidationError({'vt_min': ['vt: Minimum cannot be empty.']}))
+                else:
+                    if self.vt_max == None:
+                        errors.append(
+                            ValidationError({'vt_max': ['vt: Maximum cannot be empty.']}))
+                    else:
+                        if self.vt_min > self.vt_max:
+                            errors.append(
+                                ValidationError({'vt_min': ['vt: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.vt_value == None:
+                    errors.append(
+                        ValidationError({'vt_value': ['vt: Value cannot be empty.']}))
         
 
         # a
-        if self.a_fixed == 0:
-            if self.a_min == None:
-                errors.append(
-                    ValidationError({'a_min': ['a: Minimum cannot be empty.']}))
-            else:
-                if self.a_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.a_fixed == 0:
+                if self.a_min == None:
                     errors.append(
-                        ValidationError({'a_max': ['a: Maximum cannot be empty.']}))
+                        ValidationError({'a_min': ['a: Minimum cannot be empty.']}))
                 else:
-                    if self.a_min > self.a_max:
+                    if self.a_max == None:
                         errors.append(
-                            ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.a_value == None:
-                        errors.append(
-                            ValidationError({'a_value': ['a: Value cannot be empty.']}))
-                    elif self.a_value < self.a_min or self.a_value > self.a_max:
-                        errors.append(
-                            ValidationError({'a_value': ['a: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'a_max': ['a: Maximum cannot be empty.']}))
+                    else:
+                        if self.a_min > self.a_max:
+                            errors.append(
+                                ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.a_value == None:
+                            errors.append(
+                                ValidationError({'a_value': ['a: Value cannot be empty.']}))
+                        elif self.a_value < self.a_min or self.a_value > self.a_max:
+                            errors.append(
+                                ValidationError({'a_value': ['a: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.a_value == None:
+                    errors.append(
+                        ValidationError({'a_value': ['a: Value cannot be empty.']}))
         else:
-            if self.a_value == None:
-                errors.append(
-                    ValidationError({'a_value': ['a: Value cannot be empty.']}))
+            if self.a_fixed == 0:
+                if self.a_min == None:
+                    errors.append(
+                        ValidationError({'a_min': ['a: Minimum cannot be empty.']}))
+                else:
+                    if self.a_max == None:
+                        errors.append(
+                            ValidationError({'a_max': ['a: Maximum cannot be empty.']}))
+                    else:
+                        if self.a_min > self.a_max:
+                            errors.append(
+                                ValidationError({'a_min': ['a: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.a_value == None:
+                    errors.append(
+                        ValidationError({'a_value': ['a: Value cannot be empty.']}))
 
         # b
-        if self.b_fixed == 0:
-            if self.b_min == None:
-                errors.append(
-                    ValidationError({'b_min': ['b: Minimum cannot be empty.']}))
-            else:
-                if self.b_max == None:
+        if fitter.fitter_type == Fitter.MPFIT:
+            if self.xo_fixed == 0:
+                if self.xo_min == None:
                     errors.append(
-                        ValidationError({'b_max': ['b: Maximum cannot be empty.']}))
+                        ValidationError({'xo_min': ['xo: Minimum cannot be empty.']}))
                 else:
-                    if self.b_min > self.b_max:
+                    if self.xo_max == None:
                         errors.append(
-                            ValidationError({'b_min': ['b: Minimum must be smaller than or equal to the maximum.']}))
-                    elif self.b_value == None:
-                        errors.append(
-                            ValidationError({'b_value': ['b: Value cannot be empty.']}))
-                    elif self.b_value < self.b_min or self.b_value > self.b_max:
-                        errors.append(
-                            ValidationError({'b_value': ['b: Value must be within range set by minimum and maximum.']}))
+                            ValidationError({'xo_max': ['xo: Maximum cannot be empty.']}))
+                    else:
+                        if self.xo_min > self.xo_max:
+                            errors.append(
+                                ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
+                        elif self.xo_value == None:
+                            errors.append(
+                                ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
+                        elif self.xo_value < self.xo_min or self.xo_value > self.xo_max:
+                            errors.append(
+                                ValidationError({'xo_value': ['xo: Value must be within range set by minimum and maximum.']}))
+            else:
+                if self.xo_value == None:
+                    errors.append(
+                        ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
         else:
-            if self.b_value == None:
-                errors.append(
-                    ValidationError({'b_value': ['b: Value cannot be empty.']}))
+            if self.xo_fixed == 0:
+                if self.xo_min == None:
+                    errors.append(
+                        ValidationError({'xo_min': ['xo: Minimum cannot be empty.']}))
+                else:
+                    if self.xo_max == None:
+                        errors.append(
+                            ValidationError({'xo_max': ['xo: Maximum cannot be empty.']}))
+                    else:
+                        if self.xo_min > self.xo_max:
+                            errors.append(
+                                ValidationError({'xo_min': ['xo: Minimum must be smaller than or equal to the maximum.']}))
+            else:
+                if self.xo_value == None:
+                    errors.append(
+                        ValidationError({'xo_value': ['xo: Value cannot be empty.']}))
 
         if len(errors) > 0: # Check if dict is empty. If not, raise error.
             raise ValidationError(errors)
