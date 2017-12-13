@@ -1,0 +1,49 @@
+{% extends 'base/base-full-background.html' %}
+{% load static %}
+
+{% block info-bar %}
+{% endblock info-bar %}
+
+{% block page_header %}
+{% endblock page_header %}
+
+{% block content %}
+{#    <div class="tab-content">#}
+
+        <div class="jumbotron about">
+            <h1>About</h1>
+            <p>
+                <b>GBKFIT</b> is an open source high-performance software for galaxy kinematic modelling. It can be used to extract morphological and kinematical properties of galaxies by fitting models to spatially resolved kinematic data. The software can also take beam smearing into acount by using the knowledge of the line and point spread functions.
+            </p>
+        </div>
+
+        <div class="jumbotron about">
+            <h1>Acknowledging or Citing GBKFIT</h1>
+            <p>
+                If you use GBKFIT for work/research presented in a publication (whether directly, or as a dependency to another package), we ask that you cite the GBKFIT Paper (<a href="http://adsabs.harvard.edu/abs/2016MNRAS.455..754B">ADS</a> - <a href="http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2016MNRAS.455..754B&data_type=BIBTEX&db_key=AST&nocookieset=1">BibTeX</a>).
+            </p>
+            <p>
+                We provide the following as a standard acknowledgment you can use if there is not a specific place to cite the paper:
+            </p>
+            <code style="font-size: 16px">
+This research made use of GBKFIT, an open source high-performance software for galaxy kinematic modelling (Bekiaris, Glazebrook, Fluke, & Abraham, 2016).
+            </code>
+        </div>
+
+        <div class="jumbotron about">
+            <h1>Support</h1>
+            <p>
+                For help or comments regarding this service, please contact Dr. Giorgios Bekiaris at <code>georgios[dot]bekiaris[at]csiro[dot]au</code>.
+            </p>
+        </div>
+
+        <div class="jumbotron about last">
+            <p class="col-md-10">
+                This web application was developed with the help of software support resources acquired under the 2017B semester of the <a href="https://adacs.org.au">ADACS Software Support scheme</a>. All development performed by ADACS has been released on <a href="http://github.com/ADACS-Australia/ADACS-GBKFIT">github</a> under the <a href="https://opensource.org/licenses/MIT">MIT license</a>.
+            </p>
+            <p class="col-md-2">
+                <img src="{% static 'images/ADACS_white_bg.png' %}" id="about_image" />
+            </p>
+        </div>
+{#    </div>#}
+{% endblock content %}

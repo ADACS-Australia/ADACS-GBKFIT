@@ -128,7 +128,7 @@ Welcome page
     background-color: transparent;
 }
 
-.jumbotron {
+#welcome-message {
     background-image: url("../images/background.jpg");
     background-size:cover;
     /*background-blend-mode: screen;*/
@@ -136,6 +136,40 @@ Welcome page
     margin-bottom: 0px;
     padding-top: 15em;
     padding-bottom: 40em;
+}
+
+.with-background {
+    background-image: url("../images/background.jpg");
+    background-size:cover;
+    /*background-blend-mode: screen;*/
+    /*background-repeat: no-repeat;*/
+    margin-bottom: 0px;
+}
+
+.jumbotron.about {
+    opacity: 0.89;
+    color: black;
+    /*font-size: 13px;*/
+    font-weight: bold;
+}
+
+.jumbotron.about.last {
+    min-height: 185px;
+}
+
+@media (min-width: 1000px)
+{
+    #about_image {
+        height: 3.5em;
+        position: relative;
+        right: 1.5em;
+    }
+}
+@media (max-width: 1000px)
+{
+    #about_image {
+        height: 3.5em;
+    }
 }
 
 #welcome-message{

@@ -39,6 +39,7 @@ from rest_framework import routers, serializers, viewsets
 
 urlpatterns = [
     url(r'^$', index.index, name='index'),
+    url(r'^about/', index.about, name='about'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # Workflow API

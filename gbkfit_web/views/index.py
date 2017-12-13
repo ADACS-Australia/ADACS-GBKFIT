@@ -39,3 +39,9 @@ def index(request):
         request,
         "base/welcome.html",
     )
+
+def about(request):
+    return render(
+        request,
+        "base/about.html",
+    )
