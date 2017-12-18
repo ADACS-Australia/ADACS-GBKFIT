@@ -158,86 +158,24 @@ def set_list(l, i, v):
         l[i] = v
 
 def previous_tab(active_tab):
+    """
+    This function is used to access the tab preceding the active tab (global TABS list).
+    Given an active_tab (corresponding to one of START, DATASET, ...), it returns the previous element of the array.
+
+    :param active_tab: A tab value (e.g. START, DATASET, DMODEL, ...)
+    :return: The previous tab in the TABS list
+    """
     return TABS[TABS_INDEXES[active_tab] - 1]
 
 def next_tab(active_tab):
+    """
+        This function is used to access the tab following the active tab (global TABS list).
+        Given an active_tab (corresponding to one of START, DATASET, ...), it returns the previous element of the array.
+
+        :param active_tab: A tab value (e.g. START, DATASET, DMODEL, ...)
+        :return: The next tab in the TABS list
+        """
     return TABS[TABS_INDEXES[active_tab] + 1]
-
-def set_job_menu(request, id=None):
-    if id == None:
-        return forms.ModelChoiceField(
-            label=_('Select Job'),
-            queryset=Job.objects.filter(user=request.user, status=Job.DRAFT),
-            empty_label=_('New'),
-            widget=forms.Select(
-                attrs={'class': 'form-control'},
-            ),
-            required=False,
-        )
-    else:
-        return forms.ModelChoiceField(
-            label=_('Select Job'),
-            queryset=Job.objects.filter(user=request.user, status=Job.DRAFT, id=id),
-            empty_label=_('New'),
-            widget=forms.Select(
-                attrs={'class': 'form-control'},
-            ),
-            required=False,
-        )
-
-def build_task_json(request):
-    # try:
-    #     id = request.session['draft_job']['id']
-    # except:
-    #     id = request.user.id
-
-    # job = Job.objects.get(id=id)
-    # dataset = DataSet.objects.get(job_id=id)
-    # dmodel = DataModel.objects.get(job_id=id)
-    # psf = PSF_model.objects.get(job_id=id)
-    # lsf = LSF_model.objects.get(job_id=id)
-    # gmodel = GalaxyModel.objects.get(job_id=id)
-    # fitter = Fitter_model.objects.get(job_id=id)
-    # params = Params.objects.get(job_id=id)
-
-    # task_json = dict(
-    #     job=request.session['draft_job'],
-    #     task=
-    #     dict(
-    #         mode='fit',
-    #         dmodel=request.session['data_model'],
-    #         datasets=request.session['dataset'],
-    #         psf=request.session['psf'],
-    #         lsf=request.session['lsf'],
-    #         gmodel=request.session['galaxy_model'],
-    #         fitter=request.session['fitter'],
-    #         params=request.session['params'],
-    #     )
-    # )
-
-    dmodel = request.session.get('data_model', None)
-    dataset = request.session.get('dataset', None)
-    psf = request.session.get('psf', None)
-    lsf = request.session.get('lsf', None)
-    gmodel = request.session.get('galaxy_model', None)
-    fitter = request.session.get('fitter', None)
-    params = request.session.get('params', None)
-
-    task_json = dict(
-        mode='fit',
-        dmodel=dmodel,
-        datasets=dataset,
-        psf=psf,
-        lsf=lsf,
-        gmodel=gmodel,
-        fitter=fitter,
-        params=params,
-    )
-
-    # with open('test.json', 'w+') as outfile:
-    #     json.dump(task_json, outfile)
-
-    return json.dumps(task_json)
 
 """
 
@@ -245,6 +183,16 @@ def build_task_json(request):
 
 """
 def check_permission_save(form, request, active_tab, id):
+    """
+    Check if user has write permission for the related request
+
+    :param form: current form
+    :param request: current request
+    :param active_tab: active tab (A tab value (e.g. START, DATASET, DMODEL, ...))
+    :param id: job id
+    :return: current active tab
+    """
+
     job = Job.objects.get(id=id)
     if job.user_id == request.user.id:
         active_tab = save_form(form, request, active_tab, id)
@@ -252,6 +200,16 @@ def check_permission_save(form, request, active_tab, id):
     return active_tab
 
 def save_form(form, request, active_tab, id=None):
+    """
+    Save the content of a form to database
+
+    :param form: current form
+    :param request: current request
+    :param active_tab: active tab
+    :param id: job id
+    :return: active tab (possibly de/incremented)
+    """
+
     if active_tab == DATASET:
         try:
             dataset = DataSet.objects.get(job_id=id)
@@ -280,7 +238,15 @@ def save_form(form, request, active_tab, id=None):
     return active_tab
 
 def act_on_request_method_edit(request, active_tab, id):
-    # JobInitialForm.base_fields['job'] = set_job_menu(request, id)
+    """
+    This function acts on a request (post or get). If post, does all the checks and actions to save to database.
+    The function also fills a forms and views lists with content to be rendered for each models.
+
+    :param request: current request
+    :param active_tab: current active tab
+    :param id: job id
+    :return: the active_tab, the forms list, and the views list
+    """
 
     tab_checker = active_tab
     instance = None
@@ -504,12 +470,15 @@ def act_on_request_method_edit(request, active_tab, id):
                                                                      model=PARAMS,
                                                                      views=views) if params else None)
 
-    request.session['task'] = build_task_json(request)
-
     return active_tab, forms, views
 
 @login_required
 def start(request):
+    """
+    Start form (job creation)
+    :param request: current request (post or get)
+    :return: a page to be rendered, or to redirect
+    """
     active_tab = START
     if request.method == 'POST':
         form = FORMS_NEW[active_tab](request.POST, request=request)
@@ -532,6 +501,14 @@ def start(request):
 
 @login_required
 def edit_job_name(request, id):
+    """
+    Form to edit the job basic information (name, description). It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
     active_tab = START
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -566,6 +543,14 @@ def edit_job_name(request, id):
 
 @login_required
 def edit_job_data_model(request, id):
+    """
+    Form to edit the data model information. It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
     active_tab = DMODEL
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -600,6 +585,15 @@ def edit_job_data_model(request, id):
 
 @login_required
 def edit_job_dataset(request, id):
+    """
+    Form to edit the dataset information. It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
+
     active_tab = DATASET
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -634,6 +628,14 @@ def edit_job_dataset(request, id):
 
 @login_required
 def ajax_edit_job_dataset(request, id):
+    """
+    Form to edit the dataset information. It returns an ajax response.
+
+    :param request: current request (post)
+    :param id: job id
+    :return: ajax response
+    """
+
     job = Job.objects.get(id=id)
 
     filetype = request.POST['filetype']
@@ -689,6 +691,15 @@ def ajax_edit_job_dataset(request, id):
 
 @login_required
 def edit_job_psf(request, id):
+    """
+    Form to edit the PSF information. It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
+
     active_tab = PSF
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -723,6 +734,15 @@ def edit_job_psf(request, id):
 
 @login_required
 def edit_job_lsf(request, id):
+    """
+    Form to edit the LSF information. It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
+
     active_tab = LSF
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -757,6 +777,15 @@ def edit_job_lsf(request, id):
 
 @login_required
 def edit_job_galaxy_model(request, id):
+    """
+    Form to edit the galaxy model information. It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
+
     active_tab = GMODEL
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -791,6 +820,15 @@ def edit_job_galaxy_model(request, id):
 
 @login_required
 def edit_job_fitter(request, id):
+    """
+    Form to edit the fitter information. It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
+
     active_tab = FITTER
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -825,6 +863,15 @@ def edit_job_fitter(request, id):
 
 @login_required
 def edit_job_params(request, id):
+    """
+    Form to edit the params information. It also returns forms to be rendered in other tabs
+    (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
+
     active_tab = PARAMS
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -859,6 +906,15 @@ def edit_job_params(request, id):
 
 @login_required
 def launch(request, id):
+    """
+    Form to launch a job (changes the job status to submitted)
+    It also returns forms to be rendered in other tabs (models).
+
+    :param request: current request (post or get)
+    :param id: job id
+    :return: content to be rendered
+    """
+
     active_tab = LAUNCH
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
@@ -894,12 +950,6 @@ def launch(request, id):
     else:
         return redirect('job_list')
 
-    # task_json = build_task_json(request)
-    #
-    # request.session['task'] = task_json
-    #
-    # return HttpResponse(task_json, content_type='application/json')
-
 """
 
     JOB RESULTS
@@ -907,9 +957,22 @@ def launch(request, id):
 """
 
 def get_model_objects(model, job_id):
+    """
+    Returns data from a given model for a specific job (job_id)
+    :param model: a given model (e.g. START, DMODEL, ...)
+    :param job_id: job id
+    :return: array of results (can be empty)
+    """
     return MODELS_RESULTS[model].objects.filter(job_id=job_id)
 
 def set_iterable_views(model, views, instance):
+    """
+    Converts an instance into an iterable view for use in template
+    :param model: the current model
+    :param views: the view list
+    :param instance: the current model instance
+    :return: list with iterable views
+    """
     return set_list(views, RESULTS_PARTS_INDEXES[model], model_instance_to_iterable(instance,
                                                                       model=model,
                                                                       views=views) if instance else None)
@@ -917,6 +980,13 @@ def set_iterable_views(model, views, instance):
 # Should require that you have access to this job id too.
 @login_required
 def results(request, id):
+    """
+    Handles a result form
+    :param request: current request (get)
+    :param id: job id
+    :return: returns views to render
+    """
+
     active_tab = LAUNCH
     # This could be cleaned to avoid getting forms and only gather the one view we need
     # (which also requires info from gmodel and fitter).
@@ -959,6 +1029,13 @@ def results(request, id):
 
 @login_required
 def download_results_tar(request, id):
+    """
+    Function to download a tar file related to a job id
+    :param request: current request (required by default, not used)
+    :param id: job id
+    :return: returns a response containing the tar file
+    """
+
     result = Result.objects.get(job_id = id)
 
     tar_file = ResultFile.objects.get(result_id=result.id).tar_file
@@ -972,6 +1049,16 @@ def download_results_tar(request, id):
 
 @login_required
 def get_results_image(request, id, mode, image_type):
+    """
+    Function to get an result image related to a job id
+
+    :param request: current request
+    :param id: job id
+    :param mode: mode of the result
+    :param image_type: image type (e.g. velmap, sigmap, etc.)
+    :return: returns the image
+    """
+
     result = Result.objects.get(job_id=id)
     mode = Mode.objects.get(result_id=result.id, mode_number=mode)
     mode_image = ModeImage.objects.get(mode_id=mode.id, image_type=image_type)
@@ -980,6 +1067,13 @@ def get_results_image(request, id, mode, image_type):
 
 @login_required
 def job_overview(request, id):
+    """
+    Function to handle the overview view of a job
+    :param request: current request (get)
+    :param id: job id
+    :return: renderable views
+    """
+
     active_tab = LAUNCH
     # This could be cleaned to avoid getting forms and only gather views.
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
@@ -1003,6 +1097,12 @@ def job_overview(request, id):
 
 @login_required
 def job_duplicate(request, id):
+    """
+    Function to duplicate a job
+    :param request: current request (post)
+    :param id: id of the job to duplicate
+    :return: redirects to the edit page of the newly duplicated job
+    """
 
     job = Job.objects.get(id = id)
     # Check write permission
