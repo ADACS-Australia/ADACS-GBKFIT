@@ -616,7 +616,7 @@ class ParamsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.job_id = kwargs.pop('id', None)
+        job_id = self.job_id = kwargs.pop('id', None)
 
         if self.job_id:
             try:
@@ -635,6 +635,8 @@ class ParamsForm(forms.ModelForm):
                 pass
 
         super(ParamsForm, self).__init__(*args, **kwargs)
+
+        self.instance.job_id = job_id
 
         for field in self.fields:
             help_text = self.fields[field].help_text
