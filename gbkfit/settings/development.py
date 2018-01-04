@@ -7,6 +7,8 @@ DEBUG = True
 EMAIL_HOST = 'mail.swin.edu.au'
 EMAIL_PORT = 25
 
+ROOT_SUBDIRECTORY_PATH = ''
+
 try:
     from .local import *
 except ImportError:
