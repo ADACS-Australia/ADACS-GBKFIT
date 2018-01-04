@@ -10,6 +10,7 @@ EMAIL_HOST = 'mail.swin.edu.au'
 EMAIL_PORT = 25
 
 ROOT_SUBDIRECTORY_PATH = 'projects/gbkfit/live/'
+STATIC_URL = '/projects/gbkfit/live/static/'
 
 try:
     from .local import *

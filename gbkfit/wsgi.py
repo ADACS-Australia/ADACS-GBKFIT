@@ -1,3 +1,5 @@
+import os
+
 import django
 from django.core import signals
 from django.core.handlers import base
@@ -5,6 +7,8 @@ from django.core.handlers.wsgi import WSGIRequest, get_script_name
 from django.urls import set_script_prefix, resolve
 from django.utils.encoding import force_str
 import django.conf
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gbkfit.settings.production")
 
 
 class WSGIHandler(base.BaseHandler):
@@ -30,7 +34,7 @@ class WSGIHandler(base.BaseHandler):
                 pre_path = pre_path[:-1]
 
         # Override the environment paths
-        environ['REQUEST_URI'] = "{}{}".format(pre_path, environ['REQUEST_URI'])
+        environ['RAW_URI'] = "{}{}".format(pre_path, environ['RAW_URI'])
         environ['PATH_INFO'] = "{}{}".format(pre_path, environ['PATH_INFO'])
 
         set_script_prefix(get_script_name(environ))
@@ -61,3 +65,6 @@ def get_wsgi_application():
     """
     django.setup(set_prefix=False)
     return WSGIHandler()
+
+
+application = get_wsgi_application()

@@ -8,6 +8,7 @@ EMAIL_HOST = 'mail.swin.edu.au'
 EMAIL_PORT = 25
 
 ROOT_SUBDIRECTORY_PATH = ''
+STATIC_URL = '/static/'
 
 try:
     from .local import *
