@@ -33,6 +33,7 @@
 from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 from gbkfit_web.views import account, index, job, verify, job_info
 from rest_framework import routers, serializers, viewsets
@@ -75,7 +76,7 @@ urlpatterns = [
     url(r'^accounts/login/$',
         auth_views.LoginView.as_view(redirect_authenticated_user=True,
                                      template_name='accounts/login.html'), name='login'),
-    url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    url(r'^accounts/logout/$', auth_views.logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     url(r'^accounts/profile/$', account.profile, name='profile'),
     url(r'^accounts/password/$', account.change_password, name='change_password'),
 
