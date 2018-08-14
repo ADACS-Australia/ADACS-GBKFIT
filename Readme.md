@@ -1,3 +1,5 @@
+[![HitCount](http://hits.dwyl.io/cas-eresearch/ADACS-Australia/ADACS-GBKFIT.svg)](http://hits.dwyl.io/cas-eresearch/ADACS-Australia/ADACS-GBKFIT)
+
 **Project Overview**
 ====================
 
