@@ -53,12 +53,31 @@ def url_unquote(enc):
     return unquoted
 
 
-def get_absolute_site_url(request):
+def get_absolute_site_url(request=None):
+    """
+    Finds the site url that will be used to generate links
+    :param request: A Django request object
+    :return: String of the absolute url
+    """
+
+    # check whether forcefully using a specific url from the settings
+    if settings.SITE_URL != '':
+        return settings.SITE_URL
+
+    # If no request, an absolute url cannot be generated
+    if not request:
+        return None
+
+    # find the site name and protocol
     site_name = request.get_host()
     if request.is_secure():
         protocol = 'https'
     else:
-        protocol = settings.HTTP_PROTOCOL
+        try:
+            # Look for protocol forcefully defined in the settings
+            protocol = settings.HTTP_PROTOCOL
+        except AttributeError:
+            protocol = 'http'
     return protocol + '://' + site_name
 
 
