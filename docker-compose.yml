@@ -52,6 +52,8 @@ services:
       MYSQL_DATABASE: gbkfit_dev
       MYSQL_USER: django
       MYSQL_PASSWORD: test-docker_#1
+    volumes:
+      - var_lib_mysql:/var/lib/mysql
   web:
     build: ./
     container_name: dg01

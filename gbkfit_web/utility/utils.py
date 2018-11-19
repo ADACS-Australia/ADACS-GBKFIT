@@ -38,7 +38,6 @@ from django.conf import settings
 from django.utils import timezone
 from six.moves.urllib.parse import quote_plus, unquote_plus, parse_qsl
 
-from gbkfit_web.models import Verification
 from os import path, makedirs
 
 logger = logging.getLogger(__name__)
@@ -76,6 +75,7 @@ def get_token(information, validity=None):
     else:
         expiry = None
     try:
+        from gbkfit_web.models import Verification
         verification = Verification.objects.create(information=information, expiry=expiry)
         return url_quote('id=' + verification.id.__str__())
     except:
@@ -93,6 +93,7 @@ def get_information(token):
     now = timezone.localtime(timezone.now())
     try:
         params = dict(parse_qsl(url_unquote(token)))
+        from gbkfit_web.models import Verification
         verification = Verification.objects.get(id=params.get('id'), expiry__gte=now)
         if verification.verified:
             raise ValueError('Already verified')
@@ -296,3 +297,7 @@ def make_image(job_json, result_json, data_file, mask_file, model_file, residual
     ax00.add_artist(psf_patch_0)
 
     fig.savefig(output_file, bbox_inches='tight', dpi=FIG_FILE_DPI)
+
+
+def file_to_b64(file_path):
+    return base64.b64encode(open(file_path, 'rb').read()).decode('ascii')

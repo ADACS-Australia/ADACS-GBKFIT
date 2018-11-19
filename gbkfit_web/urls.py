@@ -43,9 +43,6 @@ urlpatterns = [
     url(r'^about/', index.about, name='about'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    # Workflow API
-    url(r'^api/', include('gbkfit_web.workflow.urls', namespace='workflow')),
-
     url(r'^jobs/(?P<pk>\d+)/$', login_required(job_info.JobDetailView.as_view(template_name='job/job_detail.html')),
         name='job_detail'),
     url(r'^jobs/$', login_required(job_info.JobListView.as_view(template_name='job/job_list.html')), name='job_list'),
@@ -61,11 +58,10 @@ urlpatterns = [
     url(r'^new_job/(?P<id>\d+)/fitter$', job.edit_job_fitter, name='job_fitter_edit'),
     url(r'^new_job/(?P<id>\d+)/params$', job.edit_job_params, name='job_params_edit'),
     url(r'^new_job/(?P<id>\d+)/launch$', job.launch, name='job_launch'),
+    url(r'^new_job/(?P<id>\d+)/ajax_dataset$', job.ajax_edit_job_dataset, name='basic_upload'),
 
     url(r'^job/(?P<id>\d+)/results', job.results, name='job_results'),
-    url('^job/(?P<id>\d+)/download_results', job.download_results_tar, name='download_results'),
-    url('^job/(?P<id>\d+)/get_image/(?P<mode>\d+)/(?P<image_type>[0-9A-Za-z_\-]+)', job.get_results_image, name='get_image'),
-    url(r'^new_job/(?P<id>\d+)/ajax_dataset$', job.ajax_edit_job_dataset, name='basic_upload'),
+    url('^download_asset/(?P<job_id>\d+)/(?P<download>\d+)/(?P<file_path>.*)$', job.download_asset, name='download_asset'),
 
     url(r'^job/(?P<id>\d+)/overview', job.job_overview, name='job_overview'),
     url(r'^job/(?P<id>\d+)/duplicate', job.job_duplicate, name='job_duplicate'),

@@ -34,8 +34,8 @@ class WSGIHandler(base.BaseHandler):
                 pre_path = pre_path[:-1]
 
         # Override the environment paths
-        environ['RAW_URI'] = "{}{}".format(pre_path, environ['RAW_URI'])
-        environ['PATH_INFO'] = "{}{}".format(pre_path, environ['PATH_INFO'])
+        #environ['RAW_URI'] = "{}{}".format(pre_path, environ['RAW_URI'])
+        #environ['PATH_INFO'] = "{}{}".format(pre_path, environ['PATH_INFO'])
 
         set_script_prefix(get_script_name(environ))
         signals.request_started.send(sender=self.__class__, environ=environ)

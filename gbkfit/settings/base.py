@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_hpc_job_controller'
 ]
 
 MIDDLEWARE = [
@@ -176,3 +177,22 @@ EMAIL_FROM = 'ssaleheen@swin.edu.au'
 HTTP_PROTOCOL = 'http'
 
 LOGOUT_REDIRECT_URL = '/'
+
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "gbkfit_web/static/"),
+]
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+HPC_IPC_UNIX_SOCKET = '/tmp/gbkfit_job_controller.sock'
+
+HPC_JOB_CLASS = 'gbkfit_web.models.Job'
+
+OMP_OR_CUDA = 'omp'

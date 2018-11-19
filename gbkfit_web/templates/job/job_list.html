@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load template_filters %}
 
 {% block page_header %}
     <div class="header-center">Jobs</div>
@@ -19,21 +20,12 @@
     </thead>
     <tbody>
         {% for job in object_list %}
-            <tr class="
-                        {% if job.status == job.DRAFT %} active {% endif %}
-                        {% if job.status == job.SUBMITTED %} warning  {% endif %}
-                        {% if job.status == job.QUEUED %} active {% endif %}
-                        {% if job.status == job.IN_PROGRESS %} info {% endif %}
-                        {% if job.status == job.COMPLETED %} success {% endif %}
-                        {% if job.status == job.ERROR %} danger {% endif %}
-                        {% if job.status == job.WALL_TIME_EXCEEDED %} danger {% endif %}
-                        {% if job.status == job.DELETED %} danger {% endif %}
-                      ">
+            <tr class="{{ job.status | status_color }}">
                 <td>{{ job.id }}</td>
                 <td>{{ job.name }}</td>
                 <td>{{ job.creation_time|date }}</td>
-                <td>{% if job.submission_time != None %}{{ job.submission_time|date }}{% else %}Not submitted{% endif %}</td>
-                <td>{{ job.status }}</td>
+                <td>{% if job.job_pending_time != None %}{{ job.job_pending_time|date }}{% else %}Not submitted{% endif %}</td>
+                <td>{{ job.status_display }}</td>
                 <td>
                     <a href="{% url 'job_overview' id=job.id %}">
                         <span class="glyphicon glyphicon-th-list has-popover"
@@ -43,7 +35,7 @@
                         <span class="glyphicon glyphicon-paste has-popover"
                               data-content="Duplicate" data-placement="top" data-container="body" />
                     </a>
-                    {% if job.status == job.DRAFT %}
+                    {% if job.status == "draft" %}
                         <a href="{% url 'job_name_edit' id=job.id %}">
                             <span class="glyphicon glyphicon-pencil has-popover"
                                   data-content="Edit details" data-placement="top" data-container="body" />
@@ -53,16 +45,16 @@
                                   data-content="Delete job" data-placement="top" data-container="body" />
                         </a>
                     {% endif %}
-                    {% if job.status == job.COMPLETED %}
+                    {% if job.status == "completed" %}
                         <a href="{% url 'job_results' id=job.id %}">
                             <span class="glyphicon glyphicon-signal has-popover"
                                   data-content="Job results" data-placement="top" data-container="body" />
                         </a>
                     {% endif %}
-                    {% if job.status == job.ERROR %}
-                        <a href="{% url 'download_results' id=job.id %}">
-                            <span class="glyphicon glyphicon-download-alt has-popover"
-                                      data-content="Download job logs" data-placement="top" data-container="body" />
+                    {% if job.status == "error" %}
+                        <a href="{% url 'job_results' id=job.id %}">
+                            <span class="glyphicon glyphicon-signal has-popover"
+                                  data-content="Job results" data-placement="top" data-container="body" />
                         </a>
                     {% endif %}
                 </td>

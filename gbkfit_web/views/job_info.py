@@ -48,7 +48,7 @@ from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
     GalaxyModel, Fitter as Fitter_model, ParameterSet as Params
 )
-from gbkfit.settings.local import MEDIA_ROOT
+#from gbkfit.settings.local import MEDIA_ROOT
 
 from gbkfit_web.utility.utils import set_dict_indices
 

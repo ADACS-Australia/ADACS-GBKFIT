@@ -1,4 +1,4 @@
-#==============================================================================
+# ==============================================================================
 #
 # This code was developed as part of the Astronomy Data and Computing Services
 # (ADACS; https:#adacs.org.au) 2017B Software Support program.
@@ -28,44 +28,36 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-#==============================================================================
+# ==============================================================================
 
 from __future__ import unicode_literals
 
 import json
 from os.path import basename
 
-import os
-from django.utils.translation import ugettext_lazy as _
-from django.utils.timezone import now
-from django.contrib.auth.decorators import login_required
-from django import forms
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, Http404
+from django.shortcuts import render, redirect, get_object_or_404
 
-from django.http import HttpResponse, JsonResponse
-from wsgiref.util import FileWrapper
-import os
-
-from django.shortcuts import render, redirect
-from gbkfit_web.forms.job.dataset import DataSetForm, EditDataSetForm
-from gbkfit_web.forms.job.job_initial import JobInitialForm, EditJobForm
+from django_hpc_job_controller.client.scheduler.status import JobStatus
 from gbkfit_web.forms.job.data_model import DataModelForm, EditDataModelForm
-from gbkfit_web.forms.job.psf import PSFForm, EditPSFForm
-from gbkfit_web.forms.job.lsf import LSFForm, EditLSFForm
-from gbkfit_web.forms.job.galaxy_model import GalaxyModelForm, EditGalaxyModelForm
+from gbkfit_web.forms.job.dataset import DataSetForm, EditDataSetForm
 from gbkfit_web.forms.job.fitter import FitterForm, EditFitterForm
+from gbkfit_web.forms.job.galaxy_model import GalaxyModelForm, EditGalaxyModelForm
+from gbkfit_web.forms.job.job_initial import JobInitialForm, EditJobForm
+from gbkfit_web.forms.job.lsf import LSFForm, EditLSFForm
 from gbkfit_web.forms.job.params import ParamsForm, EditParamsForm
+from gbkfit_web.forms.job.psf import PSFForm, EditPSFForm
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF as PSF_model, LSF as LSF_model,
-    GalaxyModel, Fitter as Fitter_model, ParameterSet as Params,
-    Result, Mode, ModeParameter, ModeImage, ResultFile,
-    user_job_input_file_directory_path)
-
+    GalaxyModel, Fitter as Fitter_model, ParameterSet as Params, Result, Mode, ModeParameter, ModeImage)
 # from gbkfit.settings.local import MAX_FILE_SIZE
-
-from gbkfit_web.views.job_info import model_instance_to_iterable
+from gbkfit_web.serializers import save_job_results, save_job_image
 from gbkfit_web.utility.utils import set_dict_indices
-from gbkfit.settings.local import MEDIA_ROOT, MEDIA_URL
+from gbkfit_web.views.job_info import model_instance_to_iterable
+
+# from gbkfit.settings.local import MEDIA_ROOT, MEDIA_URL
 
 
 """
@@ -84,6 +76,7 @@ GMODEL = 'galaxy-model'
 FITTER = 'fitter'
 PARAMS = 'params'
 LAUNCH = 'launch'
+SUBMITTED = 'submitted'
 
 TABS = [START,
         DMODEL,
@@ -130,16 +123,15 @@ MODE_PARAMS = 'mode_parameter'
 RESULT_FILE = 'result_file'
 
 RESULTS_PARTS = [RESULT,
-                MODE,
-                MODE_PARAMS,
-                RESULT_FILE]
+                 MODE,
+                 MODE_PARAMS,
+                 RESULT_FILE]
 RESULTS_PARTS_INDEXES = set_dict_indices(RESULTS_PARTS)
 
 MODELS_RESULTS = {START: Job,
                   RESULT: Result,
                   MODE: Mode,
-                  MODE_PARAMS: ModeParameter,
-                  RESULT_FILE: ResultFile}
+                  MODE_PARAMS: ModeParameter}
 
 
 def set_list(l, i, v):
@@ -157,6 +149,7 @@ def set_list(l, i, v):
             l.append(None)
         l[i] = v
 
+
 def previous_tab(active_tab):
     """
     This function is used to access the tab preceding the active tab (global TABS list).
@@ -166,6 +159,7 @@ def previous_tab(active_tab):
     :return: The previous tab in the TABS list
     """
     return TABS[TABS_INDEXES[active_tab] - 1]
+
 
 def next_tab(active_tab):
     """
@@ -177,11 +171,14 @@ def next_tab(active_tab):
         """
     return TABS[TABS_INDEXES[active_tab] + 1]
 
+
 """
 
     JOB CREATION/EDITING  SECTION
 
 """
+
+
 def check_permission_save(form, request, active_tab, id):
     """
     Check if user has write permission for the related request
@@ -198,6 +195,7 @@ def check_permission_save(form, request, active_tab, id):
         active_tab = save_form(form, request, active_tab, id)
 
     return active_tab
+
 
 def save_form(form, request, active_tab, id=None):
     """
@@ -236,6 +234,7 @@ def save_form(form, request, active_tab, id=None):
         if 'previous' in request.POST:
             active_tab = previous_tab(active_tab)
     return active_tab
+
 
 def act_on_request_method_edit(request, active_tab, id):
     """
@@ -283,7 +282,6 @@ def act_on_request_method_edit(request, active_tab, id):
                         form = FORMS_NEW[active_tab](request.POST, request=request, id=id)
                         get_instance = True
 
-
             active_tab = check_permission_save(form, request, active_tab, id)
             if get_instance:
                 if 'next' in request.POST:
@@ -330,19 +328,11 @@ def act_on_request_method_edit(request, active_tab, id):
                     task_json['fitter'] = job.job_fitter.as_json()
                     task_json['params'] = job.job_parameter_set.as_array()
 
-                    # Make sure the directory exists to write the json output
-                    os.makedirs(os.path.dirname(user_job_input_file_directory_path(job)), exist_ok=True)
-
-                    # Write the input json file
-                    with open(user_job_input_file_directory_path(job), 'w') as outfile:
-                        json.dump(task_json, outfile)
-
-                    # Now actually update the job as submitted
+                    # Now actually submit the job
                     job.user = request.user
-                    job.status = Job.SUBMITTED
-                    job.submission_time = now()
-                    job.save()
-                    return Job.SUBMITTED, [], []
+                    job.submit(task_json)
+
+                    return SUBMITTED, [], []
 
     # OTHER TABS
     forms = []
@@ -386,7 +376,7 @@ def act_on_request_method_edit(request, active_tab, id):
                                                                      views=views) if data_model else None)
 
     if tab_checker != DATASET or tab_checker == DATASET:
-        #Always get in here.
+        # Always get in here.
         try:
             dataset = DataSet.objects.get(job_id=id)
             dataset_form = FORMS_EDIT[DATASET](instance=dataset, request=request, job_id=id)
@@ -472,6 +462,7 @@ def act_on_request_method_edit(request, active_tab, id):
 
     return active_tab, forms, views
 
+
 @login_required
 def start(request):
     """
@@ -498,6 +489,7 @@ def start(request):
         )
     else:
         return redirect('job_data_model_edit', id=request.session['draft_job']['id'])
+
 
 @login_required
 def edit_job_name(request, id):
@@ -541,6 +533,7 @@ def edit_job_name(request, id):
         }
     )
 
+
 @login_required
 def edit_job_data_model(request, id):
     """
@@ -582,6 +575,7 @@ def edit_job_data_model(request, id):
             # 'max_file_size': MAX_FILE_SIZE
         }
     )
+
 
 @login_required
 def edit_job_dataset(request, id):
@@ -625,6 +619,7 @@ def edit_job_dataset(request, id):
             # 'max_file_size': MAX_FILE_SIZE
         }
     )
+
 
 @login_required
 def ajax_edit_job_dataset(request, id):
@@ -689,6 +684,7 @@ def ajax_edit_job_dataset(request, id):
 
     return JsonResponse(data)
 
+
 @login_required
 def edit_job_psf(request, id):
     """
@@ -731,6 +727,7 @@ def edit_job_psf(request, id):
             # 'max_file_size': MAX_FILE_SIZE
         }
     )
+
 
 @login_required
 def edit_job_lsf(request, id):
@@ -775,6 +772,7 @@ def edit_job_lsf(request, id):
         }
     )
 
+
 @login_required
 def edit_job_galaxy_model(request, id):
     """
@@ -817,6 +815,7 @@ def edit_job_galaxy_model(request, id):
             # 'max_file_size': MAX_FILE_SIZE
         }
     )
+
 
 @login_required
 def edit_job_fitter(request, id):
@@ -861,6 +860,7 @@ def edit_job_fitter(request, id):
         }
     )
 
+
 @login_required
 def edit_job_params(request, id):
     """
@@ -904,6 +904,7 @@ def edit_job_params(request, id):
         }
     )
 
+
 @login_required
 def launch(request, id):
     """
@@ -918,7 +919,7 @@ def launch(request, id):
     active_tab = LAUNCH
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
-    if active_tab != Job.SUBMITTED:
+    if active_tab != SUBMITTED:
         return render(
             request,
             "job/edit.html",
@@ -950,32 +951,38 @@ def launch(request, id):
     else:
         return redirect('job_list')
 
+
 """
 
     JOB RESULTS
 
 """
 
-def get_model_objects(model, job_id):
-    """
-    Returns data from a given model for a specific job (job_id)
-    :param model: a given model (e.g. START, DMODEL, ...)
-    :param job_id: job id
-    :return: array of results (can be empty)
-    """
-    return MODELS_RESULTS[model].objects.filter(job_id=job_id)
 
-def set_iterable_views(model, views, instance):
+@login_required
+def download_asset(request, job_id, download, file_path):
     """
-    Converts an instance into an iterable view for use in template
-    :param model: the current model
-    :param views: the view list
-    :param instance: the current model instance
-    :return: list with iterable views
+    Returns a file from the server for the specified job
+    :param request: The django request object
+    :param job_id: int: The job id
+    :param download: int: Force download or not
+    :param file_path: string: the path to the file to fetch
+    :return: A HttpStreamingResponse object representing the file
     """
-    return set_list(views, RESULTS_PARTS_INDEXES[model], model_instance_to_iterable(instance,
-                                                                      model=model,
-                                                                      views=views) if instance else None)
+    # Get the job
+    job = get_object_or_404(Job, id=job_id)
+
+    # Check that this user has access to this job
+    if job.user != request.user:
+        # Nothing to see here
+        raise Http404
+
+    # Get the requested file from the server
+    try:
+        return job.fetch_remote_file(file_path, force_download=download == 1)
+    except:
+        raise Http404
+
 
 # Should require that you have access to this job id too.
 @login_required
@@ -987,35 +994,84 @@ def results(request, id):
     :return: returns views to render
     """
 
+    # Get the job
+    job = get_object_or_404(Job, id=id)
+
+    # Check that this user has access to this job
+    if job.user != request.user:
+        # Nothing to see here
+        raise Http404
+
     active_tab = LAUNCH
     # This could be cleaned to avoid getting forms and only gather the one view we need
     # (which also requires info from gmodel and fitter).
     active_tab, forms, views = act_on_request_method_edit(request, active_tab, id)
 
+    # for drafts there are no clusters assigned, so job.custer is None for them
+    is_online = job.cluster is not None and job.cluster.is_connected() is not None
+
     job = model_instance_to_iterable(Job.objects.get(id=id), model=START)
-    job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
 
-    job.result.modes = {}
-    i=0
+    if is_online and job.job_status == JobStatus.COMPLETED:
+        # Check if any results exist for this job
+        if not Result.objects.filter(job_id=id).exists():
+            result_json = b''
+            for part in job.fetch_remote_file('output/results.json').streaming_content:
+                result_json += part
 
-    for mode in Mode.objects.filter(result__id = job.result.id):
-        job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
+            result_json = json.loads(result_json)
 
-        # Gather the parameters of this mode
-        job.result.modes[i].params = {}
-        j=0
-        for params in ModeParameter.objects.filter(mode__id=job.result.modes[i].id):
-            job.result.modes[i].params[j] = model_instance_to_iterable(params, model=MODE_PARAMS)
-            j+=1
+            save_job_results(job.id, result_json)
 
-        # Gather the image of this mode
-        job.result.modes[i].mode_image = {}
-        j=0
-        for mode_image in ModeImage.objects.filter(mode_id=job.result.modes[i].id):
-            job.result.modes[i].mode_image[j] = model_instance_to_iterable(mode_image, model=RESULT_FILE)
-            j+=1
+            # Get the list of images generated
+            result = job.fetch_remote_file_list(path="/", recursive=True)
+            # Waste the message id
+            result.pop_uint()
+            # Iterate over each file
+            num_entries = result.pop_uint()
+            files = []
+            for _ in range(num_entries):
+                files.append(result.pop_string())
+                # Waste the is_file bool
+                result.pop_bool()
+                # Waste the file size
+                result.pop_ulong()
 
-        i+=1
+            # Get all image files
+            images = [f for f in files if f.endswith('.png')]
+            image_data = []
+            for i in images:
+                if 'velmap' in i: image_data.append({'filename': i, 'type': 'velmap'})
+                if 'sigmap' in i: image_data.append({'filename': i, 'type': 'sigmap'})
+                if 'flxmap' in i: image_data.append({'filename': i, 'type': 'flxmap'})
+                if 'flxcube' in i: image_data.append({'filename': i, 'type': 'flxcube'})
+
+            for i in image_data:
+                save_job_image(job.id, int(i['filename'].split('_')[-2]), i['type'], i['filename'])
+
+        job.result = model_instance_to_iterable(Result.objects.get(job_id=id), model=RESULT)
+
+        job.result.modes = {}
+        i = 0
+
+        for mode in Mode.objects.filter(result__id=job.result.id):
+            job.result.modes[i] = model_instance_to_iterable(mode, model=MODE)
+
+            # Gather the parameters of this mode
+            job.result.modes[i].params = {}
+            j = 0
+            for params in ModeParameter.objects.filter(mode__id=job.result.modes[i].id):
+                job.result.modes[i].params[j] = model_instance_to_iterable(params, model=MODE_PARAMS)
+                j += 1
+
+            # Gather the image of this mode
+            job.result.modes[i].mode_image = {}
+            j = 0
+            for mode_image in ModeImage.objects.filter(mode_id=job.result.modes[i].id):
+                job.result.modes[i].mode_image[j] = model_instance_to_iterable(mode_image, model=RESULT_FILE)
+                j += 1
+
+            i += 1
 
     return render(
         request,
@@ -1023,47 +1079,12 @@ def results(request, id):
         {
             'job_id': id,
             'job_view': job,
+            'is_online': is_online,
+            'result_filename': '/gbkfit_job_{}.tar.gz'.format(job.id),
             'params_view': views[TABS_INDEXES[PARAMS]],
         }
     )
 
-@login_required
-def download_results_tar(request, id):
-    """
-    Function to download a tar file related to a job id
-    :param request: current request (required by default, not used)
-    :param id: job id
-    :return: returns a response containing the tar file
-    """
-
-    result = Result.objects.get(job_id = id)
-
-    tar_file = ResultFile.objects.get(result_id=result.id).tar_file
-    print (tar_file.file)
-
-    content = FileWrapper(tar_file.file)
-    response = HttpResponse(content, content_type='application/gzip')
-    response['Content-Length'] = tar_file.size
-    response['Content-Disposition'] = 'attachment; filename=%s' % tar_file.name
-    return response
-
-@login_required
-def get_results_image(request, id, mode, image_type):
-    """
-    Function to get an result image related to a job id
-
-    :param request: current request
-    :param id: job id
-    :param mode: mode of the result
-    :param image_type: image type (e.g. velmap, sigmap, etc.)
-    :return: returns the image
-    """
-
-    result = Result.objects.get(job_id=id)
-    mode = Mode.objects.get(result_id=result.id, mode_number=mode)
-    mode_image = ModeImage.objects.get(mode_id=mode.id, image_type=image_type)
-
-    return HttpResponse(mode_image.image_file, content_type='image/png')
 
 @login_required
 def job_overview(request, id):
@@ -1095,6 +1116,7 @@ def job_overview(request, id):
         }
     )
 
+
 @login_required
 def job_duplicate(request, id):
     """
@@ -1104,14 +1126,15 @@ def job_duplicate(request, id):
     :return: redirects to the edit page of the newly duplicated job
     """
 
-    job = Job.objects.get(id = id)
+    job = Job.objects.get(id=id)
     # Check write permission
     if job.user_id == request.user.id:
         job.pk = None
+        job.id = None
         # TODO: Need a mechanism to ensure name unique constraint.
         job.name = job.name + '_copy'
         job.submission_time = None
-        job.status = Job.DRAFT
+        job.job_status = JobStatus.DRAFT
         job.save()
 
         # Other models may not be existing. In such a case, pass.
