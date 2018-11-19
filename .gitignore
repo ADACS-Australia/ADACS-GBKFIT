@@ -12,3 +12,5 @@ log/*
 env/*
 media/*
 lib/*
+.venv/*
+gbkfit/media/*
