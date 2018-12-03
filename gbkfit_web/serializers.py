@@ -36,7 +36,7 @@ from rest_framework import serializers
 from gbkfit_web.models import (
     Job, DataSet, DataModel, PSF, LSF,
     GalaxyModel, Fitter, ParameterSet,
-    Result, Mode, ModeParameter, ModeImage, ResultFile
+    Result, Mode, ModeParameter, ModeImage
 
 )
 from gbkfit_web.forms.job.params import (
@@ -77,19 +77,18 @@ class create_task_json:
 
 
 
-def save_job_results(job_id, json_file):
+def save_job_results(job_id, json):
 
     job = Job.objects.get(id=job_id)
-    json_file = json_load(open(json_file))
 
     result = Result()
     result.job_id = job.id
-    result.dof = json_file['dof']
+    result.dof = json['dof']
     result.save()
 
     # Save modes
     mode_number = 0
-    for mode in json_file['modes']:
+    for mode in json['modes']:
         m = Mode()
         m.mode_number = mode_number
         m.result = result
@@ -109,24 +108,6 @@ def save_job_results(job_id, json_file):
         # Increase mode number
         mode_number += 1
 
-def save_job_tar_error(job_id, tar_file_path):
-    result = Result()
-    result.job_id = job_id
-    result.dof = 0
-    result.save()
-
-    result = Result.objects.get(job_id=job_id)
-    result_file = ResultFile()
-    result_file.result_id = result.id
-    result_file.tar_file.name = tar_file_path
-    result_file.save()
-
-def save_job_tar(job_id, tar_file_path):
-    result = Result.objects.get(job_id=job_id)
-    result_file = ResultFile()
-    result_file.result_id = result.id
-    result_file.tar_file.name = tar_file_path
-    result_file.save()
 
 def save_job_image(job_id, mode_number, image_type, image_file_path):
     result = Result.objects.get(job_id=job_id)
@@ -135,7 +116,7 @@ def save_job_image(job_id, mode_number, image_type, image_file_path):
     mode_image = ModeImage()
     mode_image.mode_id = mode.id
     mode_image.image_type = image_type
-    mode_image.image_file.name = image_file_path
+    mode_image.image_file = image_file_path
     mode_image.save()
 
 ####
@@ -207,13 +188,6 @@ class ModeParametersSerializer(serializers.Serializer):
     class Meta:
         model = ModeParameter
         fields = ['id', 'mode_id', 'name', 'value', 'error']
-
-class ResultFileSerializer(serializers.Serializer):
-    class Meta:
-        model = ResultFile
-        fields = ['id', 'result_id', 'filename']
-
-
 
 ####
 # End of Result serializers

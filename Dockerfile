@@ -34,6 +34,8 @@
  ENV PYTHONUNBUFFERED 1
  RUN mkdir /code
  WORKDIR /code
+ ADD . /code/ 
  ADD requirements.txt /code/
  RUN pip install -r requirements.txt
+ RUN pip install -r django_hpc_job_controller/server/requirements.txt
  ADD . /code/

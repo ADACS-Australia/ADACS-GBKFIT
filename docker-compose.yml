@@ -37,29 +37,34 @@ services:
     image: nginx:latest
     container_name: ng01
     ports:
-      - "8000:8000"
+      - "8010:8000"
     volumes:
-      - ./code:/code
-      - ./:/etc/nginx/conf.d
-      - ./gbkfit_web/static:/static
+      - ./nginx/:/etc/nginx/conf.d
+      - ./static:/static
     depends_on:
       - web
   db:
-    image: mysql
+    image: mysql:5.7
     container_name: ms01
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: gbkfit_dev
       MYSQL_USER: django
       MYSQL_PASSWORD: test-docker_#1
+    volumes:
+      - var_lib_mysql_gbkfit:/var/lib/mysql
   web:
     build: ./
     container_name: dg01
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn gbkfit.wsgi -b 0.0.0.0:8000"
     ports:
       - "8000"
+      - "8001"
     volumes:
       - ./:/code
-      - ./gbkfit_web/static:/static
+      - ./static:/static
     depends_on:
       - db
+
+volumes:
+  var_lib_mysql_gbkfit:
