@@ -39,7 +39,6 @@ services:
     ports:
       - "8010:8000"
     volumes:
-      - ./code:/code
       - ./nginx/:/etc/nginx/conf.d
       - ./static:/static
     depends_on:
